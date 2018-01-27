@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.os.Handler
 import android.preference.PreferenceManager
 import android.service.wallpaper.WallpaperService
+import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import rak.pixellwp.drawing.CirclePoint
@@ -59,6 +60,7 @@ class LiveWallpaperService : WallpaperService() {
         }
 
         override fun onTouchEvent(event: MotionEvent?) {
+            Log.d(Log.DEBUG.toString(), "touch event")
             if (touchEnabled){
                 val x: Float = event!!.x
                 val y: Float = event!!.y
@@ -73,14 +75,14 @@ class LiveWallpaperService : WallpaperService() {
                     }
 
                 } finally {
-                    canvas?: surfaceHolder.unlockCanvasAndPost(canvas)
+                    if (canvas != null) surfaceHolder.unlockCanvasAndPost(canvas)
                 }
-
                 super.onTouchEvent(event)
             }
         }
 
-        fun draw() {
+        private fun draw() {
+            Log.d(Log.DEBUG.toString(), "drawing")
             var canvas: Canvas? = null
             try {
                 canvas = surfaceHolder.lockCanvas()
@@ -91,9 +93,11 @@ class LiveWallpaperService : WallpaperService() {
                     val x: Int = (width * Math.random()).toInt()
                     val y: Int = (height * Math.random()).toInt()
                     circles.add(CirclePoint((circles.size+1).toString(), x.toFloat(), y.toFloat()))
+                    drawCircles(canvas, circles)
                 }
             } finally {
-                canvas ?: surfaceHolder.unlockCanvasAndPost(canvas)
+                Log.d(Log.DEBUG.toString(), "canvas is " + canvas)
+                if (canvas != null) surfaceHolder.unlockCanvasAndPost(canvas)
             }
             handler.removeCallbacks(drawRunner)
             if (visible) handler.postDelayed(drawRunner, 5000)

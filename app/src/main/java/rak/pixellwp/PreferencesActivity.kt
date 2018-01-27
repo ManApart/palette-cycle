@@ -3,6 +3,7 @@ package rak.pixellwp
 import android.os.Bundle
 import android.preference.Preference
 import android.preference.PreferenceActivity
+import android.util.Log
 import android.widget.Toast
 
 class PreferencesActivity : PreferenceActivity() {
@@ -10,6 +11,7 @@ class PreferencesActivity : PreferenceActivity() {
         preference: Preference, newValue: Any ->
 
         if (newValue?.toString().isNotEmpty() && newValue?.toString().matches(Regex("\\d*"))){
+            Log.d(Log.DEBUG.toString(), "grabbed new preference: " + newValue)
             return@OnPreferenceChangeListener true
         }
 
@@ -23,6 +25,7 @@ class PreferencesActivity : PreferenceActivity() {
 
         val circlePreference = getPreferenceScreen().findPreference("numberOfCircles")
         circlePreference.setOnPreferenceChangeListener(numberCheckListener)
+        Log.d(Log.DEBUG.toString(), "finished preference create")
     }
 
 }
