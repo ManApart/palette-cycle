@@ -26,7 +26,7 @@ class LiveWallpaperService : WallpaperService() {
         private var height: Int = 0
         private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@LiveWallpaperService)
 
-        private var maxNumber: Int = Integer.valueOf(prefs.getString("numberOfCircles", "4"))
+        private var maxNumber: Int = prefs.getString("numberOfCircles", "4").toInt()
         private var circles = mutableListOf<CirclePoint>()
         private var visible = true
         private var touchEnabled: Boolean = prefs.getBoolean("touch", false)
