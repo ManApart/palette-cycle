@@ -43,7 +43,7 @@ class LiveWallpaperService : WallpaperService() {
         }
 
         override fun onVisibilityChanged(visible: Boolean) {
-            this.visible = !visible
+            this.visible = visible
             if (visible) handler.post(drawRunner) else handler.removeCallbacks(drawRunner)
         }
 
@@ -60,7 +60,6 @@ class LiveWallpaperService : WallpaperService() {
         }
 
         override fun onTouchEvent(event: MotionEvent?) {
-            Log.d(Log.DEBUG.toString(), "touch event")
             if (touchEnabled){
                 val x: Float = event!!.x
                 val y: Float = event!!.y
@@ -82,7 +81,6 @@ class LiveWallpaperService : WallpaperService() {
         }
 
         private fun draw() {
-            Log.d(Log.DEBUG.toString(), "drawing")
             var canvas: Canvas? = null
             try {
                 canvas = surfaceHolder.lockCanvas()
@@ -96,11 +94,10 @@ class LiveWallpaperService : WallpaperService() {
                     drawCircles(canvas, circles)
                 }
             } finally {
-                Log.d(Log.DEBUG.toString(), "canvas is " + canvas)
                 if (canvas != null) surfaceHolder.unlockCanvasAndPost(canvas)
             }
             handler.removeCallbacks(drawRunner)
-            if (visible) handler.postDelayed(drawRunner, 5000)
+            if (visible) handler.postDelayed(drawRunner, 1000)
         }
 
 
