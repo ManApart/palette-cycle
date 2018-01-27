@@ -7,24 +7,23 @@ import android.graphics.Paint
 import android.os.Handler
 import android.preference.PreferenceManager
 import android.service.wallpaper.WallpaperService
-import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import rak.pixellwp.drawing.CirclePoint
 
 
-class LiveWallpaperService : WallpaperService() {
+class CircleWallpaperService : WallpaperService() {
 
     override fun onCreateEngine(): Engine {
-        return LiveWallpaperEngine()
+        return CircleWallpaperEngine()
     }
 
-    inner class LiveWallpaperEngine : Engine() {
+    inner class CircleWallpaperEngine : Engine() {
         private val handler = Handler()
         private val drawRunner = Runnable { draw() }
         private var width: Int = 0
         private var height: Int = 0
-        private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@LiveWallpaperService)
+        private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@CircleWallpaperService)
 
         private var maxNumber: Int = prefs.getString("numberOfCircles", "4").toInt()
         private var circles = mutableListOf<CirclePoint>()

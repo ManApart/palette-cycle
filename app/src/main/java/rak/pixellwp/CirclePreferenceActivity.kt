@@ -8,15 +8,15 @@ import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
 
-class PreferencesActivity : PreferenceActivity() {
+class CirclePreferenceActivity : PreferenceActivity() {
     private val NUMBER_OF_CIRCLES = "numberOfCircles"
     private val TOUCH_ENABLED = "touch"
 
     class MyPreferenceFragment : PreferenceFragment() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            PreferenceManager.setDefaultValues(activity, R.xml.prefs, false)
-            addPreferencesFromResource(R.xml.prefs)
+            PreferenceManager.setDefaultValues(activity, R.xml.circlePrefs, false)
+            addPreferencesFromResource(R.xml.circlePrefs)
         }
     }
 

@@ -19,7 +19,7 @@ class SetWallpaperActivity : Activity() {
         val intent = Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER)
         intent.putExtra(
                 WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
-                ComponentName(this, LiveWallpaperService::class.java
+                ComponentName(this, CircleWallpaperService::class.java
         ))
         startActivity(intent)
     }
