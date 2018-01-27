@@ -15,8 +15,8 @@ class CirclePreferenceActivity : PreferenceActivity() {
     class MyPreferenceFragment : PreferenceFragment() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            PreferenceManager.setDefaultValues(activity, R.xml.circlePrefs, false)
-            addPreferencesFromResource(R.xml.circlePrefs)
+            PreferenceManager.setDefaultValues(activity, R.xml.circle_prefs, false)
+            addPreferencesFromResource(R.xml.circle_prefs)
         }
     }
 
