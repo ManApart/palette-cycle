@@ -9,27 +9,8 @@ import android.util.Log
 import android.widget.Toast
 
 class PreferencesActivity : PreferenceActivity() {
-    val NUMBER_OF_CIRCLES = "numberOfCircles"
-    val TOUCH_ENABLED = "touch"
-
-
-    private var numberCheckListener: SharedPreferences.OnSharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener({ preference: SharedPreferences, newValue: Any ->
-        val num = preference.getString(NUMBER_OF_CIRCLES, "")
-        val touch = preference.getBoolean(TOUCH_ENABLED, false)
-        Log.d(Log.DEBUG.toString(), "evaluate new preference: $newValue")
-
-        if (NUMBER_OF_CIRCLES == newValue) {
-            if (num.isNotEmpty() && num.matches(Regex("\\d*"))) {
-                Log.d(Log.DEBUG.toString(), "evaluate new preference: $num circles and touch is $touch")
-            } else {
-                Toast.makeText(this, "Invalid Input", Toast.LENGTH_SHORT).show()
-                preference.edit().putInt(NUMBER_OF_CIRCLES, 1)
-            }
-        }
-
-        Log.d(Log.DEBUG.toString(), "circles value is : ${preference.getString(NUMBER_OF_CIRCLES, "")}")
-        Log.d(Log.DEBUG.toString(), "touch value is : ${preference.getBoolean(TOUCH_ENABLED, false)}")
-    })
+    private val NUMBER_OF_CIRCLES = "numberOfCircles"
+    private val TOUCH_ENABLED = "touch"
 
     class MyPreferenceFragment : PreferenceFragment() {
         override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,15 +20,22 @@ class PreferencesActivity : PreferenceActivity() {
         }
     }
 
+    private var numberCheckListener: SharedPreferences.OnSharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener({ preference: SharedPreferences, newValue: Any ->
+        if (NUMBER_OF_CIRCLES == newValue) {
+            val num = preference.getString(NUMBER_OF_CIRCLES, "")
+            if (num.isEmpty() || !num.matches(Regex("\\d*"))) {
+                Toast.makeText(this, "Invalid Input", Toast.LENGTH_SHORT).show()
+                preference.edit().putInt(NUMBER_OF_CIRCLES, 1)
+            }
+        }
+        Log.d(Log.DEBUG.toString(), "circles value is : ${preference.getString(NUMBER_OF_CIRCLES, "")}")
+        Log.d(Log.DEBUG.toString(), "touch value is : ${preference.getBoolean(TOUCH_ENABLED, false)}")
+    })
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val fragment = MyPreferenceFragment()
-        fragmentManager.beginTransaction().replace(android.R.id.content, fragment).commit()
-
-
-        val circlePreference = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        circlePreference.registerOnSharedPreferenceChangeListener(numberCheckListener)
+        fragmentManager.beginTransaction().replace(android.R.id.content, MyPreferenceFragment()).commit()
+        PreferenceManager.getDefaultSharedPreferences(applicationContext).registerOnSharedPreferenceChangeListener(numberCheckListener)
     }
 
 }
