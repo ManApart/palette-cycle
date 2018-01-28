@@ -1,7 +1,8 @@
 package rak.pixellwp
 
-import android.graphics.*
-import android.graphics.drawable.Drawable
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Rect
 import android.os.Handler
 import android.service.wallpaper.WallpaperService
 import android.view.SurfaceHolder
@@ -15,11 +16,11 @@ class ImageWallpaperService : WallpaperService() {
     inner class ImageWallpaperEngine : Engine(){
         private val handler = Handler()
         private val drawRunner = Runnable { draw() }
-
-        private var width: Int = 0
-        private var height: Int = 0
-        private var visible = true
         private val image = BitmapFactory.decodeResource(resources, R.drawable.beach)
+
+        private var visible = true
+        private var imageSrc: Rect = Rect(0, 0, image.width, image.height)
+        private var imageDest: Rect = Rect()
 
         init {
             handler.post(drawRunner)
@@ -37,8 +38,7 @@ class ImageWallpaperService : WallpaperService() {
         }
 
         override fun onSurfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
-            this.width = width
-            this.height = height
+            imageDest = Rect(0, 0, width, height)
             super.onSurfaceChanged(holder, format, width, height)
         }
 
@@ -47,7 +47,7 @@ class ImageWallpaperService : WallpaperService() {
             try {
                 canvas = surfaceHolder.lockCanvas()
                 if (canvas != null){
-                    canvas.drawBitmap(image, 0f, 0f, null)
+                    canvas.drawBitmap(image, imageSrc, imageDest, null)
                 }
             } finally {
                 if (canvas != null) surfaceHolder.unlockCanvasAndPost(canvas)
