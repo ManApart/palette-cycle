@@ -17,7 +17,21 @@
         <service
             android:name=".CircleWallpaperService"
             android:enabled="true"
-            android:label="Wallpaper Example "
+            android:label="Circle Wallpaper"
+            android:permission="android.permission.BIND_WALLPAPER" >
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/wallpaper" />
+        </service>
+
+        <service
+            android:name=".ImageWallpaperService"
+            android:enabled="true"
+            android:label="Image Wallpaper"
             android:permission="android.permission.BIND_WALLPAPER" >
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />

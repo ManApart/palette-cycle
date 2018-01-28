@@ -15,11 +15,20 @@ class SetWallpaperActivity : Activity() {
     }
 
 
-    fun onClick(view: View){
+    fun showCircleWallpaper(view: View){
         val intent = Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER)
         intent.putExtra(
                 WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
                 ComponentName(this, CircleWallpaperService::class.java
+        ))
+        startActivity(intent)
+    }
+
+    fun showImageWallpaper(view: View){
+        val intent = Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER)
+        intent.putExtra(
+                WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
+                ComponentName(this, ImageWallpaperService::class.java
         ))
         startActivity(intent)
     }

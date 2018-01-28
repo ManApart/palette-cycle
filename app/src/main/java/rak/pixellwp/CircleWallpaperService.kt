@@ -21,10 +21,10 @@ class CircleWallpaperService : WallpaperService() {
     inner class CircleWallpaperEngine : Engine() {
         private val handler = Handler()
         private val drawRunner = Runnable { draw() }
-        private var width: Int = 0
-        private var height: Int = 0
         private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@CircleWallpaperService)
 
+        private var width: Int = 0
+        private var height: Int = 0
         private var maxNumber: Int = prefs.getString("numberOfCircles", "4").toInt()
         private var circles = mutableListOf<CirclePoint>()
         private var visible = true
