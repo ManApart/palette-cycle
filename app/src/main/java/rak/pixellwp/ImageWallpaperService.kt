@@ -39,8 +39,13 @@ class ImageWallpaperService : WallpaperService() {
 
         private val panDetector = object : GestureDetector.SimpleOnGestureListener() {
             override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-                imageSrc = Rect((imageSrc.left + distanceX).toInt(), (imageSrc.top + distanceY).toInt(), (imageSrc.width() + distanceX).toInt(), (imageSrc.bottom + distanceY).toInt())
-                Log.d(Log.DEBUG.toString(), "New pan: $imageSrc")
+                val left = imageSrc.left + distanceX
+                val top = imageSrc.top + distanceY
+                val right = left + image.width
+                val bottom = top + image.height
+
+                imageSrc = Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
+                Log.d(Log.DEBUG.toString(), "Dist x: $distanceX, y: $distanceY = new pan: $imageSrc")
                 return super.onScroll(e1, e2, distanceX, distanceY)
             }
         }
@@ -53,7 +58,7 @@ class ImageWallpaperService : WallpaperService() {
 
         override fun onTouchEvent(event: MotionEvent?) {
             scaleDetector.onTouchEvent(event)
-            detector.onTouchEvent(event)
+//            detector.onTouchEvent(event)
             super.onTouchEvent(event)
             draw()
         }
@@ -80,7 +85,8 @@ class ImageWallpaperService : WallpaperService() {
                 if (canvas != null){
                     canvas.scale(scaleFactor, scaleFactor)
                     canvas.drawColor(Color.BLACK)
-                    canvas.drawBitmap(image, imageSrc, imageSrc, null)
+                    val imageDest = Rect(0, 0, imageSrc.width(), imageSrc.height())
+                    canvas.drawBitmap(image, imageSrc, imageDest, null)
 //                    Log.d(Log.DEBUG.toString(), "Drew canvas with src: $imageSrc")
                 }
             } finally {
