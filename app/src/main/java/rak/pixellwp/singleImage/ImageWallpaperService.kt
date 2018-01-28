@@ -1,4 +1,4 @@
-package rak.pixellwp
+package rak.pixellwp.singleImage
 
 import android.content.SharedPreferences
 import android.graphics.BitmapFactory
@@ -9,11 +9,11 @@ import android.os.Handler
 import android.preference.PreferenceManager
 import android.service.wallpaper.WallpaperService
 import android.support.v4.view.GestureDetectorCompat
-import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.SurfaceHolder
+import rak.pixellwp.R
 
 class ImageWallpaperService : WallpaperService() {
 
@@ -28,15 +28,16 @@ class ImageWallpaperService : WallpaperService() {
         private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@ImageWallpaperService)
 
         private var visible = true
-        private var imageSrc = Rect(prefs.getInt("left", 0), prefs.getInt("top", 0), prefs.getInt("right", image.width), prefs.getInt("bottom", image.height))
+        private var touchEnabled = prefs.getBoolean(TOUCH_ENABLED, false)
+        private var imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, image.width), prefs.getInt(BOTTOM, image.height))
         private var screenDimensions = Rect(imageSrc)
 
-        private var scaleFactor = prefs.getFloat("scaleFactor", 1f)
+        private var scaleFactor = prefs.getFloat(SCALE_FACTOR, 1f)
         private val scaleDetector = ScaleGestureDetector(applicationContext, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector?): Boolean {
                 scaleFactor *= (detector?.scaleFactor ?: 1f)
                 scaleFactor = Math.max(0.1f, Math.min(scaleFactor, 5f))
-                prefs.edit().putFloat("scaleFactor", scaleFactor).apply()
+                prefs.edit().putFloat(SCALE_FACTOR, scaleFactor).apply()
                 return true
             }
         })
@@ -50,10 +51,10 @@ class ImageWallpaperService : WallpaperService() {
 
                 imageSrc = Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
                 prefs.edit()
-                        .putInt("left", imageSrc.left)
-                        .putInt("top", imageSrc.top)
-                        .putInt("right", imageSrc.right)
-                        .putInt("bottom", imageSrc.bottom).apply()
+                        .putInt(LEFT, imageSrc.left)
+                        .putInt(TOP, imageSrc.top)
+                        .putInt(RIGHT, imageSrc.right)
+                        .putInt(BOTTOM, imageSrc.bottom).apply()
                 return super.onScroll(e1, e2, distanceX, distanceY)
             }
         })
@@ -63,7 +64,7 @@ class ImageWallpaperService : WallpaperService() {
         }
 
         override fun onTouchEvent(event: MotionEvent?) {
-            if (isPreview) {
+            if (isPreview || touchEnabled) {
                 scaleDetector.onTouchEvent(event)
                 panDetector.onTouchEvent(event)
                 super.onTouchEvent(event)
@@ -73,6 +74,7 @@ class ImageWallpaperService : WallpaperService() {
 
         override fun onVisibilityChanged(visible: Boolean) {
             this.visible = visible
+            touchEnabled = prefs.getBoolean(TOUCH_ENABLED, false)
             if (visible) handler.post(drawRunner) else handler.removeCallbacks(drawRunner)
         }
 

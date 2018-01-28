@@ -6,6 +6,8 @@ import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import rak.pixellwp.circles.CircleWallpaperService
+import rak.pixellwp.singleImage.ImageWallpaperService
 
 class SetWallpaperActivity : Activity() {
 

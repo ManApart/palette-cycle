@@ -1,4 +1,4 @@
-package rak.pixellwp
+package rak.pixellwp.circles
 
 import android.content.SharedPreferences
 import android.graphics.Canvas
@@ -9,7 +9,6 @@ import android.preference.PreferenceManager
 import android.service.wallpaper.WallpaperService
 import android.view.MotionEvent
 import android.view.SurfaceHolder
-import rak.pixellwp.drawing.CirclePoint
 
 
 class CircleWallpaperService : WallpaperService() {
@@ -25,10 +24,10 @@ class CircleWallpaperService : WallpaperService() {
 
         private var width: Int = 0
         private var height: Int = 0
-        private var maxNumber: Int = prefs.getString("numberOfCircles", "4").toInt()
+        private var maxNumber: Int = prefs.getString(NUMBER_OF_CIRCLES, "4").toInt()
         private var circles = mutableListOf<CirclePoint>()
         private var visible = true
-        private var touchEnabled: Boolean = prefs.getBoolean("touch", false)
+        private var touchEnabled: Boolean = prefs.getBoolean(TOUCH_ENABLED, false)
 
         private val paint = Paint()
 
@@ -43,6 +42,7 @@ class CircleWallpaperService : WallpaperService() {
 
         override fun onVisibilityChanged(visible: Boolean) {
             this.visible = visible
+            touchEnabled = prefs.getBoolean(TOUCH_ENABLED, false)
             if (visible) handler.post(drawRunner) else handler.removeCallbacks(drawRunner)
         }
 
@@ -68,7 +68,7 @@ class CircleWallpaperService : WallpaperService() {
                     if (canvas != null){
                         canvas.drawColor(Color.BLACK)
                         circles.clear()
-                        circles.add(CirclePoint((circles.size+1).toString(), x, y))
+                        circles.add(CirclePoint((circles.size + 1).toString(), x, y))
                         drawCircles(canvas, circles)
                     }
 
@@ -89,7 +89,7 @@ class CircleWallpaperService : WallpaperService() {
                     }
                     val x: Int = (width * Math.random()).toInt()
                     val y: Int = (height * Math.random()).toInt()
-                    circles.add(CirclePoint((circles.size+1).toString(), x.toFloat(), y.toFloat()))
+                    circles.add(CirclePoint((circles.size + 1).toString(), x.toFloat(), y.toFloat()))
                     drawCircles(canvas, circles)
                 }
             } finally {

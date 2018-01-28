@@ -1,4 +1,4 @@
-package rak.pixellwp
+package rak.pixellwp.circles
 
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -7,10 +7,9 @@ import android.preference.PreferenceFragment
 import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
+import rak.pixellwp.R
 
 class CirclePreferenceActivity : PreferenceActivity() {
-    private val NUMBER_OF_CIRCLES = "numberOfCircles"
-    private val TOUCH_ENABLED = "touch"
 
     class MyPreferenceFragment : PreferenceFragment() {
         override fun onCreate(savedInstanceState: Bundle?) {
