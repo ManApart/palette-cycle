@@ -2,10 +2,13 @@ package rak.pixellwp
 
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Rect
 import android.os.Handler
 import android.service.wallpaper.WallpaperService
+import android.support.v4.view.GestureDetectorCompat
 import android.util.Log
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.SurfaceHolder
@@ -16,25 +19,33 @@ class ImageWallpaperService : WallpaperService() {
         return ImageWallpaperEngine()
     }
 
-    inner class ImageWallpaperEngine : Engine(){
+    inner class ImageWallpaperEngine : Engine() {
         private val handler = Handler()
         private val drawRunner = Runnable { draw() }
         private val image = BitmapFactory.decodeResource(resources, R.drawable.beach)
 
         private var visible = true
         private var imageSrc: Rect = Rect(0, 0, image.width, image.height)
-        private var imageDest: Rect = Rect()
 
         private var scaleFactor = 1f
-        private val scaleDetector: ScaleGestureDetector = ScaleGestureDetector(applicationContext, ScaleListener())
-
-        inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+        private val scaleDetector = ScaleGestureDetector(applicationContext, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector?): Boolean {
                 scaleFactor *= (detector?.scaleFactor ?: 1f)
                 scaleFactor = Math.max(0.1f, Math.min(scaleFactor, 5f))
+                Log.d(Log.DEBUG.toString(), "New scale factor: $scaleFactor")
                 return true
             }
+        })
+
+        private val panDetector = object : GestureDetector.SimpleOnGestureListener() {
+            override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+                imageSrc = Rect((imageSrc.left + distanceX).toInt(), (imageSrc.top + distanceY).toInt(), (imageSrc.width() + distanceX).toInt(), (imageSrc.bottom + distanceY).toInt())
+                Log.d(Log.DEBUG.toString(), "New pan: $imageSrc")
+                return super.onScroll(e1, e2, distanceX, distanceY)
+            }
         }
+
+        private val detector: GestureDetectorCompat = GestureDetectorCompat(applicationContext, panDetector)
 
         init {
             handler.post(drawRunner)
@@ -42,6 +53,7 @@ class ImageWallpaperService : WallpaperService() {
 
         override fun onTouchEvent(event: MotionEvent?) {
             scaleDetector.onTouchEvent(event)
+            detector.onTouchEvent(event)
             super.onTouchEvent(event)
             draw()
         }
@@ -58,7 +70,6 @@ class ImageWallpaperService : WallpaperService() {
         }
 
         override fun onSurfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
-            imageDest = Rect(0, 0, width, height)
             super.onSurfaceChanged(holder, format, width, height)
         }
 
@@ -68,9 +79,9 @@ class ImageWallpaperService : WallpaperService() {
                 canvas = surfaceHolder.lockCanvas()
                 if (canvas != null){
                     canvas.scale(scaleFactor, scaleFactor)
-                    imageDest = Rect(0, 0, canvas.width, canvas.height)
-                    canvas.drawBitmap(image, imageSrc, imageDest, null)
-                    Log.d(Log.DEBUG.toString(), "Drew canvas with destination: $imageDest")
+                    canvas.drawColor(Color.BLACK)
+                    canvas.drawBitmap(image, imageSrc, imageSrc, null)
+//                    Log.d(Log.DEBUG.toString(), "Drew canvas with src: $imageSrc")
                 }
             } finally {
                 if (canvas != null) surfaceHolder.unlockCanvasAndPost(canvas)
