@@ -25,14 +25,14 @@ class ImageWallpaperService : WallpaperService() {
         private val image = BitmapFactory.decodeResource(resources, R.drawable.beach)
 
         private var visible = true
-        private var imageSrc: Rect = Rect(0, 0, image.width, image.height)
+        private var imageSrc = Rect(0, 0, image.width, image.height)
+        private var screenDimensions = Rect()
 
         private var scaleFactor = 1f
         private val scaleDetector = ScaleGestureDetector(applicationContext, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector?): Boolean {
                 scaleFactor *= (detector?.scaleFactor ?: 1f)
                 scaleFactor = Math.max(0.1f, Math.min(scaleFactor, 5f))
-                Log.d(Log.DEBUG.toString(), "New scale factor: $scaleFactor")
                 return true
             }
         })
@@ -41,14 +41,15 @@ class ImageWallpaperService : WallpaperService() {
             override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
                 val left = imageSrc.left + distanceX
                 val top = imageSrc.top + distanceY
-                val right = left + image.width
-                val bottom = top + image.height
+                val right = left + screenDimensions.width() / scaleFactor
+                val bottom = top + screenDimensions.height() / scaleFactor
 
                 imageSrc = Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
-                Log.d(Log.DEBUG.toString(), "Dist x: $distanceX, y: $distanceY = new pan: $imageSrc")
+                Log.d(Log.DEBUG.toString(), "Dist x: $distanceX, y: $distanceY, scale: $scaleFactor = new dimensions: $imageSrc")
                 return super.onScroll(e1, e2, distanceX, distanceY)
             }
         }
+
 
         private val detector: GestureDetectorCompat = GestureDetectorCompat(applicationContext, panDetector)
 
@@ -58,7 +59,7 @@ class ImageWallpaperService : WallpaperService() {
 
         override fun onTouchEvent(event: MotionEvent?) {
             scaleDetector.onTouchEvent(event)
-//            detector.onTouchEvent(event)
+            detector.onTouchEvent(event)
             super.onTouchEvent(event)
             draw()
         }
@@ -75,6 +76,7 @@ class ImageWallpaperService : WallpaperService() {
         }
 
         override fun onSurfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
+            screenDimensions = Rect(0, 0, width, height)
             super.onSurfaceChanged(holder, format, width, height)
         }
 
@@ -83,10 +85,9 @@ class ImageWallpaperService : WallpaperService() {
             try {
                 canvas = surfaceHolder.lockCanvas()
                 if (canvas != null){
-                    canvas.scale(scaleFactor, scaleFactor)
+//                    canvas.scale(scaleFactor, scaleFactor)
                     canvas.drawColor(Color.BLACK)
-                    val imageDest = Rect(0, 0, imageSrc.width(), imageSrc.height())
-                    canvas.drawBitmap(image, imageSrc, imageDest, null)
+                    canvas.drawBitmap(image, imageSrc, screenDimensions, null)
 //                    Log.d(Log.DEBUG.toString(), "Drew canvas with src: $imageSrc")
                 }
             } finally {
