@@ -28,7 +28,7 @@ class ImageWallpaperService : WallpaperService() {
         private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@ImageWallpaperService)
 
         private var visible = true
-        private var imageSrc = Rect(0, 0, image.width, image.height)
+        private var imageSrc = Rect(prefs.getInt("left", 0), prefs.getInt("top", 0), prefs.getInt("right", image.width), prefs.getInt("bottom", image.height))
         private var screenDimensions = Rect(imageSrc)
 
         private var scaleFactor = 1f
@@ -48,7 +48,12 @@ class ImageWallpaperService : WallpaperService() {
                 val bottom = top + screenDimensions.height() / scaleFactor
 
                 imageSrc = Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
-//                prefs.edit().putInt("left", imageSrc.left).apply()
+                prefs.edit()
+                        .putInt("left", imageSrc.left)
+                        .putInt("top", imageSrc.top)
+                        .putInt("right", imageSrc.right)
+                        .putInt("bottom", imageSrc.bottom).apply()
+//                Log.d(Log.DEBUG.toString(), "prefs: ${prefs.all}")
                 return super.onScroll(e1, e2, distanceX, distanceY)
             }
         })
@@ -67,19 +72,22 @@ class ImageWallpaperService : WallpaperService() {
         }
 
         override fun onVisibilityChanged(visible: Boolean) {
+            Log.d(Log.DEBUG.toString(), "visibility changed")
             this.visible = visible
             if (visible) handler.post(drawRunner) else handler.removeCallbacks(drawRunner)
         }
 
         override fun onSurfaceDestroyed(holder: SurfaceHolder?) {
+            Log.d(Log.DEBUG.toString(), "surface destroyed")
             super.onSurfaceDestroyed(holder)
             this.visible = false
             handler.removeCallbacks(drawRunner)
         }
 
         override fun onSurfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
+            Log.d(Log.DEBUG.toString(), "surface changed")
             screenDimensions = Rect(0, 0, width, height)
-            imageSrc = Rect(screenDimensions)
+//            imageSrc = Rect(screenDimensions)
             super.onSurfaceChanged(holder, format, width, height)
         }
 
@@ -90,12 +98,12 @@ class ImageWallpaperService : WallpaperService() {
                 if (canvas != null){
                     canvas.drawColor(Color.BLACK)
                     canvas.drawBitmap(image, imageSrc, screenDimensions, null)
+                    Log.d(Log.DEBUG.toString(), "drew $imageSrc")
                 }
             } finally {
                 if (canvas != null) surfaceHolder.unlockCanvasAndPost(canvas)
             }
             handler.removeCallbacks(drawRunner)
-            if (visible) handler.postDelayed(drawRunner, 1000)
         }
     }
 }
