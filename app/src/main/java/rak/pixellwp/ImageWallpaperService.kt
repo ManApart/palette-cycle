@@ -5,6 +5,9 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.os.Handler
 import android.service.wallpaper.WallpaperService
+import android.util.Log
+import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import android.view.SurfaceHolder
 
 class ImageWallpaperService : WallpaperService() {
@@ -22,8 +25,25 @@ class ImageWallpaperService : WallpaperService() {
         private var imageSrc: Rect = Rect(0, 0, image.width, image.height)
         private var imageDest: Rect = Rect()
 
+        private var scaleFactor = 1f
+        private val scaleDetector: ScaleGestureDetector = ScaleGestureDetector(applicationContext, ScaleListener())
+
+        inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            override fun onScale(detector: ScaleGestureDetector?): Boolean {
+                scaleFactor *= (detector?.scaleFactor ?: 1f)
+                scaleFactor = Math.max(0.1f, Math.min(scaleFactor, 5f))
+                return true
+            }
+        }
+
         init {
             handler.post(drawRunner)
+        }
+
+        override fun onTouchEvent(event: MotionEvent?) {
+            scaleDetector.onTouchEvent(event)
+            super.onTouchEvent(event)
+            draw()
         }
 
         override fun onVisibilityChanged(visible: Boolean) {
@@ -47,7 +67,10 @@ class ImageWallpaperService : WallpaperService() {
             try {
                 canvas = surfaceHolder.lockCanvas()
                 if (canvas != null){
+                    canvas.scale(scaleFactor, scaleFactor)
+                    imageDest = Rect(0, 0, canvas.width, canvas.height)
                     canvas.drawBitmap(image, imageSrc, imageDest, null)
+                    Log.d(Log.DEBUG.toString(), "Drew canvas with destination: $imageDest")
                 }
             } finally {
                 if (canvas != null) surfaceHolder.unlockCanvasAndPost(canvas)
