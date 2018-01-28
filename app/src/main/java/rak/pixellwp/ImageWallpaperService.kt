@@ -1,10 +1,12 @@
 package rak.pixellwp
 
+import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Handler
+import android.preference.PreferenceManager
 import android.service.wallpaper.WallpaperService
 import android.support.v4.view.GestureDetectorCompat
 import android.util.Log
@@ -23,10 +25,11 @@ class ImageWallpaperService : WallpaperService() {
         private val handler = Handler()
         private val drawRunner = Runnable { draw() }
         private val image = BitmapFactory.decodeResource(resources, R.drawable.beach)
+        private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@ImageWallpaperService)
 
         private var visible = true
         private var imageSrc = Rect(0, 0, image.width, image.height)
-        private var screenDimensions = Rect()
+        private var screenDimensions = Rect(imageSrc)
 
         private var scaleFactor = 1f
         private val scaleDetector = ScaleGestureDetector(applicationContext, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
@@ -37,7 +40,7 @@ class ImageWallpaperService : WallpaperService() {
             }
         })
 
-        private val panDetector = object : GestureDetector.SimpleOnGestureListener() {
+        private val panDetector: GestureDetectorCompat = GestureDetectorCompat(applicationContext, object : GestureDetector.SimpleOnGestureListener() {
             override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
                 val left = imageSrc.left + distanceX
                 val top = imageSrc.top + distanceY
@@ -45,23 +48,22 @@ class ImageWallpaperService : WallpaperService() {
                 val bottom = top + screenDimensions.height() / scaleFactor
 
                 imageSrc = Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
-                Log.d(Log.DEBUG.toString(), "Dist x: $distanceX, y: $distanceY, scale: $scaleFactor = new dimensions: $imageSrc")
+//                prefs.edit().putInt("left", imageSrc.left).apply()
                 return super.onScroll(e1, e2, distanceX, distanceY)
             }
-        }
-
-
-        private val detector: GestureDetectorCompat = GestureDetectorCompat(applicationContext, panDetector)
+        })
 
         init {
             handler.post(drawRunner)
         }
 
         override fun onTouchEvent(event: MotionEvent?) {
-            scaleDetector.onTouchEvent(event)
-            detector.onTouchEvent(event)
-            super.onTouchEvent(event)
-            draw()
+            if (isPreview) {
+                scaleDetector.onTouchEvent(event)
+                panDetector.onTouchEvent(event)
+                super.onTouchEvent(event)
+                draw()
+            }
         }
 
         override fun onVisibilityChanged(visible: Boolean) {
@@ -77,6 +79,7 @@ class ImageWallpaperService : WallpaperService() {
 
         override fun onSurfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
             screenDimensions = Rect(0, 0, width, height)
+            imageSrc = Rect(screenDimensions)
             super.onSurfaceChanged(holder, format, width, height)
         }
 
@@ -85,10 +88,8 @@ class ImageWallpaperService : WallpaperService() {
             try {
                 canvas = surfaceHolder.lockCanvas()
                 if (canvas != null){
-//                    canvas.scale(scaleFactor, scaleFactor)
                     canvas.drawColor(Color.BLACK)
                     canvas.drawBitmap(image, imageSrc, screenDimensions, null)
-//                    Log.d(Log.DEBUG.toString(), "Drew canvas with src: $imageSrc")
                 }
             } finally {
                 if (canvas != null) surfaceHolder.unlockCanvasAndPost(canvas)

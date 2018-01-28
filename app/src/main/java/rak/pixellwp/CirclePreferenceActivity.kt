@@ -25,7 +25,7 @@ class CirclePreferenceActivity : PreferenceActivity() {
             val num = preference.getString(NUMBER_OF_CIRCLES, "")
             if (num.isEmpty() || !num.matches(Regex("\\d*"))) {
                 Toast.makeText(this, "Invalid Input", Toast.LENGTH_SHORT).show()
-                preference.edit().putInt(NUMBER_OF_CIRCLES, 1)
+                preference.edit().putInt(NUMBER_OF_CIRCLES, 1).apply()
             }
         }
         Log.d(Log.DEBUG.toString(), "circles value is : ${preference.getString(NUMBER_OF_CIRCLES, "")}")
