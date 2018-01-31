@@ -27,8 +27,8 @@ class CirclePreferenceActivity : PreferenceActivity() {
                 preference.edit().putInt(NUMBER_OF_CIRCLES, 1).apply()
             }
         }
-        Log.d(Log.DEBUG.toString(), "circles value is : ${preference.getString(NUMBER_OF_CIRCLES, "")}")
-        Log.d(Log.DEBUG.toString(), "touch value is : ${preference.getBoolean(TOUCH_ENABLED, false)}")
+        Log.d("RAK", "circles value is : ${preference.getString(NUMBER_OF_CIRCLES, "")}")
+        Log.d("RAK", "touch value is : ${preference.getBoolean(TOUCH_ENABLED, false)}")
     })
 
     override fun onCreate(savedInstanceState: Bundle?) {

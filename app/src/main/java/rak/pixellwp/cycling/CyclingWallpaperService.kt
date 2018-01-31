@@ -1,19 +1,22 @@
 package rak.pixellwp.cycling
 
 import android.content.SharedPreferences
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.Rect
 import android.os.Handler
 import android.preference.PreferenceManager
 import android.service.wallpaper.WallpaperService
 import android.support.v4.view.GestureDetectorCompat
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.SurfaceHolder
-import rak.pixellwp.R
+import com.beust.klaxon.Klaxon
+import rak.pixellwp.cycling.jsonModels.ImgJson
+import java.io.InputStream
 
 class CyclingWallpaperService : WallpaperService() {
 
@@ -24,10 +27,12 @@ class CyclingWallpaperService : WallpaperService() {
     inner class CyclingWallpaperEngine : Engine() {
         private val handler = Handler()
         private val drawRunner = Runnable { draw() }
-        private val image = BitmapFactory.decodeResource(resources, R.drawable.beach)
         private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@CyclingWallpaperService)
 
         private var visible = true
+
+        private val image: Bitmap = getBitmap()
+
         private var imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, image.width), prefs.getInt(BOTTOM, image.height))
         private var screenDimensions = Rect(imageSrc)
 
@@ -95,13 +100,22 @@ class CyclingWallpaperService : WallpaperService() {
         private fun orientationHasChanged(width: Int, height: Int) =
                 (imageSrc.width() > imageSrc.height()) != (width > height)
 
+        private fun getBitmap() : Bitmap {
+            val img: ImgJson = Klaxon().parse<ImgJson>(this@CyclingWallpaperService.assets.open("SampleFile.json"))!!
+            return Bitmap(img)
+        }
+
         private fun draw() {
             var canvas: Canvas? = null
             try {
                 canvas = surfaceHolder.lockCanvas()
-                if (canvas != null){
+                if (canvas != null && image != null){
+                    Log.d("RAK", "Attempting to draw $image")
                     canvas.drawColor(Color.BLACK)
-                    canvas.drawBitmap(image, imageSrc, screenDimensions, null)
+//                    val paint = Paint()
+//                    paint.color = 1
+//                    canvas.drawPaint(paint)
+                    canvas.drawBitmap(image.render(), imageSrc, screenDimensions, null)
                 }
             } finally {
                 if (canvas != null) surfaceHolder.unlockCanvasAndPost(canvas)
