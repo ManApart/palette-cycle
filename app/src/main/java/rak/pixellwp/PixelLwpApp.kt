@@ -1,7 +1,7 @@
 package rak.pixellwp
 
 import android.app.Application
-import com.squareup.leakcanary.LeakCanary
+//import com.squareup.leakcanary.LeakCanary
 
 class PixelLwpApp : Application() {
 

@@ -15,6 +15,7 @@ import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.SurfaceHolder
 import com.beust.klaxon.Klaxon
+import rak.pixellwp.cycling.jsonModels.ColorJsonConverter
 import rak.pixellwp.cycling.jsonModels.ImgJson
 import java.io.InputStream
 
@@ -101,7 +102,7 @@ class CyclingWallpaperService : WallpaperService() {
                 (imageSrc.width() > imageSrc.height()) != (width > height)
 
         private fun getBitmap() : Bitmap {
-            val img: ImgJson = Klaxon().parse<ImgJson>(this@CyclingWallpaperService.assets.open("SampleFile.json"))!!
+            val img: ImgJson = Klaxon().converter(ColorJsonConverter).parse<ImgJson>(this@CyclingWallpaperService.assets.open("SampleFile.json"))!!
             return Bitmap(img)
         }
 
@@ -115,7 +116,7 @@ class CyclingWallpaperService : WallpaperService() {
 //                    val paint = Paint()
 //                    paint.color = 1
 //                    canvas.drawPaint(paint)
-                    canvas.drawBitmap(image.render(), imageSrc, screenDimensions, null)
+//                    canvas.drawBitmap(image.render(), imageSrc, screenDimensions, null)
                 }
             } finally {
                 if (canvas != null) surfaceHolder.unlockCanvasAndPost(canvas)
