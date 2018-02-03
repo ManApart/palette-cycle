@@ -9,6 +9,7 @@ import android.os.Handler
 import android.preference.PreferenceManager
 import android.service.wallpaper.WallpaperService
 import android.support.v4.view.GestureDetectorCompat
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
@@ -33,10 +34,11 @@ class ImageWallpaperService : WallpaperService() {
         private var screenDimensions = Rect(imageSrc)
 
         private var scaleFactor = prefs.getFloat(SCALE_FACTOR, 1f)
+        private var minScaleFactor = 0.1f
         private val scaleDetector = ScaleGestureDetector(applicationContext, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector?): Boolean {
                 scaleFactor *= (detector?.scaleFactor ?: 1f)
-                scaleFactor = Math.max(0.1f, Math.min(scaleFactor, 5f))
+                scaleFactor = clamp(scaleFactor, minScaleFactor, 5f)
                 prefs.edit().putFloat(SCALE_FACTOR, scaleFactor).apply()
                 return true
             }
@@ -44,8 +46,15 @@ class ImageWallpaperService : WallpaperService() {
 
         private val panDetector: GestureDetectorCompat = GestureDetectorCompat(applicationContext, object : GestureDetector.SimpleOnGestureListener() {
             override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-                val left = imageSrc.left + distanceX
-                val top = imageSrc.top + distanceY
+
+                val overlapLeft: Float = image.width - screenDimensions.width() / scaleFactor
+                val overLapTop: Float = image.height - screenDimensions.height() / scaleFactor
+
+                val left = clamp(imageSrc.left + distanceX, 0f, overlapLeft)
+                val top = clamp(imageSrc.top + distanceY, 0f, overLapTop)
+
+//                Log.d("panning", "source width: ${imageSrc.width()}, screen width: ${screenDimensions.width()}, screen height: ${screenDimensions.height()}, left: $overlapLeft, top: $overLapTop, scale: $scaleFactor, values: $left, $top")
+
                 val right = left + screenDimensions.width() / scaleFactor
                 val bottom = top + screenDimensions.height() / scaleFactor
 
@@ -91,7 +100,22 @@ class ImageWallpaperService : WallpaperService() {
                 val bottom = imageSrc.top + imageSrc.width()
                 imageSrc = Rect(imageSrc.left, imageSrc.top, right, bottom)
             }
+
+            determineMinScaleFactor()
+
             super.onSurfaceChanged(holder, format, width, height)
+        }
+
+        private fun clamp(value: Float, min: Float, max: Float) : Float{
+            return Math.min(Math.max(value, min), max)
+        }
+
+        private fun determineMinScaleFactor() {
+            //Find the smallest scale factor that leaves no border on one side
+            val w: Float = screenDimensions.width() / image.width.toFloat()
+            val h: Float = screenDimensions.height() / image.height.toFloat()
+            minScaleFactor = Math.max(w, h)
+//            Log.d("scaling", "width factor: $w, height: $h, min: $minScaleFactor")
         }
 
         private fun orientationHasChanged(width: Int, height: Int) =
