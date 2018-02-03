@@ -1,10 +1,11 @@
 package rak.pixellwp.cycling
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.Rect
+import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
 import android.service.wallpaper.WallpaperService
@@ -14,10 +15,6 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.SurfaceHolder
-import com.beust.klaxon.Klaxon
-import rak.pixellwp.cycling.jsonModels.ColorJsonConverter
-import rak.pixellwp.cycling.jsonModels.ImgJson
-import java.io.InputStream
 
 class CyclingWallpaperService : WallpaperService() {
 
@@ -32,10 +29,11 @@ class CyclingWallpaperService : WallpaperService() {
 
         private var visible = true
 
-        private val image: Bitmap = getBitmap()
+        private val receiver = BitmapReceiver(this, Handler())
+        private var image: Bitmap? = null
 
-        private var imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, image.width), prefs.getInt(BOTTOM, image.height))
-        private var screenDimensions = Rect(imageSrc)
+        private var imageSrc = Rect()
+        private var screenDimensions = Rect()
 
         private var scaleFactor = prefs.getFloat(SCALE_FACTOR, 1f)
         private val scaleDetector = ScaleGestureDetector(applicationContext, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
@@ -46,6 +44,10 @@ class CyclingWallpaperService : WallpaperService() {
                 return true
             }
         })
+
+        init {
+            loadBitmap()
+        }
 
         private val panDetector: GestureDetectorCompat = GestureDetectorCompat(applicationContext, object : GestureDetector.SimpleOnGestureListener() {
             override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
@@ -101,9 +103,19 @@ class CyclingWallpaperService : WallpaperService() {
         private fun orientationHasChanged(width: Int, height: Int) =
                 (imageSrc.width() > imageSrc.height()) != (width > height)
 
-        private fun getBitmap() : Bitmap {
-            val img: ImgJson = Klaxon().converter(ColorJsonConverter).parse<ImgJson>(this@CyclingWallpaperService.assets.open("SampleFile.json"))!!
-            return Bitmap(img)
+        private fun loadBitmap() {
+            val intent = Intent(Intent.ACTION_SYNC, null, this@CyclingWallpaperService, BitmapService::class.java)
+            intent.putExtra("receiver", receiver)
+            startService(intent)
+        }
+
+        fun onReceiveResult(resultCode: Int, resultData: Bundle){
+            if (resultCode == 1){
+                image = resultData.getParcelable("bitmap")
+                if (image != null) {
+                    imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, image!!.width), prefs.getInt(BOTTOM, image!!.height))
+                }
+            }
         }
 
         private fun draw() {
@@ -113,10 +125,7 @@ class CyclingWallpaperService : WallpaperService() {
                 if (canvas != null && image != null){
                     Log.d("RAK", "Attempting to draw $image")
                     canvas.drawColor(Color.BLACK)
-//                    val paint = Paint()
-//                    paint.color = Color.BLUE
-//                    canvas.drawPaint(paint)
-                    canvas.drawBitmap(image.render(), imageSrc, screenDimensions, null)
+                    canvas.drawBitmap(image!!.render(), imageSrc, screenDimensions, null)
                 }
             } finally {
                 if (canvas != null) surfaceHolder.unlockCanvasAndPost(canvas)
