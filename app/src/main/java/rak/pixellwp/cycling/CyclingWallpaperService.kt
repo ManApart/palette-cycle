@@ -114,9 +114,9 @@ class CyclingWallpaperService : WallpaperService() {
                     Log.d("RAK", "Attempting to draw $image")
                     canvas.drawColor(Color.BLACK)
 //                    val paint = Paint()
-//                    paint.color = 1
+//                    paint.color = Color.BLUE
 //                    canvas.drawPaint(paint)
-//                    canvas.drawBitmap(image.render(), imageSrc, screenDimensions, null)
+                    canvas.drawBitmap(image.render(), imageSrc, screenDimensions, null)
                 }
             } finally {
                 if (canvas != null) surfaceHolder.unlockCanvasAndPost(canvas)

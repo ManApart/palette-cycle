@@ -9,8 +9,8 @@ class ColorJson(val rgb: Int)
     val ColorJsonConverter = object : Converter<ColorJson> {
     override fun fromJson(jv: JsonValue): ColorJson {
         val r: Int = jv.array!![0] as Int
-        val g: Int = jv.array!![0] as Int
-        val b: Int = jv.array!![0] as Int
+        val g: Int = jv.array!![1] as Int
+        val b: Int = jv.array!![2] as Int
         return ColorJson(Color.rgb(r, g, b))
     }
 
