@@ -46,14 +46,11 @@ class ImageWallpaperService : WallpaperService() {
 
         private val panDetector: GestureDetectorCompat = GestureDetectorCompat(applicationContext, object : GestureDetector.SimpleOnGestureListener() {
             override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-
                 val overlapLeft: Float = image.width - screenDimensions.width() / scaleFactor
                 val overLapTop: Float = image.height - screenDimensions.height() / scaleFactor
 
                 val left = clamp(imageSrc.left + distanceX, 0f, overlapLeft)
                 val top = clamp(imageSrc.top + distanceY, 0f, overLapTop)
-
-//                Log.d("panning", "source width: ${imageSrc.width()}, screen width: ${screenDimensions.width()}, screen height: ${screenDimensions.height()}, left: $overlapLeft, top: $overLapTop, scale: $scaleFactor, values: $left, $top")
 
                 val right = left + screenDimensions.width() / scaleFactor
                 val bottom = top + screenDimensions.height() / scaleFactor
@@ -100,9 +97,7 @@ class ImageWallpaperService : WallpaperService() {
                 val bottom = imageSrc.top + imageSrc.width()
                 imageSrc = Rect(imageSrc.left, imageSrc.top, right, bottom)
             }
-
             determineMinScaleFactor()
-
             super.onSurfaceChanged(holder, format, width, height)
         }
 
@@ -115,7 +110,6 @@ class ImageWallpaperService : WallpaperService() {
             val w: Float = screenDimensions.width() / image.width.toFloat()
             val h: Float = screenDimensions.height() / image.height.toFloat()
             minScaleFactor = Math.max(w, h)
-//            Log.d("scaling", "width factor: $w, height: $h, min: $minScaleFactor")
         }
 
         private fun orientationHasChanged(width: Int, height: Int) =

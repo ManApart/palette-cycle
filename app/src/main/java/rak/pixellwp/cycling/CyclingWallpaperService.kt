@@ -38,10 +38,11 @@ class CyclingWallpaperService : WallpaperService() {
         private var screenDimensions = Rect(imageSrc)
 
         private var scaleFactor = prefs.getFloat(SCALE_FACTOR, 1f)
+        private var minScaleFactor = 0.1f
         private val scaleDetector = ScaleGestureDetector(applicationContext, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector?): Boolean {
                 scaleFactor *= (detector?.scaleFactor ?: 1f)
-                scaleFactor = Math.max(0.1f, Math.min(scaleFactor, 5f))
+                scaleFactor = Math.max(minScaleFactor, Math.min(scaleFactor, 10f))
                 prefs.edit().putFloat(SCALE_FACTOR, scaleFactor).apply()
                 return true
             }
@@ -49,8 +50,12 @@ class CyclingWallpaperService : WallpaperService() {
 
         private val panDetector: GestureDetectorCompat = GestureDetectorCompat(applicationContext, object : GestureDetector.SimpleOnGestureListener() {
             override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-                val left = imageSrc.left + distanceX
-                val top = imageSrc.top + distanceY
+                val overlapLeft: Float = image.width - screenDimensions.width() / scaleFactor
+                val overLapTop: Float = image.height - screenDimensions.height() / scaleFactor
+
+                val left = clamp(imageSrc.left + distanceX, 0f, overlapLeft)
+                val top = clamp(imageSrc.top + distanceY, 0f, overLapTop)
+
                 val right = left + screenDimensions.width() / scaleFactor
                 val bottom = top + screenDimensions.height() / scaleFactor
 
@@ -95,7 +100,19 @@ class CyclingWallpaperService : WallpaperService() {
                 val bottom = imageSrc.top + imageSrc.width()
                 imageSrc = Rect(imageSrc.left, imageSrc.top, right, bottom)
             }
+            determineMinScaleFactor()
             super.onSurfaceChanged(holder, format, width, height)
+        }
+
+        private fun determineMinScaleFactor() {
+            //Find the smallest scale factor that leaves no border on one side
+            val w: Float = screenDimensions.width() / image.width.toFloat()
+            val h: Float = screenDimensions.height() / image.height.toFloat()
+            minScaleFactor = Math.max(w, h)
+        }
+
+        private fun clamp(value: Float, min: Float, max: Float) : Float{
+            return Math.min(Math.max(value, min), max)
         }
 
         private fun orientationHasChanged(width: Int, height: Int) =

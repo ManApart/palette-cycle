@@ -10,11 +10,15 @@ class Bitmap(img: ImgJson) {
     private val pixels = img.pixels
     private val bitmap: Bitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888)
 
+    init {
+        createBitmap()
+    }
+
     override fun toString(): String {
         return "image with wth dimensions $width x $height = ${width*height}, ${palette.colors.size} colors, ${palette.cycles.size} cycles and ${pixels.size} pixels"
     }
 
-    fun render() : Bitmap{
+    private fun createBitmap() {
         var j = 0
         for (y in 0 until height){
             for (x in 0 until width) {
@@ -23,8 +27,10 @@ class Bitmap(img: ImgJson) {
                 j++
             }
         }
+    }
 
-
+    fun render() : Bitmap{
         return bitmap
     }
+
 }
