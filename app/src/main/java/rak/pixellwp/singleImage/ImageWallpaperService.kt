@@ -49,8 +49,8 @@ class ImageWallpaperService : WallpaperService() {
                 val overlapLeft: Float = image.width - screenDimensions.width() / scaleFactor
                 val overLapTop: Float = image.height - screenDimensions.height() / scaleFactor
 
-                val left = clamp(imageSrc.left + distanceX, 0f, overlapLeft)
-                val top = clamp(imageSrc.top + distanceY, 0f, overLapTop)
+                val left = clamp(imageSrc.left + distanceX/scaleFactor, 0f, overlapLeft)
+                val top = clamp(imageSrc.top + distanceY/scaleFactor, 0f, overLapTop)
 
                 val right = left + screenDimensions.width() / scaleFactor
                 val bottom = top + screenDimensions.height() / scaleFactor

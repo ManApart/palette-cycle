@@ -3,7 +3,6 @@ package rak.pixellwp.cycling
 import android.content.SharedPreferences
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.Rect
 import android.os.Handler
 import android.preference.PreferenceManager
@@ -14,10 +13,9 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.SurfaceHolder
-import com.beust.klaxon.Klaxon
-import rak.pixellwp.cycling.jsonModels.ColorJsonConverter
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import rak.pixellwp.cycling.jsonModels.ImgJson
-import java.io.InputStream
 
 class CyclingWallpaperService : WallpaperService() {
 
@@ -50,11 +48,11 @@ class CyclingWallpaperService : WallpaperService() {
 
         private val panDetector: GestureDetectorCompat = GestureDetectorCompat(applicationContext, object : GestureDetector.SimpleOnGestureListener() {
             override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-                val overlapLeft: Float = image.width - screenDimensions.width() / scaleFactor
-                val overLapTop: Float = image.height - screenDimensions.height() / scaleFactor
+                val overlapLeft: Float = image.width - screenDimensions.width()/scaleFactor
+                val overLapTop: Float = image.height - screenDimensions.height()/scaleFactor
 
-                val left = clamp(imageSrc.left + distanceX, 0f, overlapLeft)
-                val top = clamp(imageSrc.top + distanceY, 0f, overLapTop)
+                val left = clamp(imageSrc.left + distanceX/scaleFactor, 0f, overlapLeft)
+                val top = clamp(imageSrc.top + distanceY/scaleFactor, 0f, overLapTop)
 
                 val right = left + screenDimensions.width() / scaleFactor
                 val bottom = top + screenDimensions.height() / scaleFactor
@@ -119,7 +117,9 @@ class CyclingWallpaperService : WallpaperService() {
                 (imageSrc.width() > imageSrc.height()) != (width > height)
 
         private fun getBitmap() : Bitmap {
-            val img: ImgJson = Klaxon().converter(ColorJsonConverter).parse<ImgJson>(this@CyclingWallpaperService.assets.open("SampleFile.json"))!!
+            val json = this@CyclingWallpaperService.assets.open("SampleFile.json");
+//            val img: ImgJson = Klaxon().converter(ColorJsonConverter).parse<ImgJson>(this@CyclingWallpaperService.assets.open("SampleFile.json"))!!
+            val img: ImgJson = jacksonObjectMapper().readValue(json)
             return Bitmap(img)
         }
 
