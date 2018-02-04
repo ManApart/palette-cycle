@@ -76,7 +76,7 @@ class CyclingWallpaperService : WallpaperService() {
                 scaleDetector.onTouchEvent(event)
                 panDetector.onTouchEvent(event)
                 super.onTouchEvent(event)
-                draw()
+//                draw()
             }
         }
 
@@ -136,6 +136,7 @@ class CyclingWallpaperService : WallpaperService() {
                 if (canvas != null) surfaceHolder.unlockCanvasAndPost(canvas)
             }
             handler.removeCallbacks(drawRunner)
+            if (visible) handler.postDelayed(drawRunner, 500)
         }
     }
 }
