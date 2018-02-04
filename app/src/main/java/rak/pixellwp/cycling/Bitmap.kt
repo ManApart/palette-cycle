@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.util.Log
 import rak.pixellwp.cycling.jsonModels.ImgJson
 import java.util.*
 
@@ -37,11 +36,9 @@ class Bitmap(img: ImgJson) {
 
     fun advance(){
         val timePassed = Date().time - startTime
-        Log.d("cycling", "cycling with time passed: $timePassed")
         palette.cycle(timePassed)
 
         //eventually optimize and only draw active pixels over old bitmap
-
         val canvas = Canvas(bitmap)
         val p = Paint()
 
@@ -52,8 +49,6 @@ class Bitmap(img: ImgJson) {
                 p.color = color
                 canvas.drawPoint(x.toFloat(), y.toFloat(), p)
                 j++
-
-//                if (j > 10000) break
             }
         }
 

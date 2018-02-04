@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Handler
+import android.os.HandlerThread
 import android.preference.PreferenceManager
 import android.service.wallpaper.WallpaperService
 import android.support.v4.view.GestureDetectorCompat
@@ -24,8 +25,7 @@ class CyclingWallpaperService : WallpaperService() {
     }
 
     inner class CyclingWallpaperEngine : Engine() {
-        private val handler = Handler()
-        private val drawRunner = Runnable { draw() }
+        private val drawRunner = PaletteDrawer(this)
         private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@CyclingWallpaperService)
 
         private var visible = true
@@ -68,7 +68,7 @@ class CyclingWallpaperService : WallpaperService() {
         })
 
         init {
-            handler.post(drawRunner)
+            drawRunner.draw()
         }
 
         override fun onTouchEvent(event: MotionEvent?) {
@@ -76,19 +76,19 @@ class CyclingWallpaperService : WallpaperService() {
                 scaleDetector.onTouchEvent(event)
                 panDetector.onTouchEvent(event)
                 super.onTouchEvent(event)
-//                draw()
+                drawRunner.draw()
             }
         }
 
         override fun onVisibilityChanged(visible: Boolean) {
             this.visible = visible
-            if (visible) handler.post(drawRunner) else handler.removeCallbacks(drawRunner)
+            if (visible) drawRunner.draw() else drawRunner.removeCallbacks()
         }
 
         override fun onSurfaceDestroyed(holder: SurfaceHolder?) {
             super.onSurfaceDestroyed(holder)
             this.visible = false
-            handler.removeCallbacks(drawRunner)
+            drawRunner.removeCallbacks()
         }
 
         override fun onSurfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
@@ -122,7 +122,7 @@ class CyclingWallpaperService : WallpaperService() {
             return Bitmap(img)
         }
 
-        private fun draw() {
+        fun draw() {
             var canvas: Canvas? = null
             try {
                 canvas = surfaceHolder.lockCanvas()
@@ -135,8 +135,8 @@ class CyclingWallpaperService : WallpaperService() {
             } finally {
                 if (canvas != null) surfaceHolder.unlockCanvasAndPost(canvas)
             }
-            handler.removeCallbacks(drawRunner)
-            if (visible) handler.postDelayed(drawRunner, 500)
+            drawRunner.removeCallbacks()
+            if (visible) drawRunner.drawDelayed(100)
         }
     }
 }
