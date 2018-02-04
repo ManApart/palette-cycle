@@ -118,7 +118,6 @@ class CyclingWallpaperService : WallpaperService() {
 
         private fun getBitmap() : Bitmap {
             val json = this@CyclingWallpaperService.assets.open("SampleFile.json");
-//            val img: ImgJson = Klaxon().converter(ColorJsonConverter).parse<ImgJson>(this@CyclingWallpaperService.assets.open("SampleFile.json"))!!
             val img: ImgJson = jacksonObjectMapper().readValue(json)
             return Bitmap(img)
         }
@@ -128,8 +127,9 @@ class CyclingWallpaperService : WallpaperService() {
             try {
                 canvas = surfaceHolder.lockCanvas()
                 if (canvas != null && image != null){
-                    Log.d("RAK", "Attempting to draw $image. Scale = $scaleFactor. Dimensions = $imageSrc")
-                    canvas.drawColor(Color.BLACK)
+                    Log.d("Cycle Wallpaper", "Attempting to draw $image. Scale = $scaleFactor. Dimensions = $imageSrc")
+
+                    image.advance()
                     canvas.drawBitmap(image.render(), imageSrc, screenDimensions, null)
                 }
             } finally {
