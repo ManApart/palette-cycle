@@ -44,21 +44,7 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
 
     private fun doDraw(){
         val timePassed = Date().time - startTime
-
-        if (drawCount == 100){
-            Log.d("optimize", "drew $drawCount times every $drawDelay seconds with average speed of ${drawTime/drawCount}")
-            drawTime = 0
-            drawCount = 0
-        }
-        val drawStart = Date().time
-
         image.advance(timePassed)
-
-        drawTime += Date().time - drawStart
-        drawCount++
-        if (drawCount % 10 == 0){
-            Log.d("pass", "draw count: $drawCount, elapsed in frame: ${Date().time - drawStart}, elapsed total: $drawTime")
-    }
         drawFrame(engine.surfaceHolder, engine.imageSrc, engine.screenDimensions)
     }
 

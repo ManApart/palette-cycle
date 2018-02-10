@@ -51,7 +51,6 @@ class ColorCyclingImage(img: ImgJson) {
                 j++
             }
         }
-
         return optPixels
     }
 
