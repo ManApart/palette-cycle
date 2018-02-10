@@ -2,15 +2,12 @@ package rak.pixellwp.cycling
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import rak.pixellwp.cycling.jsonModels.ImgJson
-import java.util.*
 
-class Bitmap(img: ImgJson) {
+class ColorCyclingImage(img: ImgJson) {
     val width = img.width
     val height = img.height
-    private val startTime = Date().time
     private val palette = Palette(img.getParsedColors(), img.cycles)
     private val pixels = img.pixels.toList()
     private val optimizedPixels = optimizePixels(pixels)
@@ -59,10 +56,8 @@ class Bitmap(img: ImgJson) {
         }
     }
 
-    fun advance(){
-        val timePassed = Date().time - startTime
+    fun advance(timePassed: Long){
         palette.cycle(timePassed)
-
 //        drawFullImage()
         drawOptimizedImage()
     }

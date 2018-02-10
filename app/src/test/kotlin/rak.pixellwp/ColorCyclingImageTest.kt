@@ -5,7 +5,7 @@ import android.graphics.Color
 import junit.framework.Assert.assertEquals
 import org.junit.Test
 
-class BitmapTest {
+class ColorCyclingImageTest {
 
     val pixels = intArrayOf(Color.BLUE, Color.GREEN, Color.RED,
             Color.WHITE, Color.MAGENTA, Color.YELLOW,
@@ -22,7 +22,7 @@ class BitmapTest {
 //    @Throws(Exception::class)
 //    fun createBitmap(){
         //Can't test android.jar methods, lol
-//        val bitMap = Bitmap.createBitmap(pixels, 3, 3, null)
+//        val bitMap = ColorCyclingImage.createBitmap(pixels, 3, 3, null)
 //
 //    }
 
