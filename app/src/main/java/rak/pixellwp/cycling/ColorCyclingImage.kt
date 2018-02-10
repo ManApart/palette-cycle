@@ -22,6 +22,15 @@ class ColorCyclingImage(img: ImgJson) {
         return "image with dimensions $width x $height = ${width*height}, ${palette.colors.size} colors, ${palette.cycles.size} cycles and ${pixels.size} pixels"
     }
 
+    fun advance(timePassed: Long){
+        palette.cycle(timePassed)
+        drawOptimizedImage()
+    }
+
+    fun getBitmap() : Bitmap{
+        return bitmap
+    }
+
     private fun optimizePixels(pixels: List<Int>) : List<Pixel> {
         val optPixels = mutableListOf<Pixel>()
         val optColors = BooleanArray(pixels.size, { _ -> false}).toMutableList()
@@ -36,6 +45,7 @@ class ColorCyclingImage(img: ImgJson) {
             for (x in 0 until width) {
                 //If this pixel references an animated color
                 if (optColors[pixels[j]]){
+//                    optPixels.add(Pixel(x, y, j))
                     optPixels.add(Pixel(x.toFloat(), y.toFloat(), j))
                 }
                 j++
@@ -56,27 +66,6 @@ class ColorCyclingImage(img: ImgJson) {
         }
     }
 
-    fun advance(timePassed: Long){
-        palette.cycle(timePassed)
-//        drawFullImage()
-        drawOptimizedImage()
-    }
-
-    private fun drawFullImage() {
-        val canvas = Canvas(bitmap)
-        val p = Paint()
-
-        var j = 0
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                val color = palette.colors[pixels[j]]
-                p.color = color
-                canvas.drawPoint(x.toFloat(), y.toFloat(), p)
-                j++
-            }
-        }
-    }
-
     private fun drawOptimizedImage(){
         val canvas = Canvas(bitmap)
         val p = Paint()
@@ -84,10 +73,6 @@ class ColorCyclingImage(img: ImgJson) {
             p.color = palette.colors[pixels[pixel.index]]
             canvas.drawPoint(pixel.x, pixel.y, p)
         }
-    }
-
-    fun render() : Bitmap{
-        return bitmap
     }
 
 }

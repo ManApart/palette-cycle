@@ -27,34 +27,17 @@ class CyclingWallpaperService : WallpaperService() {
         var screenDimensions = Rect(imageSrc)
         private var scaleFactor = prefs.getFloat(SCALE_FACTOR, 1f)
 
-
         private var minScaleFactor = 0.1f
         private val scaleDetector = ScaleGestureDetector(applicationContext, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector?): Boolean {
-                scaleFactor *= (detector?.scaleFactor ?: 1f)
-                scaleFactor = Math.max(minScaleFactor, Math.min(scaleFactor, 10f))
-                prefs.edit().putFloat(SCALE_FACTOR, scaleFactor).apply()
+                incrementScaleFactor(detector?.scaleFactor ?: 1f)
                 return true
             }
         })
 
         private val panDetector: GestureDetectorCompat = GestureDetectorCompat(applicationContext, object : GestureDetector.SimpleOnGestureListener() {
             override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-                val overlapLeft: Float = drawRunner.image.width - screenDimensions.width()/scaleFactor
-                val overLapTop: Float = drawRunner.image.height - screenDimensions.height()/scaleFactor
-
-                val left = clamp(imageSrc.left + distanceX/scaleFactor, 0f, overlapLeft)
-                val top = clamp(imageSrc.top + distanceY/scaleFactor, 0f, overLapTop)
-
-                val right = left + screenDimensions.width() / scaleFactor
-                val bottom = top + screenDimensions.height() / scaleFactor
-
-                imageSrc = Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
-                prefs.edit()
-                        .putInt(LEFT, imageSrc.left)
-                        .putInt(TOP, imageSrc.top)
-                        .putInt(RIGHT, imageSrc.right)
-                        .putInt(BOTTOM, imageSrc.bottom).apply()
+                adjustImageSrc(distanceX, distanceY)
                 return super.onScroll(e1, e2, distanceX, distanceY)
             }
         })
@@ -90,6 +73,30 @@ class CyclingWallpaperService : WallpaperService() {
             }
             determineMinScaleFactor()
             super.onSurfaceChanged(holder, format, width, height)
+        }
+
+        private fun adjustImageSrc(distanceX: Float, distanceY: Float) {
+            val overlapLeft: Float = drawRunner.image.width - screenDimensions.width() / scaleFactor
+            val overLapTop: Float = drawRunner.image.height - screenDimensions.height() / scaleFactor
+
+            val left = clamp(imageSrc.left + distanceX / scaleFactor, 0f, overlapLeft)
+            val top = clamp(imageSrc.top + distanceY / scaleFactor, 0f, overLapTop)
+
+            val right = left + screenDimensions.width() / scaleFactor
+            val bottom = top + screenDimensions.height() / scaleFactor
+
+            imageSrc = Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
+            prefs.edit()
+                    .putInt(LEFT, imageSrc.left)
+                    .putInt(TOP, imageSrc.top)
+                    .putInt(RIGHT, imageSrc.right)
+                    .putInt(BOTTOM, imageSrc.bottom).apply()
+        }
+
+        private fun incrementScaleFactor(incrementFactor: Float) {
+            scaleFactor *= incrementFactor
+            scaleFactor = Math.max(minScaleFactor, Math.min(scaleFactor, 10f))
+            prefs.edit().putFloat(SCALE_FACTOR, scaleFactor).apply()
         }
 
         private fun determineMinScaleFactor() {
