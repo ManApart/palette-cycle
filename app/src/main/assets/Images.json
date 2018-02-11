@@ -3,18 +3,83 @@
     "name": "Seascape",
     "images": [
       {
-        "name": "Seascape",
-        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V29",
-        "startHour": "12"
-      },
-      {
         "name": "SeascapeFOG",
         "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V29FOG",
         "startHour": "6"
       },
       {
+        "name": "Seascape",
+        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V29",
+        "startHour": "12"
+      },
+      {
         "name": "SeascapePM",
         "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V29PM",
+        "startHour": "18"
+      }
+    ]
+  },
+  {
+    "name": "Waterfall",
+    "images": [
+      {
+        "name": "WaterfallAM",
+        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V08AM",
+        "startHour": "6"
+      },
+      {
+        "name": "Waterfall",
+        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V08",
+        "startHour": "12"
+      },
+      {
+        "name": "WaterfallRain",
+        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V08RAIN",
+        "startHour": "18"
+      },
+      {
+        "name": "WaterfallPM",
+        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V08PM",
+        "startHour": "21"
+      }
+    ]
+  },
+  {
+    "name": "MirrorPond",
+    "images": [
+      {
+        "name": "MirrorPondAM",
+        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V16",
+        "startHour": "6"
+      },
+      {
+        "name": "MirrorPondPM",
+        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V16PM",
+        "startHour": "12"
+      },
+      {
+        "name": "MirrorPondRain",
+        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V16RAIN",
+        "startHour": "18"
+      }
+    ]
+  },
+  {
+    "name": "MountainStream",
+    "images": [
+      {
+        "name": "MountainStream",
+        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V19",
+        "startHour": "6"
+      },
+      {
+        "name": "MountainStreamPM",
+        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V19PM",
+        "startHour": "12"
+      },
+      {
+        "name": "MountainStreamAURA",
+        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V19AURA",
         "startHour": "18"
       }
     ]
