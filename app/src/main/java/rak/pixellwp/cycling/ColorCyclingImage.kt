@@ -3,6 +3,7 @@ package rak.pixellwp.cycling
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.util.Log
 import rak.pixellwp.cycling.jsonModels.ImgJson
 
 class ColorCyclingImage(img: ImgJson) {
@@ -22,7 +23,7 @@ class ColorCyclingImage(img: ImgJson) {
         return "image with dimensions $width x $height = ${width*height}, ${palette.colors.size} colors, ${palette.cycles.size} cycles and ${pixels.size} pixels"
     }
 
-    fun advance(timePassed: Long){
+    fun advance(timePassed: Int){
         palette.cycle(timePassed)
         drawOptimizedImage()
     }
@@ -45,7 +46,6 @@ class ColorCyclingImage(img: ImgJson) {
             for (x in 0 until width) {
                 //If this pixel references an animated color
                 if (optColors[pixels[j]]){
-//                    optPixels.add(Pixel(x, y, j))
                     optPixels.add(Pixel(x.toFloat(), y.toFloat(), j))
                 }
                 j++

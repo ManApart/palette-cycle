@@ -1,0 +1,19 @@
+[
+  {
+    "name": "seascape",
+    "images": [
+      {
+        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V29",
+        "time": "12:00"
+      },
+      {
+        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V29FOG",
+        "time": "6:00"
+      },
+      {
+        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V29PM",
+        "time": "18:00"
+      }
+    ]
+  }
+]

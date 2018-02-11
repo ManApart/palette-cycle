@@ -4,7 +4,6 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.os.Handler
 import android.os.HandlerThread
-import android.util.Log
 import android.view.SurfaceHolder
 import java.util.*
 
@@ -15,11 +14,9 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
     }
     private val handler = Handler(handlerThread.looper)
     private val runner = Runnable { doDraw() }
-    private val drawDelay = 10L
+    private val drawDelay = 100L
     private val startTime = Date().time
     private var visible = true
-    var drawTime = 0L
-    var drawCount = 0
 
     fun startDrawing(){
         handler.post(runner)
@@ -43,7 +40,8 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
     }
 
     private fun doDraw(){
-        val timePassed = Date().time - startTime
+        val timePassed = Math.floor((Date().time - startTime).toDouble()).toInt()
+//        val timePassed = 100L
         image.advance(timePassed)
         drawFrame(engine.surfaceHolder, engine.imageSrc, engine.screenDimensions)
     }

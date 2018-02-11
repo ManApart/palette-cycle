@@ -3,24 +3,27 @@ package rak.pixellwp.cycling
 import android.util.Log
 
 class Palette(colors: List<Int>, val cycles: List<Cycle>) {
-    val baseColors = colors
-    val colors = baseColors.toMutableList()
+    private val baseColors = colors
+    var colors = baseColors.toMutableList()
 
-    fun cycle(timePassed: Long) {
+    fun cycle(timePassed: Int) {
+        //it's important we copy the base values as each time we cycle it 'starts from 0'; it's not additive
+        colors = baseColors.toMutableList()
         cycles
                 .filter { it.rate != 0 }
                 .forEach { cycle ->
                     cycle.reverseColorsIfNecessary(colors)
-                    shiftColors(cycle, cycle.getCycleAmount(timePassed))
+                    val amount = cycle.getCycleAmount(timePassed)
+//                    val amount = 1
+                    if (cycle.low == 32) {
+                        Log.d("Cycling", "time passed: $timePassed, amount: $amount")
+                    }
+                    shiftColors(colors, cycle, amount)
                     cycle.reverseColorsIfNecessary(colors)
                 }
     }
 
-    fun shiftColors(cycle: Cycle, amount: Int) {
-//        if (cycle.low == 32){
-//            Log.d("Palette", "Shifting cycle with ${cycle.low}-${cycle.high} by $amount")
-//            Log.d("Palette", "before: $colors")
-//        }
+    fun shiftColors(colors: MutableList<Int>, cycle: Cycle, amount: Int) {
         for (i in 0 until amount) {
             val temp = colors[cycle.high]
             for (j in (cycle.high - 1) downTo cycle.low) {
@@ -28,8 +31,6 @@ class Palette(colors: List<Int>, val cycles: List<Cycle>) {
             }
             colors[cycle.low] = temp
         }
-
-//        if (cycle.low == 32) Log.d("Palette", "after: $colors")
 
     }
 

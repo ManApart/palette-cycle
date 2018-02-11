@@ -1,14 +1,16 @@
 package rak.pixellwp.cycling
 
-data class Cycle(val rate: Int, val reverse: Int, val low: Int, val high: Int) {
-    private val precision = 100
-    private val cycleSpeed = 280
+import android.util.Log
+
+data class Cycle(val rate: Int, private val reverse: Int, val low: Int, val high: Int) {
+    private val precision: Double = 100.0
+    private val cycleSpeed: Double = 280.0
 
     private val size = high - low + 1
-    private val adjustedRate: Float = rate / cycleSpeed.toFloat()
+    private val adjustedRate: Float = (rate / cycleSpeed).toFloat()
 
-    private fun dFloatMod(a: Float, b: Float) : Double {
-        return (Math.floor((a*precision).toDouble()) % Math.floor((b*precision).toDouble())) / precision
+    private fun dFloatMod(a: Float, b: Int) : Double {
+        return (Math.floor((a*precision)) % Math.floor((b*precision))) / precision
     }
 
     fun reverseColorsIfNecessary(colors: MutableList<Int>){
@@ -22,28 +24,27 @@ data class Cycle(val rate: Int, val reverse: Int, val low: Int, val high: Int) {
         }
     }
 
-    fun getCycleAmount(timePassed: Long) : Int{
-        var cycleAmount = 0f
+    fun getCycleAmount(timePassed: Int) : Int{
+        var cycleAmount = 0.0
         if (reverse < 3){
             //standard cycle
-            cycleAmount = timePassed / (1000/adjustedRate) % size
+            cycleAmount = dFloatMod(timePassed / (1000/adjustedRate), size)
         } else if (reverse == 3){
             //ping pong
-            cycleAmount = timePassed / (1000/adjustedRate) % (size* 2)
+            cycleAmount = dFloatMod(timePassed / (1000/adjustedRate), (size* 2))
             if (cycleAmount >= size){
                 cycleAmount = size*2 - cycleAmount
             }
         } else if (reverse < 6){
             //sine wave
-            cycleAmount = timePassed / (1000/adjustedRate) % size
-            cycleAmount = (Math.sin(cycleAmount * Math.PI * 2/size) + 1).toFloat()
+            cycleAmount = dFloatMod(timePassed / (1000/adjustedRate), size)
+            cycleAmount = (Math.sin(cycleAmount * Math.PI * 2/size) + 1)
             if (reverse == 4){
                 cycleAmount *= size/4
             } else if (reverse == 5){
                 cycleAmount *= size/2
             }
         }
-
 
         return cycleAmount.toInt()
     }

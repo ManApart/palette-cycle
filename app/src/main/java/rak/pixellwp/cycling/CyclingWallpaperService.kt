@@ -114,7 +114,7 @@ class CyclingWallpaperService : WallpaperService() {
                 (imageSrc.width() > imageSrc.height()) != (width > height)
 
         private fun getBitmap() : ColorCyclingImage {
-            val json = this@CyclingWallpaperService.assets.open("SampleFile.json")
+            val json = this@CyclingWallpaperService.assets.open("Seascape.json")
             val img: ImgJson = jacksonObjectMapper().readValue(json)
             return ColorCyclingImage(img)
         }
