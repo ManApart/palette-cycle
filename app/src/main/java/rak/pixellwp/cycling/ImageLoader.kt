@@ -46,22 +46,31 @@ class ImageLoader(private val context: Context) {
     }
 
     private fun loadImage(fileName: String): ColorCyclingImage {
-        val json: InputStream = if (context.getFileStreamPath(fileName).exists()) {
+        val json: String = readJson(loadInputStream(fileName))
+        Log.d("Image Loader", "load json: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
+        return ColorCyclingImage(parseJson(json))
+    }
+
+    private fun loadInputStream(fileName: String): InputStream {
+        return if (context.getFileStreamPath(fileName).exists()) {
             FileInputStream(context.getFileStreamPath(fileName))
         } else {
             Log.e("ImageLoader", "Couldn't load $fileName. Falling back to seascape")
             context.assets.open("Seascape.json")
         }
-        Log.d("Image Loader", "Loading $fileName from input stream")
+    }
+
+    private fun readJson(inputStream: InputStream): String {
+        val s = Scanner(inputStream).useDelimiter("\\A")
+        val json = if (s.hasNext()) s.next() else ""
+        inputStream.close()
+        return json
+    }
+
+    private fun parseJson(json: String): ImgJson {
         val mapper = jacksonObjectMapper()
-//        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
-//        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
-
-//        val s = java.util.Scanner(json).useDelimiter("\\A")
-//        val jsonString = if (s.hasNext()) s.next() else ""
-//        Log.d("json", jsonString)
-
-        val img: ImgJson = mapper.readValue(json)
-        return ColorCyclingImage(img)
+        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
+        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
+        return mapper.readValue(json)
     }
 }

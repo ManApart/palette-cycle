@@ -13,7 +13,6 @@ class JsonDownloader(private val fileName: String, private val url: String, priv
     }
 
     private fun downloadImage() : String {
-        Log.d("Image Loader", "loading json for $url")
         var json = ""
         try {
             val inputStream = URL(url).openStream()
@@ -24,10 +23,9 @@ class JsonDownloader(private val fileName: String, private val url: String, priv
             inputStream.close()
             return json
         } catch (e: Exception){
-            Log.e("Image Loader", "Unable to download image")
+            Log.e("Image Loader", "Unable to download image from $url")
             e.printStackTrace()
         }
-        Log.d("Image Loader", "downloaded json for $url")
         return json
     }
 
@@ -43,17 +41,14 @@ class JsonDownloader(private val fileName: String, private val url: String, priv
     }
 
     private fun saveImage(json: String){
-        Log.d("Image Loader", "save json from $url: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
-
         try {
-            val stream = context.openFileOutput(fileName, Context.MODE_PRIVATE)
-            OutputStreamWriter(stream).write(json)
+            val stream = OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE))
+            stream.write(json)
             stream.close()
         } catch (e: Exception){
             Log.e("Image Loader", "Unable to save image")
             e.printStackTrace()
         }
-        Log.d("Image Loader", "saved json from $url to $fileName")
-        Log.d("json", json)
+        Log.d("Image Loader", "saved json from $url to $fileName: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
     }
 }
