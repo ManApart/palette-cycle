@@ -5,15 +5,12 @@ import android.util.Log
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import rak.pixellwp.cycling.jsonModels.JsonDownloader
-import rak.pixellwp.cycling.jsonModels.ImageCollection
-import rak.pixellwp.cycling.jsonModels.ImageInfo
-import rak.pixellwp.cycling.jsonModels.ImgJson
+import rak.pixellwp.cycling.jsonModels.*
 import java.io.*
 import java.util.*
 
 
-class ImageLoader(private val context: Context) {
+class ImageLoader(private val context: Context, private val listener: JsonDownloadListener) {
     private val collection: List<ImageCollection> = loadCollection()
 
     private fun loadCollection(): List<ImageCollection> {
@@ -24,12 +21,11 @@ class ImageLoader(private val context: Context) {
     fun getBitmap(name: String) : ColorCyclingImage {
         val image = getImageInfo(name)
 
-        val fileName = image.name + ".json"
-        if (!context.getFileStreamPath(fileName).exists()){
-            Log.d("Image Loader", "Unable to find $fileName locally, downloading from ${image.url}")
-            JsonDownloader(fileName, image.url, context).execute()
+        if (!context.getFileStreamPath(image.fileName).exists()){
+            Log.d("Image Loader", "Unable to find $image.fileName locally, downloading from ${image.url}")
+            JsonDownloader(image, context, listener).execute()
         }
-        return loadImage(fileName)
+        return loadImageFromFile(image.fileName)
     }
 
     private fun getImageInfo(name: String): ImageInfo {
@@ -45,7 +41,7 @@ class ImageLoader(private val context: Context) {
                         .last()
     }
 
-    private fun loadImage(fileName: String): ColorCyclingImage {
+    fun loadImageFromFile(fileName: String): ColorCyclingImage {
         val json: String = readJson(loadInputStream(fileName))
         Log.d("Image Loader", "load json: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
         return ColorCyclingImage(parseJson(json))

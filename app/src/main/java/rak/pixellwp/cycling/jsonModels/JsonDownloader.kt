@@ -3,11 +3,12 @@ package rak.pixellwp.cycling.jsonModels
 import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
+import rak.pixellwp.cycling.ImageLoader
 import java.io.OutputStreamWriter
 import java.net.URL
 
 
-class JsonDownloader(private val fileName: String, private val url: String, private val context: Context) : AsyncTask<String, Void, String>() {
+class JsonDownloader(private val image: ImageInfo, private val context: Context, private val listener: JsonDownloadListener) : AsyncTask<String, Void, String>() {
     override fun doInBackground(vararg params: String?): String {
         return downloadImage()
     }
@@ -15,7 +16,7 @@ class JsonDownloader(private val fileName: String, private val url: String, priv
     private fun downloadImage() : String {
         var json = ""
         try {
-            val inputStream = URL(url).openStream()
+            val inputStream = URL(image.url).openStream()
 
             val s = java.util.Scanner(inputStream).useDelimiter("\\A")
             json = if (s.hasNext()) s.next() else ""
@@ -23,7 +24,7 @@ class JsonDownloader(private val fileName: String, private val url: String, priv
             inputStream.close()
             return json
         } catch (e: Exception){
-            Log.e("Image Loader", "Unable to download image from $url")
+            Log.e("Image Loader", "Unable to download image from $image.url")
             e.printStackTrace()
         }
         return json
@@ -42,13 +43,14 @@ class JsonDownloader(private val fileName: String, private val url: String, priv
 
     private fun saveImage(json: String){
         try {
-            val stream = OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE))
+            val stream = OutputStreamWriter(context.openFileOutput(image.fileName, Context.MODE_PRIVATE))
             stream.write(json)
             stream.close()
         } catch (e: Exception){
             Log.e("Image Loader", "Unable to save image")
             e.printStackTrace()
         }
-        Log.d("Image Loader", "saved json from $url to $fileName: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
+        Log.d("Image Loader", "saved json from $image.url to $image.fileName: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
+        listener.notify(image.fileName)
     }
 }

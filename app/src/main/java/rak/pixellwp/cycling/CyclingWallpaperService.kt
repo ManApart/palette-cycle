@@ -9,6 +9,7 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.SurfaceHolder
+import rak.pixellwp.cycling.jsonModels.JsonDownloadListener
 
 class CyclingWallpaperService : WallpaperService() {
 
@@ -16,12 +17,12 @@ class CyclingWallpaperService : WallpaperService() {
         return CyclingWallpaperEngine()
     }
 
-    inner class CyclingWallpaperEngine : Engine() {
+    inner class CyclingWallpaperEngine : Engine(), JsonDownloadListener {
         private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@CyclingWallpaperService)
 
-        private val imageLoader: ImageLoader = ImageLoader(this@CyclingWallpaperService)
+        private val imageLoader: ImageLoader = ImageLoader(this@CyclingWallpaperService, this@CyclingWallpaperEngine)
 
-        private val drawRunner = PaletteDrawer(this, imageLoader.getBitmap("Seascape"))
+        private var drawRunner = PaletteDrawer(this, imageLoader.getBitmap("Seascape"))
         var imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, drawRunner.image.width), prefs.getInt(BOTTOM, drawRunner.image.height))
         var screenDimensions = Rect(imageSrc)
         private var scaleFactor = prefs.getFloat(SCALE_FACTOR, 1f)
@@ -42,6 +43,12 @@ class CyclingWallpaperService : WallpaperService() {
         })
 
         init {
+            drawRunner.startDrawing()
+        }
+
+        override fun notify(fileName: String) {
+            drawRunner.stop()
+            drawRunner = PaletteDrawer(this, imageLoader.loadImageFromFile(fileName))
             drawRunner.startDrawing()
         }
 

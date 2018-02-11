@@ -7,7 +7,7 @@ import android.os.HandlerThread
 import android.view.SurfaceHolder
 import java.util.*
 
-class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaperEngine, val image: ColorCyclingImage) : Thread() {
+class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaperEngine, val image: ColorCyclingImage) {
     private val handlerThread = HandlerThread("drawThread")
     init {
         handlerThread.start()
@@ -20,6 +20,11 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
 
     fun startDrawing(){
         handler.post(runner)
+    }
+
+    fun stop(){
+        setVisible(false)
+        handlerThread.quitSafely()
     }
 
     fun setVisible(visible: Boolean){
