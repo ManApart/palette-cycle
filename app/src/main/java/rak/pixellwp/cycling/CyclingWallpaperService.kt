@@ -9,9 +9,6 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.SurfaceHolder
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import rak.pixellwp.cycling.jsonModels.ImgJson
 
 class CyclingWallpaperService : WallpaperService() {
 
@@ -22,7 +19,9 @@ class CyclingWallpaperService : WallpaperService() {
     inner class CyclingWallpaperEngine : Engine() {
         private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@CyclingWallpaperService)
 
-        private val drawRunner = PaletteDrawer(this, getBitmap())
+        private val imageLoader: ImageLoader = ImageLoader(this@CyclingWallpaperService)
+
+        private val drawRunner = PaletteDrawer(this, imageLoader.getBitmap("Seascape"))
         var imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, drawRunner.image.width), prefs.getInt(BOTTOM, drawRunner.image.height))
         var screenDimensions = Rect(imageSrc)
         private var scaleFactor = prefs.getFloat(SCALE_FACTOR, 1f)
@@ -112,12 +111,5 @@ class CyclingWallpaperService : WallpaperService() {
 
         private fun orientationHasChanged(width: Int, height: Int) =
                 (imageSrc.width() > imageSrc.height()) != (width > height)
-
-        private fun getBitmap() : ColorCyclingImage {
-            val json = this@CyclingWallpaperService.assets.open("Seascape.json")
-            val img: ImgJson = jacksonObjectMapper().readValue(json)
-            return ColorCyclingImage(img)
-        }
-
     }
 }

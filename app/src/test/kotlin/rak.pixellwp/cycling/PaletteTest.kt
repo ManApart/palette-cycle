@@ -23,7 +23,7 @@ class PaletteTest {
         val palette = Palette(colors, listOf(cycle))
         val amount = 1
 
-        palette.shiftColors(cycle, amount)
+        palette.shiftColors(palette.colors, cycle, amount)
 //        Log.info("palette.colors= ${palette.colors}")
         Assert.assertTrue(palette.colors.toIntArray() contentEquals shiftedColors.toIntArray())
     }

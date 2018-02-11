@@ -1,18 +1,21 @@
 [
   {
-    "name": "seascape",
+    "name": "Seascape",
     "images": [
       {
+        "name": "Seascape",
         "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V29",
-        "time": "12:00"
+        "startHour": "12"
       },
       {
+        "name": "SeascapeFOG",
         "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V29FOG",
-        "time": "6:00"
+        "startHour": "6"
       },
       {
+        "name": "SeascapePM",
         "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V29PM",
-        "time": "18:00"
+        "startHour": "18"
       }
     ]
   }

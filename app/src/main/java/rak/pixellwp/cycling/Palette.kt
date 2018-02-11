@@ -1,7 +1,5 @@
 package rak.pixellwp.cycling
 
-import android.util.Log
-
 class Palette(colors: List<Int>, val cycles: List<Cycle>) {
     private val baseColors = colors
     var colors = baseColors.toMutableList()
@@ -14,10 +12,6 @@ class Palette(colors: List<Int>, val cycles: List<Cycle>) {
                 .forEach { cycle ->
                     cycle.reverseColorsIfNecessary(colors)
                     val amount = cycle.getCycleAmount(timePassed)
-//                    val amount = 1
-                    if (cycle.low == 32) {
-                        Log.d("Cycling", "time passed: $timePassed, amount: $amount")
-                    }
                     shiftColors(colors, cycle, amount)
                     cycle.reverseColorsIfNecessary(colors)
                 }
