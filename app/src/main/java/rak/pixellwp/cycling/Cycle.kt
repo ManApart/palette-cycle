@@ -15,11 +15,12 @@ data class Cycle(val rate: Int, private val reverse: Int, val low: Int, val high
 
     fun reverseColorsIfNecessary(colors: MutableList<Int>){
         if (reverse == 2){
-            for (i in 0..size/2){
-                val low = colors[low+i]
-                val high = colors[high-i]
-                colors[low+i] = high
-                colors[high-i] = low
+//            Log.d("cycling", "Reversing cycle $this")
+            for (i in 0 until size/2){
+                val lowValue = colors[low+i]
+                val highValue = colors[high-i]
+                colors[low+i] = highValue
+                colors[high-i] = lowValue
             }
         }
     }
