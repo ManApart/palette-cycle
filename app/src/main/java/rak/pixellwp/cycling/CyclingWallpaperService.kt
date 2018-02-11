@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.preference.PreferenceManager
 import android.service.wallpaper.WallpaperService
 import android.support.v4.view.GestureDetectorCompat
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
@@ -22,7 +23,8 @@ class CyclingWallpaperService : WallpaperService() {
 
         private val imageLoader: ImageLoader = ImageLoader(this@CyclingWallpaperService, this@CyclingWallpaperEngine)
 
-        private var drawRunner = PaletteDrawer(this, imageLoader.getBitmap("Seascape"))
+        private var imageCollection = prefs.getString(IMAGE_COLLECTION, "Seascape")
+        private var drawRunner = PaletteDrawer(this, imageLoader.getBitmap(imageCollection))
         var imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, drawRunner.image.width), prefs.getInt(BOTTOM, drawRunner.image.height))
         var screenDimensions = Rect(imageSrc)
         private var scaleFactor = prefs.getFloat(SCALE_FACTOR, 1f)
@@ -42,6 +44,15 @@ class CyclingWallpaperService : WallpaperService() {
             }
         })
 
+        private val imageCollectionListener: SharedPreferences.OnSharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener({ preference: SharedPreferences, newValue: Any ->
+            val prefVal = preference.getString(IMAGE_COLLECTION, "")
+            if (imageCollection != prefVal && prefVal != "") {
+                Log.d("RAK", "Image collection is now: $prefVal")
+                imageCollection = prefVal
+                changeCollection(imageCollection)
+            }
+        })
+
         init {
             drawRunner.startDrawing()
         }
@@ -52,6 +63,12 @@ class CyclingWallpaperService : WallpaperService() {
             drawRunner.startDrawing()
         }
 
+        fun changeCollection(collectionName: String) {
+            drawRunner.stop()
+            drawRunner = PaletteDrawer(this, imageLoader.getBitmap(collectionName))
+            drawRunner.startDrawing()
+        }
+
         override fun onTouchEvent(event: MotionEvent?) {
             if (isPreview) {
                 scaleDetector.onTouchEvent(event)
@@ -59,6 +76,11 @@ class CyclingWallpaperService : WallpaperService() {
                 super.onTouchEvent(event)
                 drawRunner.startDrawing()
             }
+        }
+
+        override fun onCreate(surfaceHolder: SurfaceHolder?) {
+            PreferenceManager.getDefaultSharedPreferences(applicationContext).registerOnSharedPreferenceChangeListener(imageCollectionListener)
+            super.onCreate(surfaceHolder)
         }
 
         override fun onVisibilityChanged(visible: Boolean) {

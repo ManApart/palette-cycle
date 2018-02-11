@@ -19,7 +19,13 @@ class CirclePreferenceActivity : PreferenceActivity() {
         }
     }
 
-    private var numberCheckListener: SharedPreferences.OnSharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener({ preference: SharedPreferences, newValue: Any ->
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        fragmentManager.beginTransaction().replace(android.R.id.content, MyPreferenceFragment()).commit()
+        PreferenceManager.getDefaultSharedPreferences(applicationContext).registerOnSharedPreferenceChangeListener(numberCheckListener)
+    }
+
+    private val numberCheckListener: SharedPreferences.OnSharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener({ preference: SharedPreferences, newValue: Any ->
         if (NUMBER_OF_CIRCLES == newValue) {
             val num = preference.getString(NUMBER_OF_CIRCLES, "")
             if (num.isEmpty() || !num.matches(Regex("\\d*"))) {
@@ -30,11 +36,5 @@ class CirclePreferenceActivity : PreferenceActivity() {
         Log.d("RAK", "circles value is : ${preference.getString(NUMBER_OF_CIRCLES, "")}")
         Log.d("RAK", "touch value is : ${preference.getBoolean(TOUCH_ENABLED, false)}")
     })
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        fragmentManager.beginTransaction().replace(android.R.id.content, MyPreferenceFragment()).commit()
-        PreferenceManager.getDefaultSharedPreferences(applicationContext).registerOnSharedPreferenceChangeListener(numberCheckListener)
-    }
 
 }
