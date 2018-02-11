@@ -33,13 +33,18 @@ class JsonDownloader(private val fileName: String, private val url: String, priv
 
     override fun onPostExecute(result: String?) {
         if (result != null) {
-            saveImage(result)
+            saveImage(cleanJson(result))
         }
         super.onPostExecute(result)
     }
 
+    private fun cleanJson(json: String) : String{
+        return json.substring(25, json.length-4)
+    }
+
     private fun saveImage(json: String){
-        Log.d("Image Loader", "save json from $url: ${json.substring(0, 100)}")
+        Log.d("Image Loader", "save json from $url: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
+
         try {
             val stream = context.openFileOutput(fileName, Context.MODE_PRIVATE)
             OutputStreamWriter(stream).write(json)
@@ -49,5 +54,6 @@ class JsonDownloader(private val fileName: String, private val url: String, priv
             e.printStackTrace()
         }
         Log.d("Image Loader", "saved json from $url to $fileName")
+        Log.d("json", json)
     }
 }

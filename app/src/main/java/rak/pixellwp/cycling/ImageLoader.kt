@@ -2,6 +2,7 @@ package rak.pixellwp.cycling
 
 import android.content.Context
 import android.util.Log
+import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import rak.pixellwp.cycling.jsonModels.JsonDownloader
@@ -13,8 +14,7 @@ import java.util.*
 
 
 class ImageLoader(private val context: Context) {
-
-    val collection: List<ImageCollection> = loadCollection()
+    private val collection: List<ImageCollection> = loadCollection()
 
     private fun loadCollection(): List<ImageCollection> {
         val json = context.assets.open("Images.json")
@@ -22,14 +22,12 @@ class ImageLoader(private val context: Context) {
     }
 
     fun getBitmap(name: String) : ColorCyclingImage {
-        Log.d("Image Loader", "grabbing image for $name")
         val image = getImageInfo(name)
 
         val fileName = image.name + ".json"
-//        if (!File(context.filesDir, fileName).exists()){
-        if (!context.assets.list("").contains(fileName)){
+        if (!context.getFileStreamPath(fileName).exists()){
             Log.d("Image Loader", "Unable to find $fileName locally, downloading from ${image.url}")
-            downloadImage(fileName, image.url)
+            JsonDownloader(fileName, image.url, context).execute()
         }
         return loadImage(fileName)
     }
@@ -37,7 +35,7 @@ class ImageLoader(private val context: Context) {
     private fun getImageInfo(name: String): ImageInfo {
         val imageCollection = collection.first { it.name == name }
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-        Log.d("Image Loader", "grabbing image for $hour")
+        Log.d("Image Loader", "grabbing image for $name at hour $hour")
         return imageCollection.images
                 .filter { hour > it.startHour }
                 .sortedBy { it.startHour }
@@ -47,40 +45,23 @@ class ImageLoader(private val context: Context) {
                         .last()
     }
 
-    private fun downloadImage(fileName: String, url: String) {
-        JsonDownloader(fileName, url, context).execute()
-
-//        val url = URL(url)
-//        val urlConnection = url.openConnection() as HttpURLConnection
-//        try {
-//            val input = BufferedInputStream(urlConnection.inputStream)
-//            val bytes = input.read()
-//            val fileout = context.openFileOutput(fileName, MODE_PRIVATE)
-//            val outputWriter = OutputStreamWriter(fileout). use {
-//                it.write(input)
-//            }
-//            outputWriter.close()
-//        } finally {
-//            urlConnection.disconnect()
-//        }
-//        val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-//        val uri = Uri.parse(url)
-//        val request = DownloadManager.Request(uri)
-//        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-////        request.setde(this@Video_detail_Activity, Environment.DIRECTORY_DOWNLOADS, videoName)
-//        val reference = downloadManager.enqueue(request)
-
-    }
-
     private fun loadImage(fileName: String): ColorCyclingImage {
-//        val json: InputStream = if (File(context.filesDir, fileName).exists()) {
-//            FileInputStream(File(context.filesDir, fileName))
-//        } else {
+        val json: InputStream = if (context.getFileStreamPath(fileName).exists()) {
+            FileInputStream(context.getFileStreamPath(fileName))
+        } else {
             Log.e("ImageLoader", "Couldn't load $fileName. Falling back to seascape")
-            val json = context.assets.open("Seascape.json")
-//        }
+            context.assets.open("Seascape.json")
+        }
+        Log.d("Image Loader", "Loading $fileName from input stream")
+        val mapper = jacksonObjectMapper()
+//        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
+//        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
 
-        val img: ImgJson = jacksonObjectMapper().readValue(json)
+//        val s = java.util.Scanner(json).useDelimiter("\\A")
+//        val jsonString = if (s.hasNext()) s.next() else ""
+//        Log.d("json", jsonString)
+
+        val img: ImgJson = mapper.readValue(json)
         return ColorCyclingImage(img)
     }
 }
