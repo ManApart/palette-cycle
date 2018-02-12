@@ -1,4 +1,4 @@
-package rak.pixellwp.cycling
+package rak.pixellwp.cycling.jsonLoading
 
 import android.content.Context
 import android.os.AsyncTask
@@ -24,7 +24,7 @@ class JsonDownloader(private val image: ImageInfo, private val context: Context,
             inputStream.close()
             return json
         } catch (e: Exception){
-            Log.e("Image Loader", "Unable to download image from $image.url")
+            Log.e("Image Loader", "Unable to download image from ${image.url}")
             e.printStackTrace()
         }
         return json
@@ -50,7 +50,7 @@ class JsonDownloader(private val image: ImageInfo, private val context: Context,
             Log.e("Image Loader", "Unable to save image")
             e.printStackTrace()
         }
-        Log.d("Image Loader", "saved json from $image.url to $image.fileName: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
+        Log.d("Image Loader", "saved json from ${image.url} to ${image.fileName}: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
         listener.downloadComplete(image)
     }
 }

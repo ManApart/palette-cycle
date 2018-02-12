@@ -10,6 +10,8 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.SurfaceHolder
+import rak.pixellwp.cycling.jsonLoading.ImageLoader
+import rak.pixellwp.cycling.jsonLoading.JsonDownloadListener
 import rak.pixellwp.cycling.jsonModels.ImageInfo
 import java.util.*
 
@@ -33,7 +35,7 @@ class CyclingWallpaperService : WallpaperService() {
         private var scaleFactor = prefs.getFloat(SCALE_FACTOR, 5.3f)
         private var minScaleFactor = 0.1f
 
-        private var lastHourChecked = 0
+        private var lastHourChecked = prefs.getInt(LAST_HOUR_CHECKED, 0)
 
         private val scaleDetector = ScaleGestureDetector(applicationContext, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector?): Boolean {
@@ -64,6 +66,7 @@ class CyclingWallpaperService : WallpaperService() {
                 if (lastHourChecked != hour){
                     Log.d("Time Checker", "Hour passed ($lastHourChecked > $hour). Assessing possible image change")
                     lastHourChecked = hour
+                    prefs.edit().putInt(LAST_HOUR_CHECKED, lastHourChecked).apply()
                     changeCollection(imageCollection)
                 }
             }
@@ -74,7 +77,7 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         override fun downloadComplete(image: ImageInfo) {
-            changeImage(image)
+            changeImage(image, true)
         }
 
         private fun changeCollection(collectionName: String) {
@@ -82,8 +85,9 @@ class CyclingWallpaperService : WallpaperService() {
             changeImage(image)
         }
 
-        private fun changeImage(image: ImageInfo) {
-            if (image != currentImage) {
+        private fun changeImage(image: ImageInfo, force: Boolean = false) {
+            Log.d("Engine", "Considering change from ${currentImage.name} to ${image.name}")
+            if (image != currentImage || force) {
                 Log.d("Engine", "Changing from ${currentImage.name} to ${image.fileName}")
                 currentImage = image
                 drawRunner.stop()

@@ -1,10 +1,12 @@
-package rak.pixellwp.cycling
+package rak.pixellwp.cycling.jsonLoading
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import rak.pixellwp.cycling.ColorCyclingImage
 import rak.pixellwp.cycling.jsonModels.*
 import java.io.*
 import java.util.*
@@ -40,8 +42,9 @@ class ImageLoader(private val context: Context, private val listener: JsonDownlo
 
     private fun startDownloadingMissingFile(image: ImageInfo) {
         if (!context.getFileStreamPath(image.fileName).exists()) {
-            Log.d("Image Loader", "Unable to find $image.fileName locally, downloading from ${image.url}")
+            Log.d("Image Loader", "Unable to find ${image.fileName} locally, downloading from ${image.url}")
             JsonDownloader(image, context, listener).execute()
+            Toast.makeText(context, "Unable to find ${image.fileName} locally. I'll change the image as soon as it's downloaded", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -67,4 +70,5 @@ class ImageLoader(private val context: Context, private val listener: JsonDownlo
         mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
         return mapper.readValue(json)
     }
+
 }

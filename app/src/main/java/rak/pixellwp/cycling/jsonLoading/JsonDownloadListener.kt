@@ -1,4 +1,4 @@
-package rak.pixellwp.cycling
+package rak.pixellwp.cycling.jsonLoading
 
 import rak.pixellwp.cycling.jsonModels.ImageInfo
 

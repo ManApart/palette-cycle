@@ -1,8 +1,7 @@
 **TODO**
 * Blend shifting
-* Polling for Night / day cycling / palette shifting based on time of day
 * Logo
-* Make Logo Palette Shiftable
+* Make Logo Palette Shiftable, use as standard image (remove any actual art)
 * Popup to tell user the image will be shown once downloaded
 * Remove circles and single image code
 * Credit Mark Ferrari and Joseph Huckaby 

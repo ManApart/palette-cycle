@@ -18,7 +18,6 @@ class SetWallpaperActivity : Activity() {
         showCyclingWallpaper(View(this))
     }
 
-
     fun showCircleWallpaper(view: View){
         val intent = Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER)
         intent.putExtra(
