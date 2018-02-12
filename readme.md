@@ -1,6 +1,11 @@
 **TODO**
-* New wallpaper service for palette cycling
-* Night / day cycling / palette shifting based on time of day
+* Blend shifting
+* Polling for Night / day cycling / palette shifting based on time of day
+* Logo
+* Make Logo Palette Shiftable
+* Popup to tell user the image will be shown once downloaded
+* Remove circles and single image code
+* Credit Mark Ferrari and Joseph Huckaby 
 
  | id  | name |
  |  ---  |  ---  |

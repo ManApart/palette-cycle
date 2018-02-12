@@ -18,20 +18,10 @@ class ImageLoader(private val context: Context, private val listener: JsonDownlo
         return jacksonObjectMapper().readValue(json)
     }
 
-    fun getBitmap(name: String) : ColorCyclingImage {
-        val image = getImageInfo(name)
-
-        if (!context.getFileStreamPath(image.fileName).exists()){
-            Log.d("Image Loader", "Unable to find $image.fileName locally, downloading from ${image.url}")
-            JsonDownloader(image, context, listener).execute()
-        }
-        return loadImageFromFile(image.fileName)
-    }
-
-    private fun getImageInfo(name: String): ImageInfo {
+    fun getImageInfo(name: String): ImageInfo {
         val imageCollection = collection.first { it.name == name }
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-        Log.d("Image Loader", "grabbing image for $name at hour $hour")
+        Log.d("Image Loader", "grabbing image info for $name at hour $hour")
         return imageCollection.images
                 .filter { hour > it.startHour }
                 .sortedBy { it.startHour }
@@ -41,10 +31,18 @@ class ImageLoader(private val context: Context, private val listener: JsonDownlo
                         .last()
     }
 
-    fun loadImageFromFile(fileName: String): ColorCyclingImage {
-        val json: String = readJson(loadInputStream(fileName))
+    fun loadImage(image: ImageInfo): ColorCyclingImage {
+        startDownloadingMissingFile(image)
+        val json: String = readJson(loadInputStream(image.fileName))
         Log.d("Image Loader", "load json: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
         return ColorCyclingImage(parseJson(json))
+    }
+
+    private fun startDownloadingMissingFile(image: ImageInfo) {
+        if (!context.getFileStreamPath(image.fileName).exists()) {
+            Log.d("Image Loader", "Unable to find $image.fileName locally, downloading from ${image.url}")
+            JsonDownloader(image, context, listener).execute()
+        }
     }
 
     private fun loadInputStream(fileName: String): InputStream {

@@ -1,9 +1,9 @@
-package rak.pixellwp.cycling.jsonModels
+package rak.pixellwp.cycling
 
 import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
-import rak.pixellwp.cycling.ImageLoader
+import rak.pixellwp.cycling.jsonModels.ImageInfo
 import java.io.OutputStreamWriter
 import java.net.URL
 
@@ -51,6 +51,6 @@ class JsonDownloader(private val image: ImageInfo, private val context: Context,
             e.printStackTrace()
         }
         Log.d("Image Loader", "saved json from $image.url to $image.fileName: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
-        listener.notify(image.fileName)
+        listener.downloadComplete(image)
     }
 }

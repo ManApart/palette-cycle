@@ -1,6 +1,6 @@
 package rak.pixellwp.cycling
 
-import android.content.SharedPreferences
+import android.content.*
 import android.graphics.Rect
 import android.preference.PreferenceManager
 import android.service.wallpaper.WallpaperService
@@ -10,7 +10,8 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.SurfaceHolder
-import rak.pixellwp.cycling.jsonModels.JsonDownloadListener
+import rak.pixellwp.cycling.jsonModels.ImageInfo
+import java.util.*
 
 class CyclingWallpaperService : WallpaperService() {
 
@@ -22,14 +23,18 @@ class CyclingWallpaperService : WallpaperService() {
         private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@CyclingWallpaperService)
 
         private val imageLoader: ImageLoader = ImageLoader(this@CyclingWallpaperService, this@CyclingWallpaperEngine)
-
         private var imageCollection = prefs.getString(IMAGE_COLLECTION, "Seascape")
-        private var drawRunner = PaletteDrawer(this, imageLoader.getBitmap(imageCollection))
+        private var currentImage = imageLoader.getImageInfo(imageCollection)
+
+        private var drawRunner = PaletteDrawer(this, imageLoader.loadImage(currentImage))
+
         var imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, drawRunner.image.width), prefs.getInt(BOTTOM, drawRunner.image.height))
         var screenDimensions = Rect(imageSrc)
-        private var scaleFactor = prefs.getFloat(SCALE_FACTOR, 1f)
-
+        private var scaleFactor = prefs.getFloat(SCALE_FACTOR, 5.3f)
         private var minScaleFactor = 0.1f
+
+        private var lastHourChecked = 0
+
         private val scaleDetector = ScaleGestureDetector(applicationContext, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector?): Boolean {
                 incrementScaleFactor(detector?.scaleFactor ?: 1f)
@@ -37,14 +42,14 @@ class CyclingWallpaperService : WallpaperService() {
             }
         })
 
-        private val panDetector: GestureDetectorCompat = GestureDetectorCompat(applicationContext, object : GestureDetector.SimpleOnGestureListener() {
+        private val panDetector = GestureDetectorCompat(applicationContext, object : GestureDetector.SimpleOnGestureListener() {
             override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
                 adjustImageSrc(distanceX, distanceY)
                 return super.onScroll(e1, e2, distanceX, distanceY)
             }
         })
 
-        private val imageCollectionListener: SharedPreferences.OnSharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener({ preference: SharedPreferences, newValue: Any ->
+        private val imageCollectionListener = SharedPreferences.OnSharedPreferenceChangeListener({ preference: SharedPreferences, newValue: Any ->
             val prefVal = preference.getString(IMAGE_COLLECTION, "")
             if (imageCollection != prefVal && prefVal != "") {
                 Log.d("RAK", "Image collection is now: $prefVal")
@@ -53,20 +58,38 @@ class CyclingWallpaperService : WallpaperService() {
             }
         })
 
+        private val timeReceiver = object : BroadcastReceiver(){
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+                if (lastHourChecked != hour){
+                    Log.d("Time Checker", "Hour passed ($lastHourChecked > $hour). Assessing possible image change")
+                    lastHourChecked = hour
+                    changeCollection(imageCollection)
+                }
+            }
+        }
+
         init {
             drawRunner.startDrawing()
         }
 
-        override fun notify(fileName: String) {
-            drawRunner.stop()
-            drawRunner = PaletteDrawer(this, imageLoader.loadImageFromFile(fileName))
-            drawRunner.startDrawing()
+        override fun downloadComplete(image: ImageInfo) {
+            changeImage(image)
         }
 
-        fun changeCollection(collectionName: String) {
-            drawRunner.stop()
-            drawRunner = PaletteDrawer(this, imageLoader.getBitmap(collectionName))
-            drawRunner.startDrawing()
+        private fun changeCollection(collectionName: String) {
+            val image = imageLoader.getImageInfo(collectionName)
+            changeImage(image)
+        }
+
+        private fun changeImage(image: ImageInfo) {
+            if (image != currentImage) {
+                Log.d("Engine", "Changing from ${currentImage.name} to ${image.fileName}")
+                currentImage = image
+                drawRunner.stop()
+                drawRunner = PaletteDrawer(this, imageLoader.loadImage(image))
+                drawRunner.startDrawing()
+            }
         }
 
         override fun onTouchEvent(event: MotionEvent?) {
@@ -80,6 +103,7 @@ class CyclingWallpaperService : WallpaperService() {
 
         override fun onCreate(surfaceHolder: SurfaceHolder?) {
             PreferenceManager.getDefaultSharedPreferences(applicationContext).registerOnSharedPreferenceChangeListener(imageCollectionListener)
+            registerReceiver(timeReceiver, IntentFilter(Intent.ACTION_TIME_TICK))
             super.onCreate(surfaceHolder)
         }
 

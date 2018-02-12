@@ -1,7 +1,5 @@
 package rak.pixellwp.cycling
 
-import android.util.Log
-
 data class Cycle(val rate: Int, private val reverse: Int, val low: Int, val high: Int) {
     private val precision: Double = 100.0
     private val cycleSpeed: Double = 280.0
@@ -15,7 +13,6 @@ data class Cycle(val rate: Int, private val reverse: Int, val low: Int, val high
 
     fun reverseColorsIfNecessary(colors: MutableList<Int>){
         if (reverse == 2){
-//            Log.d("cycling", "Reversing cycle $this")
             for (i in 0 until size/2){
                 val lowValue = colors[low+i]
                 val highValue = colors[high-i]
