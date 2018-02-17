@@ -4,7 +4,7 @@
 * Make Logo Palette Shiftable, use as standard image (remove any actual art)
 * Popup to tell user the image will be shown once downloaded
 * Remove circles and single image code
-* Credit Mark Ferrari and Joseph Huckaby 
+* Credit Mark Ferrari and Joseph Huckaby  (link to canvas cycle)
 
  | id  | name |
  |  ---  |  ---  |

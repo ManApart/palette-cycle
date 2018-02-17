@@ -14,7 +14,7 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
     }
     private val handler = Handler(handlerThread.looper)
     private val runner = Runnable { doDraw() }
-    private val drawDelay = 100L
+    private val drawDelay = 50L
     private val startTime = Date().time
     private var visible = true
 
@@ -46,7 +46,6 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
 
     private fun doDraw(){
         val timePassed = Math.floor((Date().time - startTime).toDouble()).toInt()
-//        val timePassed = 100L
         image.advance(timePassed)
         drawFrame(engine.surfaceHolder, engine.imageSrc, engine.screenDimensions)
     }

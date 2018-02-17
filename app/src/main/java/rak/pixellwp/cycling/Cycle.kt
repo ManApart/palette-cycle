@@ -1,7 +1,9 @@
 package rak.pixellwp.cycling
 
+const val precision: Double = 100.0
+const val precisionInt: Int = 100
+
 data class Cycle(val rate: Int, private val reverse: Int, val low: Int, val high: Int) {
-    private val precision: Double = 100.0
     private val cycleSpeed: Double = 280.0
 
     private val size = high - low + 1
@@ -22,7 +24,7 @@ data class Cycle(val rate: Int, private val reverse: Int, val low: Int, val high
         }
     }
 
-    fun getCycleAmount(timePassed: Int) : Int{
+    fun getCycleAmount(timePassed: Int) : Double{
         var cycleAmount = 0.0
         if (reverse < 3){
             //standard cycle
@@ -44,6 +46,6 @@ data class Cycle(val rate: Int, private val reverse: Int, val low: Int, val high
             }
         }
 
-        return cycleAmount.toInt()
+        return cycleAmount
     }
 }
