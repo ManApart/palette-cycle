@@ -1,87 +1,142 @@
 [
   {
-    "name": "Seascape",
-    "images": [
-      {
-        "name": "SeascapeFOG",
-        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V29FOG",
-        "startHour": "6"
-      },
-      {
-        "name": "Seascape",
-        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V29",
-        "startHour": "12"
-      },
-      {
-        "name": "SeascapePM",
-        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V29PM",
-        "startHour": "18"
-      }
-    ]
+    "id": "V08AM",
+    "name": "Jungle Waterfall - Morning"
   },
   {
-    "name": "Waterfall",
-    "images": [
-      {
-        "name": "WaterfallAM",
-        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V08AM",
-        "startHour": "6"
-      },
-      {
-        "name": "Waterfall",
-        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V08",
-        "startHour": "12"
-      },
-      {
-        "name": "WaterfallRain",
-        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V08RAIN",
-        "startHour": "18"
-      },
-      {
-        "name": "WaterfallPM",
-        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V08PM",
-        "startHour": "21"
-      }
-    ]
+    "id": "V08RAIN",
+    "name": "Jungle Waterfall - Rain"
   },
   {
-    "name": "MirrorPond",
-    "images": [
-      {
-        "name": "MirrorPondAM",
-        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V16",
-        "startHour": "6"
-      },
-      {
-        "name": "MirrorPondPM",
-        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V16PM",
-        "startHour": "12"
-      },
-      {
-        "name": "MirrorPondRain",
-        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V16RAIN",
-        "startHour": "18"
-      }
-    ]
+    "id": "V08PM",
+    "name": "Jungle Waterfall - Night"
   },
   {
-    "name": "MountainStream",
-    "images": [
-      {
-        "name": "MountainStream",
-        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V19",
-        "startHour": "6"
-      },
-      {
-        "name": "MountainStreamPM",
-        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V19PM",
-        "startHour": "12"
-      },
-      {
-        "name": "MountainStreamAURA",
-        "url": "http://www.effectgames.com/demos/canvascycle/image.php?file=V19AURA",
-        "startHour": "18"
-      }
-    ]
+    "id": "V29",
+    "name": "Seascape - Day"
+  },
+  {
+    "id": "V19",
+    "name": "Mountain Stream - Morning"
+  },
+  {
+    "id": "V19AURA",
+    "name": "Mountain Stream - Night"
+  },
+  {
+    "id": "V26SNOW",
+    "name": "Winter Forest - Snow"
+  },
+  {
+    "id": "V14",
+    "name": "Mountain Storm - Day"
+  },
+  {
+    "id": "V30",
+    "name": "Deep Forest - Day"
+  },
+  {
+    "id": "V30RAIN",
+    "name": "Deep Forest - Rain"
+  },
+  {
+    "id": "V04",
+    "name": "Highland Ruins - Rain"
+  },
+  {
+    "id": "V07",
+    "name": "Rough Seas - Day"
+  },
+  {
+    "id": "V20",
+    "name": "Crystal Caves - Day"
+  },
+  {
+    "id": "V05RAIN",
+    "name": "Haunted Castle Ruins - Rain"
+  },
+  {
+    "id": "V16RAIN",
+    "name": "Mirror Pond - Rain"
+  },
+  {
+    "id": "CORAL",
+    "name": "Aquarius - Day"
+  },
+  {
+    "id": "V15",
+    "name": "Harbor Town - Night"
+  },
+  {
+    "id": "V02",
+    "name": "Mountain Fortress - Dusk"
+  },
+  {
+    "id": "V28",
+    "name": "Water City Gates - Fog"
+  },
+  {
+    "id": "V29PM",
+    "name": "Seascape - Sunset"
+  },
+  {
+    "id": "V16",
+    "name": "Mirror Pond - Morning"
+  },
+  {
+    "id": "V01",
+    "name": "Island Fires - Dusk"
+  },
+  {
+    "id": "V09",
+    "name": "Forest Edge - Day"
+  },
+  {
+    "id": "V16PM",
+    "name": "Mirror Pond - Afternoon"
+  },
+  {
+    "id": "V08",
+    "name": "Jungle Waterfall - Afternoon"
+  },
+  {
+    "id": "V03",
+    "name": "Swamp Cathedral - Day"
+  },
+  {
+    "id": "V05HAUNT",
+    "name": "Haunted Castle Ruins - Night"
+  },
+  {
+    "id": "V10",
+    "name": "Deep Swamp - Day"
+  },
+  {
+    "id": "V11AM",
+    "name": "Approaching Storm - Day"
+  },
+  {
+    "id": "V13",
+    "name": "Pond Ripples - Dawn"
+  },
+  {
+    "id": "V17",
+    "name": "Ice Wind - Day"
+  },
+  {
+    "id": "V19PM",
+    "name": "Mountain Stream - Afternoon"
+  },
+  {
+    "id": "V25HEAT",
+    "name": "Desert Heat Wave - Day"
+  },
+  {
+    "id": "V27",
+    "name": "Magic Marsh Cave - Night"
+  },
+  {
+    "id": "V29FOG",
+    "name": "Seascape - Fog"
   }
 ]

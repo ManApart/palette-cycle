@@ -14,16 +14,27 @@ import java.util.*
 
 class ImageLoader(private val context: Context, private val listener: JsonDownloadListener) {
     private val collection: List<ImageCollection> = loadCollection()
+    private val images: List<ImageInfo> = loadImages()
 
     private fun loadCollection(): List<ImageCollection> {
+        val json = context.assets.open("ImageCollections.json")
+        return jacksonObjectMapper().readValue(json)
+    }
+
+    private fun loadImages(): List<ImageInfo> {
         val json = context.assets.open("Images.json")
         return jacksonObjectMapper().readValue(json)
     }
 
-    fun getImageInfo(name: String): ImageInfo {
-        val imageCollection = collection.first { it.name == name }
+    fun getImageInfoForImage(imageId: String): ImageInfo {
+        Log.d("Image Loader", "grabbing image info for $imageId")
+        return images.first { it.id == imageId }
+    }
+
+    fun getImageInfoForCollection(collectionName: String): ImageInfo {
+        val imageCollection = collection.first { it.name == collectionName }
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-        Log.d("Image Loader", "grabbing image info for $name at hour $hour")
+        Log.d("Image Loader", "grabbing image info for $collectionName at hour $hour")
         return imageCollection.images
                 .filter { hour > it.startHour }
                 .sortedBy { it.startHour }
@@ -42,7 +53,7 @@ class ImageLoader(private val context: Context, private val listener: JsonDownlo
 
     private fun startDownloadingMissingFile(image: ImageInfo) {
         if (!context.getFileStreamPath(image.fileName).exists()) {
-            Log.d("Image Loader", "Unable to find ${image.fileName} locally, downloading from ${image.url}")
+            Log.d("Image Loader", "Unable to find ${image.fileName} locally, downloading using id ${image.id}")
             JsonDownloader(image, context, listener).execute()
             Toast.makeText(context, "Unable to find ${image.fileName} locally. I'll change the image as soon as it's downloaded", Toast.LENGTH_LONG).show()
         }

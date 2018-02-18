@@ -14,9 +14,6 @@ import rak.pixellwp.cycling.jsonLoading.ImageLoader
 import rak.pixellwp.cycling.jsonLoading.JsonDownloadListener
 import rak.pixellwp.cycling.jsonModels.ImageInfo
 import java.util.*
-import android.support.v4.content.ContextCompat.startActivity
-import android.content.Intent
-import rak.pixellwp.SetWallpaperActivity
 
 
 class CyclingWallpaperService : WallpaperService() {
@@ -30,7 +27,8 @@ class CyclingWallpaperService : WallpaperService() {
 
         private val imageLoader: ImageLoader = ImageLoader(this@CyclingWallpaperService, this@CyclingWallpaperEngine)
         private var imageCollection = prefs.getString(IMAGE_COLLECTION, "Seascape")
-        private var currentImage = imageLoader.getImageInfo(imageCollection)
+        private var singleImage = prefs.getString(SINGLE_IMAGE, "")
+        private var currentImage = imageLoader.getImageInfoForCollection(imageCollection)
 
         private var drawRunner = PaletteDrawer(this, imageLoader.loadImage(currentImage))
 
@@ -56,11 +54,17 @@ class CyclingWallpaperService : WallpaperService() {
         })
 
         private val imageCollectionListener = SharedPreferences.OnSharedPreferenceChangeListener({ preference: SharedPreferences, newValue: Any ->
-            val prefVal = preference.getString(IMAGE_COLLECTION, "")
-            if (imageCollection != prefVal && prefVal != "") {
-                Log.d("RAK", "Image collection is now: $prefVal")
-                imageCollection = prefVal
+            val prefCollectionVal = preference.getString(IMAGE_COLLECTION, "")
+            val prefImageVal = preference.getString(SINGLE_IMAGE, "")
+            if (imageCollection != prefCollectionVal && prefCollectionVal != "") {
+                Log.d("RAK", "Image collection is now: $prefCollectionVal")
+                imageCollection = prefCollectionVal
                 changeCollection(imageCollection)
+            } else if (singleImage != prefImageVal && prefImageVal != "") {
+                Log.d("RAK", "Single image is now: $singleImage")
+                singleImage = prefImageVal
+                val image = imageLoader.getImageInfoForImage(singleImage)
+                changeImage(image)
             }
         })
 
@@ -72,7 +76,9 @@ class CyclingWallpaperService : WallpaperService() {
                     Log.d("Time Checker", "Hour passed ($lastHourChecked > $hour). Assessing possible image change")
                     lastHourChecked = hour
                     prefs.edit().putInt(LAST_HOUR_CHECKED, lastHourChecked).apply()
-                    changeCollection(imageCollection)
+                    if (imageCollection != ""){
+                        changeCollection(imageCollection)
+                    }
                 }
             }
         }
@@ -86,12 +92,11 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         private fun changeCollection(collectionName: String) {
-            val image = imageLoader.getImageInfo(collectionName)
+            val image = imageLoader.getImageInfoForCollection(collectionName)
             changeImage(image)
         }
 
         private fun changeImage(image: ImageInfo, force: Boolean = false) {
-            Log.d("Engine", "Considering change from ${currentImage.name} to ${image.name}")
             if (image != currentImage || force) {
                 Log.d("Engine", "Changing from ${currentImage.name} to ${image.fileName}")
                 currentImage = image

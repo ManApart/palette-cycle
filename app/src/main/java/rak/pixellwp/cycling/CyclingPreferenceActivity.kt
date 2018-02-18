@@ -6,6 +6,7 @@ import android.preference.PreferenceFragment
 import android.preference.PreferenceManager
 import rak.pixellwp.R
 
+
 class CyclingPreferenceActivity : PreferenceActivity() {
 
     class MyPreferenceFragment : PreferenceFragment() {
@@ -20,5 +21,6 @@ class CyclingPreferenceActivity : PreferenceActivity() {
         super.onCreate(savedInstanceState)
         fragmentManager.beginTransaction().replace(android.R.id.content, MyPreferenceFragment()).commit()
     }
+
 
 }

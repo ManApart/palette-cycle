@@ -1,7 +1,7 @@
 **TODO**
 * Logo
 * Make Logo Palette Shiftable, use as standard image (remove any actual art)
-* Remove circles and single image code
+* Allow select single images
 * Credit Mark Ferrari and Joseph Huckaby  (link to canvas cycle)
 
  | id  | name |

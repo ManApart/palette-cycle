@@ -2,7 +2,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference
         android:key="imageCollection"
-        android:title="Image"
+        android:title="Image Collection"
         android:entries="@array/ImageCollections"
         android:entryValues="@array/ImageCollections"/>
+    <rak.pixellwp.cycling.ImagePreference
+        android:key="singleImage"
+        android:title="Single Image"
+        />
 </PreferenceScreen>

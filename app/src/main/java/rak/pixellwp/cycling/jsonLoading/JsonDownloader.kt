@@ -9,6 +9,7 @@ import java.net.URL
 
 
 class JsonDownloader(private val image: ImageInfo, private val context: Context, private val listener: JsonDownloadListener) : AsyncTask<String, Void, String>() {
+    private val baseUrl = "http://www.effectgames.com/demos/canvascycle/image.php?file="
     override fun doInBackground(vararg params: String?): String {
         return downloadImage()
     }
@@ -16,7 +17,7 @@ class JsonDownloader(private val image: ImageInfo, private val context: Context,
     private fun downloadImage() : String {
         var json = ""
         try {
-            val inputStream = URL(image.url).openStream()
+            val inputStream = URL(baseUrl + image.id).openStream()
 
             val s = java.util.Scanner(inputStream).useDelimiter("\\A")
             json = if (s.hasNext()) s.next() else ""
@@ -24,7 +25,7 @@ class JsonDownloader(private val image: ImageInfo, private val context: Context,
             inputStream.close()
             return json
         } catch (e: Exception){
-            Log.e("Image Loader", "Unable to download image from ${image.url}")
+            Log.e("Image Loader", "Unable to download image from ${baseUrl + image.id}")
             e.printStackTrace()
         }
         return json
@@ -50,7 +51,7 @@ class JsonDownloader(private val image: ImageInfo, private val context: Context,
             Log.e("Image Loader", "Unable to save image")
             e.printStackTrace()
         }
-        Log.d("Image Loader", "saved json from ${image.url} to ${image.fileName}: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
+        Log.d("Image Loader", "saved json from ${baseUrl + image.id} to ${image.fileName}: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
         listener.downloadComplete(image)
     }
 }
