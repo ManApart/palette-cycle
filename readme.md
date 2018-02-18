@@ -1,6 +1,5 @@
 **TODO**
 * Make default image palette shiftable?
-* Credit Mark Ferrari and Joseph Huckaby  (link to canvas cycle)
 
  | id  | name |
  |  ---  |  ---  |

@@ -7,6 +7,10 @@
         android:entryValues="@array/ImageCollections"/>
     <rak.pixellwp.cycling.ImagePreference
         android:key="singleImage"
-        android:title="Single Image"
-        />
+        android:title="Single Image"/>
+
+    <Preference
+        android:title="credits"
+        android:selectable="false"
+        android:layout="@layout/credits" />
 </PreferenceScreen>
