@@ -1,7 +1,5 @@
 **TODO**
-* Logo
-* Make Logo Palette Shiftable, use as standard image (remove any actual art)
-* Allow select single images
+* Make default image palette shiftable?
 * Credit Mark Ferrari and Joseph Huckaby  (link to canvas cycle)
 
  | id  | name |

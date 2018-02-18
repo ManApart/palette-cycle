@@ -1,7 +1,4 @@
 <resources>
-    <string name="app_name">Pixel LWP</string>
-    <string name="wallpaper_description">Pixel Art Wallpaper</string>
-    <string name="circle_wallpaper_button">Circle Wallpaper</string>
-    <string name="image_wallpaper_button">Image Wallpaper</string>
-    <string name="cycling_wallpaper_button">Palette Shift Wallpaper</string>
+    <string name="app_name">Palette Cycling LWP</string>
+    <string name="wallpaper_description">Palette Cycling Pixel Art Wallpaper</string>
 </resources>
