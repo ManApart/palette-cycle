@@ -19,20 +19,6 @@
         android:theme="@style/AppTheme" >
 
         <service
-            android:name=".circles.CircleWallpaperService"
-            android:enabled="true"
-            android:label="Circle Wallpaper"
-            android:permission="android.permission.BIND_WALLPAPER" >
-            <intent-filter>
-                <action android:name="android.service.wallpaper.WallpaperService" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.service.wallpaper"
-                android:resource="@xml/circle_wallpaper" />
-        </service>
-
-        <service
             android:name=".cycling.CyclingWallpaperService"
             android:enabled="true"
             android:label="Cycling Wallpaper"
@@ -46,35 +32,8 @@
                 android:resource="@xml/cycling_wallpaper" />
         </service>
 
-        <service
-            android:name=".singleImage.ImageWallpaperService"
-            android:enabled="true"
-            android:label="Image Wallpaper"
-            android:permission="android.permission.BIND_WALLPAPER" >
-            <intent-filter>
-                <action android:name="android.service.wallpaper.WallpaperService" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.service.wallpaper"
-                android:resource="@xml/image_wallpaper" />
-        </service>
-
-        <activity
-            android:name=".circles.CirclePreferenceActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@android:style/Theme.Light.WallpaperSettings" >
-        </activity>
-
         <activity
             android:name=".cycling.CyclingPreferenceActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@android:style/Theme.Light.WallpaperSettings" >
-        </activity>
-        <activity
-            android:name=".singleImage.ImagePreferenceActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Light.WallpaperSettings" >

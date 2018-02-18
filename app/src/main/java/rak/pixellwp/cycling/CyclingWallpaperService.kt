@@ -14,6 +14,10 @@ import rak.pixellwp.cycling.jsonLoading.ImageLoader
 import rak.pixellwp.cycling.jsonLoading.JsonDownloadListener
 import rak.pixellwp.cycling.jsonModels.ImageInfo
 import java.util.*
+import android.support.v4.content.ContextCompat.startActivity
+import android.content.Intent
+import rak.pixellwp.SetWallpaperActivity
+
 
 class CyclingWallpaperService : WallpaperService() {
 
@@ -63,6 +67,7 @@ class CyclingWallpaperService : WallpaperService() {
         private val timeReceiver = object : BroadcastReceiver(){
             override fun onReceive(context: Context?, intent: Intent?) {
                 val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+                Log.d("wallpaper service", "time check")
                 if (lastHourChecked != hour){
                     Log.d("Time Checker", "Hour passed ($lastHourChecked > $hour). Assessing possible image change")
                     lastHourChecked = hour
@@ -96,6 +101,12 @@ class CyclingWallpaperService : WallpaperService() {
             }
         }
 
+        override fun onCreate(surfaceHolder: SurfaceHolder?) {
+            PreferenceManager.getDefaultSharedPreferences(applicationContext).registerOnSharedPreferenceChangeListener(imageCollectionListener)
+            registerReceiver(timeReceiver, IntentFilter(Intent.ACTION_TIME_TICK))
+            super.onCreate(surfaceHolder)
+        }
+
         override fun onTouchEvent(event: MotionEvent?) {
             if (isPreview) {
                 scaleDetector.onTouchEvent(event)
@@ -103,12 +114,6 @@ class CyclingWallpaperService : WallpaperService() {
                 super.onTouchEvent(event)
                 drawRunner.startDrawing()
             }
-        }
-
-        override fun onCreate(surfaceHolder: SurfaceHolder?) {
-            PreferenceManager.getDefaultSharedPreferences(applicationContext).registerOnSharedPreferenceChangeListener(imageCollectionListener)
-            registerReceiver(timeReceiver, IntentFilter(Intent.ACTION_TIME_TICK))
-            super.onCreate(surfaceHolder)
         }
 
         override fun onVisibilityChanged(visible: Boolean) {

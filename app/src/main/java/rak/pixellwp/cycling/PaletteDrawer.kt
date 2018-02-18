@@ -4,6 +4,7 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.os.Handler
 import android.os.HandlerThread
+import android.util.Log
 import android.view.SurfaceHolder
 import java.util.*
 
@@ -55,7 +56,6 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
         try {
             canvas = surfaceHolder.lockCanvas()
             if (canvas != null && image != null){
-//                Log.d("Cycle Wallpaper", "Attempting to startDrawing $image. Scale = $scaleFactor. Dimensions = $imageSrc")
                 canvas.drawBitmap(image.getBitmap(), imageSrc, screenDimensions, null)
             }
         } finally {
