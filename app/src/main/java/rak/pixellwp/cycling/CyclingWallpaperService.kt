@@ -34,6 +34,8 @@ class CyclingWallpaperService : WallpaperService() {
 
         var imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, drawRunner.image.width), prefs.getInt(BOTTOM, drawRunner.image.height))
         var screenDimensions = Rect(imageSrc)
+        private var screenOffset: Float = 0f
+        private var parallax = prefs.getBoolean(PARALLAX,true)
         private var scaleFactor = prefs.getFloat(SCALE_FACTOR, 5.3f)
         private var minScaleFactor = 0.1f
 
@@ -56,6 +58,7 @@ class CyclingWallpaperService : WallpaperService() {
         private val imageCollectionListener = SharedPreferences.OnSharedPreferenceChangeListener({ preference: SharedPreferences, newValue: Any ->
             val prefCollectionVal = preference.getString(IMAGE_COLLECTION, imageCollection)
             val prefImageVal = preference.getString(SINGLE_IMAGE, singleImage)
+            parallax = preference.getBoolean(PARALLAX, parallax)
 
             if (imageCollection != prefCollectionVal && prefCollectionVal != "") {
                 Log.d("RAK", "Image collection: $imageCollection > $prefCollectionVal")
@@ -77,7 +80,6 @@ class CyclingWallpaperService : WallpaperService() {
         private val timeReceiver = object : BroadcastReceiver(){
             override fun onReceive(context: Context?, intent: Intent?) {
                 val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-                Log.d("wallpaper service", "time check")
                 if (lastHourChecked != hour){
                     Log.d("Time Checker", "Hour passed ($lastHourChecked > $hour). Assessing possible image change")
                     lastHourChecked = hour
@@ -161,6 +163,22 @@ class CyclingWallpaperService : WallpaperService() {
             }
             determineMinScaleFactor()
             super.onSurfaceChanged(holder, format, width, height)
+        }
+
+        override fun onOffsetsChanged(xOffset: Float, yOffset: Float, xOffsetStep: Float, yOffsetStep: Float, xPixelOffset: Int, yPixelOffset: Int) {
+            super.onOffsetsChanged(xOffset, yOffset, xOffsetStep, yOffsetStep, xPixelOffset, yPixelOffset)
+            screenOffset = xOffset
+            drawRunner.drawNow()
+        }
+
+        fun getOffsetImage() : Rect {
+            if (parallax) {
+                val totalPossibleOffset = drawRunner.image.width - imageSrc.width()
+                val offsetPixels = totalPossibleOffset * screenOffset
+                val left = offsetPixels.toInt()
+                return Rect(left, imageSrc.top, left + imageSrc.width(), imageSrc.bottom)
+            }
+            return imageSrc
         }
 
         private fun adjustImageSrc(distanceX: Float, distanceY: Float) {

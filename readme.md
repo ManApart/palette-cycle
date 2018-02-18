@@ -1,5 +1,6 @@
 **TODO**
 * Make default image palette shiftable?
+* Make wider screen pan with multiple screens
 
  | id  | name |
  |  ---  |  ---  |
