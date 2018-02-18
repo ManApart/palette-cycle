@@ -26,9 +26,9 @@ class CyclingWallpaperService : WallpaperService() {
         private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@CyclingWallpaperService)
 
         private val imageLoader: ImageLoader = ImageLoader(this@CyclingWallpaperService, this@CyclingWallpaperEngine)
-        private var imageCollection = prefs.getString(IMAGE_COLLECTION, "Seascape")
+        private var imageCollection = prefs.getString(IMAGE_COLLECTION, "")
         private var singleImage = prefs.getString(SINGLE_IMAGE, "")
-        private var currentImage = imageLoader.getImageInfoForCollection(imageCollection)
+        private var currentImage = loadInitialImage()
 
         private var drawRunner = PaletteDrawer(this, imageLoader.loadImage(currentImage))
 
@@ -54,17 +54,25 @@ class CyclingWallpaperService : WallpaperService() {
         })
 
         private val imageCollectionListener = SharedPreferences.OnSharedPreferenceChangeListener({ preference: SharedPreferences, newValue: Any ->
-            val prefCollectionVal = preference.getString(IMAGE_COLLECTION, "")
-            val prefImageVal = preference.getString(SINGLE_IMAGE, "")
+            val prefCollectionVal = preference.getString(IMAGE_COLLECTION, imageCollection)
+            val prefImageVal = preference.getString(SINGLE_IMAGE, singleImage)
+
             if (imageCollection != prefCollectionVal && prefCollectionVal != "") {
-                Log.d("RAK", "Image collection is now: $prefCollectionVal")
+                Log.d("RAK", "Image collection: $imageCollection > $prefCollectionVal")
                 imageCollection = prefCollectionVal
+                singleImage = ""
+                preference.edit().putString(SINGLE_IMAGE, "").apply()
                 changeCollection(imageCollection)
+
             } else if (singleImage != prefImageVal && prefImageVal != "") {
-                Log.d("RAK", "Single image is now: $singleImage")
+                Log.d("RAK", "Single image: $singleImage > $prefImageVal")
                 singleImage = prefImageVal
+                imageCollection = ""
+                preference.edit().putString(IMAGE_COLLECTION, "").apply()
                 val image = imageLoader.getImageInfoForImage(singleImage)
                 changeImage(image)
+            } else {
+                Log.d("RAK", "No change found. Collection: $imageCollection > $prefCollectionVal, image: $singleImage > $prefImageVal ")
             }
         })
 
@@ -81,6 +89,7 @@ class CyclingWallpaperService : WallpaperService() {
                     }
                 }
             }
+
         }
 
         init {
@@ -89,6 +98,15 @@ class CyclingWallpaperService : WallpaperService() {
 
         override fun downloadComplete(image: ImageInfo) {
             changeImage(image, true)
+        }
+
+        private fun loadInitialImage() : ImageInfo{
+            if (imageCollection != ""){
+                return imageLoader.getImageInfoForCollection(imageCollection)
+            } else if (singleImage != "") {
+                return imageLoader.getImageInfoForImage(singleImage)
+            }
+            return imageLoader.getImageInfoForCollection("Seascape")
         }
 
         private fun changeCollection(collectionName: String) {
@@ -110,6 +128,11 @@ class CyclingWallpaperService : WallpaperService() {
             PreferenceManager.getDefaultSharedPreferences(applicationContext).registerOnSharedPreferenceChangeListener(imageCollectionListener)
             registerReceiver(timeReceiver, IntentFilter(Intent.ACTION_TIME_TICK))
             super.onCreate(surfaceHolder)
+        }
+
+        override fun onDestroy() {
+            super.onDestroy()
+            unregisterReceiver(timeReceiver)
         }
 
         override fun onTouchEvent(event: MotionEvent?) {

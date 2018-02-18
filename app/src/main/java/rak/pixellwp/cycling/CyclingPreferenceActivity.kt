@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.preference.PreferenceActivity
 import android.preference.PreferenceFragment
 import android.preference.PreferenceManager
+import android.util.Log
+import android.view.MenuItem
 import rak.pixellwp.R
 
 
@@ -20,6 +22,12 @@ class CyclingPreferenceActivity : PreferenceActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fragmentManager.beginTransaction().replace(android.R.id.content, MyPreferenceFragment()).commit()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        Log.d("pref", "on button pressed")
+        onBackPressed()
+        return super.onOptionsItemSelected(item)
     }
 
 
