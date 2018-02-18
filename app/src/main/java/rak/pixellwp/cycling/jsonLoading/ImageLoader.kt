@@ -63,8 +63,8 @@ class ImageLoader(private val context: Context, private val listener: JsonDownlo
         return if (context.getFileStreamPath(fileName).exists()) {
             FileInputStream(context.getFileStreamPath(fileName))
         } else {
-            Log.e("ImageLoader", "Couldn't load $fileName. Falling back to seascape")
-            context.assets.open("Seascape.json")
+            Log.e("ImageLoader", "Couldn't load $fileName.")
+            context.assets.open("DefaultImage.json")
         }
     }
 

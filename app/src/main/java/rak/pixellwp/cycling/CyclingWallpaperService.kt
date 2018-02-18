@@ -71,8 +71,6 @@ class CyclingWallpaperService : WallpaperService() {
                 preference.edit().putString(IMAGE_COLLECTION, "").apply()
                 val image = imageLoader.getImageInfoForImage(singleImage)
                 changeImage(image)
-            } else {
-                Log.d("RAK", "No change found. Collection: $imageCollection > $prefCollectionVal, image: $singleImage > $prefImageVal ")
             }
         })
 
@@ -120,6 +118,7 @@ class CyclingWallpaperService : WallpaperService() {
                 currentImage = image
                 drawRunner.stop()
                 drawRunner = PaletteDrawer(this, imageLoader.loadImage(image))
+                determineMinScaleFactor()
                 drawRunner.startDrawing()
             }
         }
