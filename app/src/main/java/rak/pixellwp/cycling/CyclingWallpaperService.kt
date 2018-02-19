@@ -172,7 +172,7 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         fun getOffsetImage() : Rect {
-            if (parallax) {
+            if (parallax && !isPreview) {
                 val totalPossibleOffset = drawRunner.image.width - imageSrc.width()
                 val offsetPixels = totalPossibleOffset * screenOffset
                 val left = offsetPixels.toInt()

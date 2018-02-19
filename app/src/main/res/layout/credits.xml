@@ -8,8 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
         android:text="@string/credits"
-        android:gravity="bottom"
-        android:layout_marginTop="100dp"/>
+        android:gravity="bottom"/>
 </RelativeLayout>

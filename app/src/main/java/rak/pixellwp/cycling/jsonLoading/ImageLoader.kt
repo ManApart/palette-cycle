@@ -35,13 +35,16 @@ class ImageLoader(private val context: Context, private val listener: JsonDownlo
         val imageCollection = collection.first { it.name == collectionName }
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         Log.d("Image Loader", "grabbing image info for $collectionName at hour $hour")
-        return imageCollection.images
-                .filter { hour > it.startHour }
+        val info = imageCollection.images
+                .filter { it.startHour > hour }
                 .sortedBy { it.startHour }
                 .firstOrNull()
                 ?: imageCollection.images
                         .sortedBy { it.startHour }
                         .last()
+
+        Log.d("Image Loader", "grabbed ${info.name} with hour ${info.startHour}")
+        return info
     }
 
     fun loadImage(image: ImageInfo): ColorCyclingImage {

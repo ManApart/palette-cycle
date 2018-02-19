@@ -1,6 +1,6 @@
 **TODO**
 * Make default image palette shiftable?
-* Make wider screen pan with multiple screens
+* Thread leaks, performance, bugs?
 
  | id  | name |
  |  ---  |  ---  |
