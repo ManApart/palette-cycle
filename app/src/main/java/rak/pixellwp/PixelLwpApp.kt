@@ -3,6 +3,7 @@ package rak.pixellwp
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import rak.pixellwp.cycling.jsonModels.ImageInfo
 import java.io.File
 import java.io.IOException
 import java.io.OutputStreamWriter
@@ -24,7 +25,7 @@ class PixelLwpApp : Application() {
 
     private fun startLogging() {
         val logFileName = "log-${System.currentTimeMillis()}"
-        Log.d(logTag, "attempting to log to file $logFileName")
+        Log.d(logTag, "logging to file $logFileName")
 
         try {
             val logFileStream = OutputStreamWriter(baseContext.openFileOutput(logFileName, Context.MODE_PRIVATE))
@@ -35,7 +36,7 @@ class PixelLwpApp : Application() {
             val logFile = File("${logDirectory.path}/$logFileName")
 
             Runtime.getRuntime().exec("logcat -c")
-            val fileCommand = "logcat -f $logFile *:S $logTag:D CyclingWallpaperService:D ImageLoader:D JsonDownloader:D"
+            val fileCommand = "logcat -f $logFile *:W $logTag:D CyclingWallpaperService:D ImageLoader:D JsonDownloader:D PaletteDrawer:D"
             Runtime.getRuntime().exec(fileCommand)
         } catch (e: IOException){
             e.printStackTrace()

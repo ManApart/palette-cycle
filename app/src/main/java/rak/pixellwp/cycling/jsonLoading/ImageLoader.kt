@@ -11,11 +11,13 @@ import rak.pixellwp.cycling.jsonModels.*
 import java.io.*
 import java.util.*
 
-class ImageLoader(private val context: Context, private val loadListener: ImageLoadedListener) : JsonDownloadListener {
+class ImageLoader(private val context: Context) : JsonDownloadListener {
     private val logTag = "ImageLoader"
-
     private val collection: List<ImageCollection> = loadCollection()
     private val images: List<ImageInfo> = loadImages()
+    private val defaultImage = ImageInfo("DefaultImage", "none", 0)
+    private val downloading: MutableList<ImageInfo> = mutableListOf()
+    private val loadListeners: MutableList<ImageLoadedListener> = mutableListOf()
 
     private fun loadCollection(): List<ImageCollection> {
         val json = context.assets.open("ImageCollections.json")
@@ -29,7 +31,13 @@ class ImageLoader(private val context: Context, private val loadListener: ImageL
 
     override fun downloadComplete(image: ImageInfo, json: String) {
         saveImage(image, json)
-        loadListener.imageLoadComplete(image)
+        for (loadListener in loadListeners){
+            loadListener.imageLoadComplete(image)
+        }
+    }
+
+    fun addLoadListener(loadListener: ImageLoadedListener){
+        loadListeners.add(loadListener)
     }
 
     fun getImageInfoForImage(imageId: String): ImageInfo {
@@ -53,18 +61,23 @@ class ImageLoader(private val context: Context, private val loadListener: ImageL
         return info
     }
 
-    fun loadImage(image: ImageInfo): ColorCyclingImage {
+    fun loadImage(image: ImageInfo, fallback: ImageInfo = defaultImage): ColorCyclingImage {
         startDownloadingMissingFile(image)
-        val json: String = readJson(loadInputStream(image.fileName))
+        val json: String = readJson(loadInputStream(image.fileName, fallback.fileName))
         Log.d(logTag, "load json: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
         return ColorCyclingImage(parseJson(json))
     }
 
     private fun startDownloadingMissingFile(image: ImageInfo) {
         if (!context.getFileStreamPath(image.fileName).exists()) {
-            Log.d(logTag, "Unable to find ${image.fileName} locally, downloading using id ${image.id}")
-            JsonDownloader(image, this).execute()
-            Toast.makeText(context, "Unable to find ${image.fileName} locally. I'll change the image as soon as it's downloaded", Toast.LENGTH_LONG).show()
+            if (downloading.contains(image)){
+                Log.d(logTag, "Still attempting to download ${image.fileName}")
+            } else {
+                Log.d(logTag, "Unable to find ${image.fileName} locally, downloading using id ${image.id}")
+                downloading.add(image)
+                JsonDownloader(image, this).execute()
+                Toast.makeText(context, "Unable to find ${image.fileName} locally. I'll change the image as soon as it's downloaded", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -78,14 +91,16 @@ class ImageLoader(private val context: Context, private val loadListener: ImageL
             e.printStackTrace()
         }
         Log.d(logTag, "saved ${image.fileName}")
+        downloading.remove(image)
     }
 
-    private fun loadInputStream(fileName: String): InputStream {
+    private fun loadInputStream(fileName: String, fallback: String): InputStream {
         return if (context.getFileStreamPath(fileName).exists()) {
             FileInputStream(context.getFileStreamPath(fileName))
         } else {
             Log.e(logTag, "Couldn't load $fileName.")
-            context.assets.open("DefaultImage.json")
+            FileInputStream(context.getFileStreamPath(fallback))
+//            context.assets.open("DefaultImage.json")
         }
     }
 

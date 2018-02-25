@@ -17,17 +17,25 @@ import java.util.*
 
 
 class CyclingWallpaperService : WallpaperService() {
-
     private val logTag = "CyclingWallpaperService"
+    private lateinit var imageLoader: ImageLoader
+
+    override fun onCreate() {
+        imageLoader = ImageLoader(this@CyclingWallpaperService)
+        super.onCreate()
+    }
 
     override fun onCreateEngine(): Engine {
         return CyclingWallpaperEngine()
     }
 
     inner class CyclingWallpaperEngine : Engine(), ImageLoadedListener {
+        init {
+            imageLoader.addLoadListener(this)
+        }
+
         private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@CyclingWallpaperService)
 
-        private val imageLoader: ImageLoader = ImageLoader(this@CyclingWallpaperService, this)
         private var imageCollection = prefs.getString(IMAGE_COLLECTION, "")
         private var singleImage = prefs.getString(SINGLE_IMAGE, "")
         private var currentImage = loadInitialImage()
@@ -37,7 +45,7 @@ class CyclingWallpaperService : WallpaperService() {
         var imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, drawRunner.image.width), prefs.getInt(BOTTOM, drawRunner.image.height))
         var screenDimensions = Rect(imageSrc)
         private var screenOffset: Float = 0f
-        private var parallax = prefs.getBoolean(PARALLAX,true)
+        private var parallax = prefs.getBoolean(PARALLAX, true)
         private var scaleFactor = prefs.getFloat(SCALE_FACTOR, 5.3f)
         private var minScaleFactor = 0.1f
 
@@ -58,35 +66,43 @@ class CyclingWallpaperService : WallpaperService() {
         })
 
         private val imageCollectionListener = SharedPreferences.OnSharedPreferenceChangeListener({ preference: SharedPreferences, newValue: Any ->
-            val prefCollectionVal = preference.getString(IMAGE_COLLECTION, imageCollection)
-            val prefImageVal = preference.getString(SINGLE_IMAGE, singleImage)
-            parallax = preference.getBoolean(PARALLAX, parallax)
+//            if (isPreview) {
+                val prefCollectionVal = preference.getString(IMAGE_COLLECTION, imageCollection)
+                val prefImageVal = preference.getString(SINGLE_IMAGE, singleImage)
+                parallax = preference.getBoolean(PARALLAX, parallax)
 
-            if (imageCollection != prefCollectionVal && prefCollectionVal != "") {
-                Log.d(logTag, "Image collection: $imageCollection > $prefCollectionVal")
-                imageCollection = prefCollectionVal
-                singleImage = ""
-                preference.edit().putString(SINGLE_IMAGE, "").apply()
-                changeCollection(imageCollection)
+                imageSrc = Rect(preference.getInt(LEFT, imageSrc.left),
+                        preference.getInt(TOP, imageSrc.top),
+                        preference.getInt(RIGHT, imageSrc.right),
+                        preference.getInt(BOTTOM, imageSrc.bottom))
 
-            } else if (singleImage != prefImageVal && prefImageVal != "") {
-                Log.d(logTag, "Single image: $singleImage > $prefImageVal")
-                singleImage = prefImageVal
-                imageCollection = ""
-                preference.edit().putString(IMAGE_COLLECTION, "").apply()
-                val image = imageLoader.getImageInfoForImage(singleImage)
-                changeImage(image)
-            }
+
+                if (imageCollection != prefCollectionVal && prefCollectionVal != "") {
+                    Log.d(logTag, "Image collection: $imageCollection > $prefCollectionVal for engine $this")
+                    imageCollection = prefCollectionVal
+                    singleImage = ""
+                    preference.edit().putString(SINGLE_IMAGE, "").apply()
+                    changeCollection(imageCollection)
+
+                } else if (singleImage != prefImageVal && prefImageVal != "") {
+                    Log.d(logTag, "Single image: $singleImage > $prefImageVal for engine $this")
+                    singleImage = prefImageVal
+                    imageCollection = ""
+                    preference.edit().putString(IMAGE_COLLECTION, "").apply()
+                    val image = imageLoader.getImageInfoForImage(singleImage)
+                    changeImage(image)
+                }
+//            }
         })
 
-        private val timeReceiver = object : BroadcastReceiver(){
+        private val timeReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-                if (lastHourChecked != hour){
+                if (lastHourChecked != hour) {
                     Log.d(logTag, "Hour passed ($lastHourChecked > $hour). Assessing possible image change")
                     lastHourChecked = hour
                     prefs.edit().putInt(LAST_HOUR_CHECKED, lastHourChecked).apply()
-                    if (imageCollection != ""){
+                    if (imageCollection != "") {
                         changeCollection(imageCollection)
                     }
                 }
@@ -97,8 +113,8 @@ class CyclingWallpaperService : WallpaperService() {
             drawRunner.startDrawing()
         }
 
-        private fun loadInitialImage() : ImageInfo{
-            if (imageCollection != ""){
+        private fun loadInitialImage(): ImageInfo {
+            if (imageCollection != "") {
                 return imageLoader.getImageInfoForCollection(imageCollection)
             } else if (singleImage != "") {
                 return imageLoader.getImageInfoForImage(singleImage)
@@ -113,16 +129,17 @@ class CyclingWallpaperService : WallpaperService() {
 
         private fun changeImage(image: ImageInfo, force: Boolean = false) {
             if (image != currentImage || force) {
-                Log.d(logTag, "Changing from ${currentImage.name} to ${image.fileName}")
+                Log.d(logTag, "Changing from ${currentImage.name} to ${image.name}. (Force = $force)")
+                val previousImage = currentImage
                 currentImage = image
                 drawRunner.stop()
-                drawRunner = PaletteDrawer(this, imageLoader.loadImage(image))
+                drawRunner = PaletteDrawer(this, imageLoader.loadImage(image, previousImage))
                 determineMinScaleFactor()
                 drawRunner.startDrawing()
             }
         }
 
-        override fun imageLoadComplete(image: ImageInfo){
+        override fun imageLoadComplete(image: ImageInfo) {
             changeImage(image, true)
         }
 
@@ -135,6 +152,8 @@ class CyclingWallpaperService : WallpaperService() {
         override fun onDestroy() {
             super.onDestroy()
             unregisterReceiver(timeReceiver)
+            PreferenceManager.getDefaultSharedPreferences(applicationContext).unregisterOnSharedPreferenceChangeListener(imageCollectionListener)
+            drawRunner.stop()
         }
 
         override fun onTouchEvent(event: MotionEvent?) {
@@ -152,7 +171,12 @@ class CyclingWallpaperService : WallpaperService() {
 
         override fun onSurfaceDestroyed(holder: SurfaceHolder?) {
             super.onSurfaceDestroyed(holder)
-            drawRunner.setVisible(false)
+            drawRunner.stop()
+        }
+
+        override fun onSurfaceCreated(holder: SurfaceHolder?) {
+            super.onSurfaceCreated(holder)
+            drawRunner.startDrawing()
         }
 
         override fun onSurfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
@@ -172,7 +196,7 @@ class CyclingWallpaperService : WallpaperService() {
             drawRunner.drawNow()
         }
 
-        fun getOffsetImage() : Rect {
+        fun getOffsetImage(): Rect {
             if (parallax && !isPreview) {
                 val totalPossibleOffset = drawRunner.image.width - imageSrc.width()
                 val offsetPixels = totalPossibleOffset * screenOffset
@@ -213,7 +237,7 @@ class CyclingWallpaperService : WallpaperService() {
             minScaleFactor = Math.max(w, h)
         }
 
-        private fun clamp(value: Float, min: Float, max: Float) : Float{
+        private fun clamp(value: Float, min: Float, max: Float): Float {
             return Math.min(Math.max(value, min), max)
         }
 

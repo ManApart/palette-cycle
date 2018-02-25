@@ -1,10 +1,8 @@
 package rak.pixellwp.cycling.jsonLoading
 
-import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
 import rak.pixellwp.cycling.jsonModels.ImageInfo
-import java.io.OutputStreamWriter
 import java.net.URL
 
 
