@@ -15,7 +15,6 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
     private val logTag = "ImageLoader"
     private val collection: List<ImageCollection> = loadCollection()
     private val images: List<ImageInfo> = loadImages()
-    private val defaultImage = ImageInfo("DefaultImage", "none", 0)
     private val downloading: MutableList<ImageInfo> = mutableListOf()
     private val loadListeners: MutableList<ImageLoadedListener> = mutableListOf()
 
@@ -50,18 +49,18 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         Log.d(logTag, "grabbing image info for $collectionName at hour $hour")
         val info = imageCollection.images
-                .filter { it.startHour > hour }
-                .sortedBy { it.startHour }
+                .filter { it.startHour < hour }
+                .sortedByDescending { it.startHour }
                 .firstOrNull()
                 ?: imageCollection.images
-                        .sortedBy { it.startHour }
+                        .sortedByDescending { it.startHour }
                         .last()
 
         Log.d(logTag, "grabbed ${info.name} with hour ${info.startHour}")
         return info
     }
 
-    fun loadImage(image: ImageInfo = defaultImage): ColorCyclingImage {
+    fun loadImage(image: ImageInfo): ColorCyclingImage {
         val json: String = readJson(loadInputStream(image.fileName))
         Log.d(logTag, "load json: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
         return ColorCyclingImage(parseJson(json))

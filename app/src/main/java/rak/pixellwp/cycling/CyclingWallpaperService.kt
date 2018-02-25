@@ -2,7 +2,6 @@ package rak.pixellwp.cycling
 
 import android.content.*
 import android.graphics.Rect
-import android.os.Bundle
 import android.preference.PreferenceManager
 import android.service.wallpaper.WallpaperService
 import android.support.v4.view.GestureDetectorCompat
@@ -39,9 +38,10 @@ class CyclingWallpaperService : WallpaperService() {
 
         private var imageCollection = prefs.getString(IMAGE_COLLECTION, "")
         private var singleImage = prefs.getString(SINGLE_IMAGE, "")
-        private var currentImage = loadInitialImage()
+        private val defaultImage = ImageInfo("DefaultImage", "none", 0)
+        private var currentImage = defaultImage
 
-        private var drawRunner = PaletteDrawer(this, imageLoader.loadImage(currentImage))
+        private var drawRunner = PaletteDrawer(this, imageLoader.loadImage(defaultImage))
 
         var imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, drawRunner.image.width), prefs.getInt(BOTTOM, drawRunner.image.height))
         var screenDimensions = Rect(imageSrc)
@@ -111,6 +111,7 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         init {
+            changeImage(loadInitialImage())
             drawRunner.startDrawing()
         }
 
@@ -120,7 +121,7 @@ class CyclingWallpaperService : WallpaperService() {
             } else if (singleImage != "") {
                 return imageLoader.getImageInfoForImage(singleImage)
             }
-            return imageLoader.getImageInfoForCollection("Seascape")
+            throw IllegalArgumentException("No default image to load")
         }
 
         private fun changeCollection(collectionName: String) {

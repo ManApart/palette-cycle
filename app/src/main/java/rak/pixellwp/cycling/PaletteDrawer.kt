@@ -55,15 +55,15 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
 
     private fun draw() {
         val timePassed = Math.floor((Date().time - startTime).toDouble()).toInt()
-        image.advance(timePassed)
+        image?.advance(timePassed)
         drawFrame(engine.surfaceHolder, engine.getOffsetImage(), engine.screenDimensions)
     }
 
     private fun drawFrame(surfaceHolder: SurfaceHolder, imageSrc: Rect, screenDimensions: Rect) {
         val canvas = surfaceHolder.lockCanvas()
         if (canvas == null) {
-            Log.e(logTag, "Can't lock canvas; killing this drawer")
-            stop()
+//            Log.e(logTag, "Can't lock canvas; killing this drawer")
+//            stop()
         } else if (image != null) {
             canvas.drawBitmap(image.getBitmap(), imageSrc, screenDimensions, null)
             surfaceHolder.unlockCanvasAndPost(canvas)

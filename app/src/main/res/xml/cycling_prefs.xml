@@ -5,7 +5,8 @@
         android:title="Image Collection"
         android:entries="@array/ImageCollections"
         android:entryValues="@array/ImageCollections"
-        android:summary="Choose an image that will react to the time of day"/>
+        android:summary="Choose an image that will react to the time of day"
+        android:defaultValue="Seascape"/>
     <rak.pixellwp.cycling.ImagePreference
         android:key="singleImage"
         android:title="Single Image"
