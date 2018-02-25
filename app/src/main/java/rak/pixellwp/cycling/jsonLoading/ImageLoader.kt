@@ -11,8 +11,7 @@ import rak.pixellwp.cycling.jsonModels.*
 import java.io.*
 import java.util.*
 
-
-class ImageLoader(private val context: Context, private val listener: JsonDownloadListener) {
+class ImageLoader(private val context: Context, private val loadListener: ImageLoadedListener) : JsonDownloadListener {
     private val logTag = "ImageLoader"
 
     private val collection: List<ImageCollection> = loadCollection()
@@ -26,6 +25,11 @@ class ImageLoader(private val context: Context, private val listener: JsonDownlo
     private fun loadImages(): List<ImageInfo> {
         val json = context.assets.open("Images.json")
         return jacksonObjectMapper().readValue(json)
+    }
+
+    override fun downloadComplete(image: ImageInfo, json: String) {
+        saveImage(image, json)
+        loadListener.imageLoadComplete(image)
     }
 
     fun getImageInfoForImage(imageId: String): ImageInfo {
@@ -59,9 +63,21 @@ class ImageLoader(private val context: Context, private val listener: JsonDownlo
     private fun startDownloadingMissingFile(image: ImageInfo) {
         if (!context.getFileStreamPath(image.fileName).exists()) {
             Log.d(logTag, "Unable to find ${image.fileName} locally, downloading using id ${image.id}")
-            JsonDownloader(image, context, listener).execute()
+            JsonDownloader(image, this).execute()
             Toast.makeText(context, "Unable to find ${image.fileName} locally. I'll change the image as soon as it's downloaded", Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun saveImage(image: ImageInfo, json: String){
+        try {
+            val stream = OutputStreamWriter(context.openFileOutput(image.fileName, Context.MODE_PRIVATE))
+            stream.write(json)
+            stream.close()
+        } catch (e: Exception){
+            Log.e(logTag, "Unable to save image")
+            e.printStackTrace()
+        }
+        Log.d(logTag, "saved ${image.fileName}")
     }
 
     private fun loadInputStream(fileName: String): InputStream {

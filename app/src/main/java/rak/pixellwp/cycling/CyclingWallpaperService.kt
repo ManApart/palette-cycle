@@ -10,8 +10,8 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.SurfaceHolder
+import rak.pixellwp.cycling.jsonLoading.ImageLoadedListener
 import rak.pixellwp.cycling.jsonLoading.ImageLoader
-import rak.pixellwp.cycling.jsonLoading.JsonDownloadListener
 import rak.pixellwp.cycling.jsonModels.ImageInfo
 import java.util.*
 
@@ -24,10 +24,10 @@ class CyclingWallpaperService : WallpaperService() {
         return CyclingWallpaperEngine()
     }
 
-    inner class CyclingWallpaperEngine : Engine(), JsonDownloadListener {
+    inner class CyclingWallpaperEngine : Engine(), ImageLoadedListener {
         private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@CyclingWallpaperService)
 
-        private val imageLoader: ImageLoader = ImageLoader(this@CyclingWallpaperService, this@CyclingWallpaperEngine)
+        private val imageLoader: ImageLoader = ImageLoader(this@CyclingWallpaperService, this)
         private var imageCollection = prefs.getString(IMAGE_COLLECTION, "")
         private var singleImage = prefs.getString(SINGLE_IMAGE, "")
         private var currentImage = loadInitialImage()
@@ -91,15 +91,10 @@ class CyclingWallpaperService : WallpaperService() {
                     }
                 }
             }
-
         }
 
         init {
             drawRunner.startDrawing()
-        }
-
-        override fun downloadComplete(image: ImageInfo) {
-            changeImage(image, true)
         }
 
         private fun loadInitialImage() : ImageInfo{
@@ -125,6 +120,10 @@ class CyclingWallpaperService : WallpaperService() {
                 determineMinScaleFactor()
                 drawRunner.startDrawing()
             }
+        }
+
+        override fun imageLoadComplete(image: ImageInfo){
+            changeImage(image, true)
         }
 
         override fun onCreate(surfaceHolder: SurfaceHolder?) {
