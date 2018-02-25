@@ -10,6 +10,7 @@ import java.net.URL
 
 class JsonDownloader(private val image: ImageInfo, private val context: Context, private val listener: JsonDownloadListener) : AsyncTask<String, Void, String>() {
     private val baseUrl = "http://www.effectgames.com/demos/canvascycle/image.php?file="
+    private val logTag = "JsonDownloader"
     override fun doInBackground(vararg params: String?): String {
         return downloadImage()
     }
@@ -25,7 +26,7 @@ class JsonDownloader(private val image: ImageInfo, private val context: Context,
             inputStream.close()
             return json
         } catch (e: Exception){
-            Log.e("Image Loader", "Unable to download image from ${baseUrl + image.id}")
+            Log.e(logTag, "Unable to download image from ${baseUrl + image.id}")
             e.printStackTrace()
         }
         return json
@@ -48,10 +49,10 @@ class JsonDownloader(private val image: ImageInfo, private val context: Context,
             stream.write(json)
             stream.close()
         } catch (e: Exception){
-            Log.e("Image Loader", "Unable to save image")
+            Log.e(logTag, "Unable to save image")
             e.printStackTrace()
         }
-        Log.d("Image Loader", "saved json from ${baseUrl + image.id} to ${image.fileName}: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
+        Log.d(logTag, "saved json from ${baseUrl + image.id} to ${image.fileName}: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
         listener.downloadComplete(image)
     }
 }

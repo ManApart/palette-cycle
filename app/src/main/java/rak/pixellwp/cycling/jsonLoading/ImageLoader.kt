@@ -13,6 +13,8 @@ import java.util.*
 
 
 class ImageLoader(private val context: Context, private val listener: JsonDownloadListener) {
+    private val logTag = "ImageLoader"
+
     private val collection: List<ImageCollection> = loadCollection()
     private val images: List<ImageInfo> = loadImages()
 
@@ -27,14 +29,14 @@ class ImageLoader(private val context: Context, private val listener: JsonDownlo
     }
 
     fun getImageInfoForImage(imageId: String): ImageInfo {
-        Log.d("Image Loader", "grabbing image info for $imageId")
+        Log.d(logTag, "grabbing image info for $imageId")
         return images.first { it.id == imageId }
     }
 
     fun getImageInfoForCollection(collectionName: String): ImageInfo {
         val imageCollection = collection.first { it.name == collectionName }
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-        Log.d("Image Loader", "grabbing image info for $collectionName at hour $hour")
+        Log.d(logTag, "grabbing image info for $collectionName at hour $hour")
         val info = imageCollection.images
                 .filter { it.startHour > hour }
                 .sortedBy { it.startHour }
@@ -43,20 +45,20 @@ class ImageLoader(private val context: Context, private val listener: JsonDownlo
                         .sortedBy { it.startHour }
                         .last()
 
-        Log.d("Image Loader", "grabbed ${info.name} with hour ${info.startHour}")
+        Log.d(logTag, "grabbed ${info.name} with hour ${info.startHour}")
         return info
     }
 
     fun loadImage(image: ImageInfo): ColorCyclingImage {
         startDownloadingMissingFile(image)
         val json: String = readJson(loadInputStream(image.fileName))
-        Log.d("Image Loader", "load json: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
+        Log.d(logTag, "load json: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
         return ColorCyclingImage(parseJson(json))
     }
 
     private fun startDownloadingMissingFile(image: ImageInfo) {
         if (!context.getFileStreamPath(image.fileName).exists()) {
-            Log.d("Image Loader", "Unable to find ${image.fileName} locally, downloading using id ${image.id}")
+            Log.d(logTag, "Unable to find ${image.fileName} locally, downloading using id ${image.id}")
             JsonDownloader(image, context, listener).execute()
             Toast.makeText(context, "Unable to find ${image.fileName} locally. I'll change the image as soon as it's downloaded", Toast.LENGTH_LONG).show()
         }
@@ -66,7 +68,7 @@ class ImageLoader(private val context: Context, private val listener: JsonDownlo
         return if (context.getFileStreamPath(fileName).exists()) {
             FileInputStream(context.getFileStreamPath(fileName))
         } else {
-            Log.e("ImageLoader", "Couldn't load $fileName.")
+            Log.e(logTag, "Couldn't load $fileName.")
             context.assets.open("DefaultImage.json")
         }
     }

@@ -18,6 +18,8 @@ import java.util.*
 
 class CyclingWallpaperService : WallpaperService() {
 
+    private val logTag = "CyclingWallpaperService"
+
     override fun onCreateEngine(): Engine {
         return CyclingWallpaperEngine()
     }
@@ -61,14 +63,14 @@ class CyclingWallpaperService : WallpaperService() {
             parallax = preference.getBoolean(PARALLAX, parallax)
 
             if (imageCollection != prefCollectionVal && prefCollectionVal != "") {
-                Log.d("RAK", "Image collection: $imageCollection > $prefCollectionVal")
+                Log.d(logTag, "Image collection: $imageCollection > $prefCollectionVal")
                 imageCollection = prefCollectionVal
                 singleImage = ""
                 preference.edit().putString(SINGLE_IMAGE, "").apply()
                 changeCollection(imageCollection)
 
             } else if (singleImage != prefImageVal && prefImageVal != "") {
-                Log.d("RAK", "Single image: $singleImage > $prefImageVal")
+                Log.d(logTag, "Single image: $singleImage > $prefImageVal")
                 singleImage = prefImageVal
                 imageCollection = ""
                 preference.edit().putString(IMAGE_COLLECTION, "").apply()
@@ -81,7 +83,7 @@ class CyclingWallpaperService : WallpaperService() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
                 if (lastHourChecked != hour){
-                    Log.d("Time Checker", "Hour passed ($lastHourChecked > $hour). Assessing possible image change")
+                    Log.d(logTag, "Hour passed ($lastHourChecked > $hour). Assessing possible image change")
                     lastHourChecked = hour
                     prefs.edit().putInt(LAST_HOUR_CHECKED, lastHourChecked).apply()
                     if (imageCollection != ""){
@@ -116,7 +118,7 @@ class CyclingWallpaperService : WallpaperService() {
 
         private fun changeImage(image: ImageInfo, force: Boolean = false) {
             if (image != currentImage || force) {
-                Log.d("Engine", "Changing from ${currentImage.name} to ${image.fileName}")
+                Log.d(logTag, "Changing from ${currentImage.name} to ${image.fileName}")
                 currentImage = image
                 drawRunner.stop()
                 drawRunner = PaletteDrawer(this, imageLoader.loadImage(image))
