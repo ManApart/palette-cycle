@@ -61,23 +61,24 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
         return info
     }
 
-    fun loadImage(image: ImageInfo, fallback: ImageInfo = defaultImage): ColorCyclingImage {
-        startDownloadingMissingFile(image)
-        val json: String = readJson(loadInputStream(image.fileName, fallback.fileName))
+    fun loadImage(image: ImageInfo = defaultImage): ColorCyclingImage {
+        val json: String = readJson(loadInputStream(image.fileName))
         Log.d(logTag, "load json: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
         return ColorCyclingImage(parseJson(json))
     }
 
-    private fun startDownloadingMissingFile(image: ImageInfo) {
-        if (!context.getFileStreamPath(image.fileName).exists()) {
-            if (downloading.contains(image)){
-                Log.d(logTag, "Still attempting to download ${image.fileName}")
-            } else {
-                Log.d(logTag, "Unable to find ${image.fileName} locally, downloading using id ${image.id}")
-                downloading.add(image)
-                JsonDownloader(image, this).execute()
-                Toast.makeText(context, "Unable to find ${image.fileName} locally. I'll change the image as soon as it's downloaded", Toast.LENGTH_LONG).show()
-            }
+    fun imageIsReady(image: ImageInfo) : Boolean {
+        return context.getFileStreamPath(image.fileName).exists()
+    }
+
+    fun downloadImage(image: ImageInfo) {
+        if (downloading.contains(image)) {
+            Log.d(logTag, "Still attempting to download ${image.fileName}")
+        } else {
+            Log.d(logTag, "Unable to find ${image.fileName} locally, downloading using id ${image.id}")
+            downloading.add(image)
+            JsonDownloader(image, this).execute()
+            Toast.makeText(context, "Unable to find ${image.fileName} locally. I'll change the image as soon as it's downloaded", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -94,13 +95,12 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
         downloading.remove(image)
     }
 
-    private fun loadInputStream(fileName: String, fallback: String): InputStream {
+    private fun loadInputStream(fileName: String): InputStream {
         return if (context.getFileStreamPath(fileName).exists()) {
             FileInputStream(context.getFileStreamPath(fileName))
         } else {
             Log.e(logTag, "Couldn't load $fileName.")
-            FileInputStream(context.getFileStreamPath(fallback))
-//            context.assets.open("DefaultImage.json")
+            context.assets.open("DefaultImage.json")
         }
     }
 

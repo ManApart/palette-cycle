@@ -2,6 +2,7 @@ package rak.pixellwp.cycling
 
 import android.content.*
 import android.graphics.Rect
+import android.os.Bundle
 import android.preference.PreferenceManager
 import android.service.wallpaper.WallpaperService
 import android.support.v4.view.GestureDetectorCompat
@@ -66,7 +67,7 @@ class CyclingWallpaperService : WallpaperService() {
         })
 
         private val imageCollectionListener = SharedPreferences.OnSharedPreferenceChangeListener({ preference: SharedPreferences, newValue: Any ->
-//            if (isPreview) {
+            if (isPreview) {
                 val prefCollectionVal = preference.getString(IMAGE_COLLECTION, imageCollection)
                 val prefImageVal = preference.getString(SINGLE_IMAGE, singleImage)
                 parallax = preference.getBoolean(PARALLAX, parallax)
@@ -92,7 +93,7 @@ class CyclingWallpaperService : WallpaperService() {
                     val image = imageLoader.getImageInfoForImage(singleImage)
                     changeImage(image)
                 }
-//            }
+            }
         })
 
         private val timeReceiver = object : BroadcastReceiver() {
@@ -127,20 +128,25 @@ class CyclingWallpaperService : WallpaperService() {
             changeImage(image)
         }
 
-        private fun changeImage(image: ImageInfo, force: Boolean = false) {
-            if (image != currentImage || force) {
-                Log.d(logTag, "Changing from ${currentImage.name} to ${image.name}. (Force = $force)")
-                val previousImage = currentImage
-                currentImage = image
-                drawRunner.stop()
-                drawRunner = PaletteDrawer(this, imageLoader.loadImage(image, previousImage))
-                determineMinScaleFactor()
-                drawRunner.startDrawing()
+        private fun changeImage(image: ImageInfo) {
+            if (image != currentImage) {
+                Log.d(logTag, "Changing from ${currentImage.name} to ${image.name}.")
+                if (imageLoader.imageIsReady(image)){
+                    currentImage = image
+                    drawRunner.stop()
+                    drawRunner = PaletteDrawer(this, imageLoader.loadImage(image))
+                    determineMinScaleFactor()
+                    drawRunner.startDrawing()
+                } else {
+                    imageLoader.downloadImage(image)
+                }
             }
         }
 
         override fun imageLoadComplete(image: ImageInfo) {
-            changeImage(image, true)
+            if (isPreview){
+                changeImage(image)
+            }
         }
 
         override fun onCreate(surfaceHolder: SurfaceHolder?) {
@@ -166,7 +172,32 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         override fun onVisibilityChanged(visible: Boolean) {
+            if (visible && !isPreview){
+                reloadPrefs()
+            }
             drawRunner.setVisible(visible)
+        }
+
+        private fun reloadPrefs() {
+            Log.i(logTag, "reload prefs: img= $singleImage")
+            val prefCollectionVal = prefs.getString(IMAGE_COLLECTION, "")
+            val prefImageVal = prefs.getString(SINGLE_IMAGE, "")
+            parallax = prefs.getBoolean(PARALLAX, parallax)
+
+            imageSrc = Rect(prefs.getInt(LEFT, imageSrc.left),
+                    prefs.getInt(TOP, imageSrc.top),
+                    prefs.getInt(RIGHT, imageSrc.right),
+                    prefs.getInt(BOTTOM, imageSrc.bottom))
+
+            imageCollection = prefCollectionVal
+            singleImage = prefImageVal
+
+            if (prefCollectionVal != ""){
+                changeCollection(imageCollection)
+            } else if (prefImageVal != ""){
+                val image = imageLoader.getImageInfoForImage(singleImage)
+                changeImage(image)
+            }
         }
 
         override fun onSurfaceDestroyed(holder: SurfaceHolder?) {
