@@ -10,7 +10,7 @@
       {
         "name": "Seascape",
         "id": "V29",
-        "startHour": "12"
+        "startHour": "10"
       },
       {
         "name": "SeascapePM",
@@ -30,17 +30,17 @@
       {
         "name": "Waterfall",
         "id": "V08",
-        "startHour": "12"
+        "startHour": "11"
       },
       {
         "name": "WaterfallRain",
         "id": "V08RAIN",
-        "startHour": "18"
+        "startHour": "16"
       },
       {
         "name": "WaterfallPM",
         "id": "V08PM",
-        "startHour": "21"
+        "startHour": "18"
       }
     ]
   },
@@ -53,13 +53,13 @@
         "startHour": "6"
       },
       {
-        "name": "MirrorPondPM",
-        "id": "V16PM",
-        "startHour": "12"
-      },
-      {
         "name": "MirrorPondRain",
         "id": "V16RAIN",
+        "startHour": "15"
+      },
+      {
+        "name": "MirrorPondPM",
+        "id": "V16PM",
         "startHour": "18"
       }
     ]
@@ -80,7 +80,7 @@
       {
         "name": "MountainStreamAURA",
         "id": "V19AURA",
-        "startHour": "18"
+        "startHour": "21"
       }
     ]
   }
