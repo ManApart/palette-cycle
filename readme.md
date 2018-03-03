@@ -8,7 +8,7 @@
 
 Internal storage path: data/data/rak.pixellwp/files
 Internal storage path: data/data/rak.pixellwp/app_logs
-External storage path: An
+External storage path: Android/data/rak.pixellwp/files
 
 
 **ID Table**
