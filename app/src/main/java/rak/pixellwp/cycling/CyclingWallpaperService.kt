@@ -138,6 +138,7 @@ class CyclingWallpaperService : WallpaperService() {
                     drawRunner = PaletteDrawer(this, imageLoader.loadImage(image))
                     determineMinScaleFactor()
                     drawRunner.startDrawing()
+
                 } else {
                     imageLoader.downloadImage(image)
                 }
@@ -176,7 +177,9 @@ class CyclingWallpaperService : WallpaperService() {
             if (visible && !isPreview){
                 reloadPrefs()
             }
-            drawRunner.setVisible(visible)
+            if (!isPreview){
+                drawRunner.setVisible(visible)
+            }
         }
 
         private fun reloadPrefs() {

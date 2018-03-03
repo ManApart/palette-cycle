@@ -62,7 +62,6 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
 
     fun loadImage(image: ImageInfo): ColorCyclingImage {
         val json: String = readJson(loadInputStream(image.fileName))
-        Log.d(logTag, "load json: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
         return ColorCyclingImage(parseJson(json))
     }
 
