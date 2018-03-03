@@ -10,3 +10,4 @@
 .idea/
 gradle/
 *.zip
+logs/

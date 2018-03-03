@@ -23,8 +23,9 @@ class PixelLwpApp : Application() {
 
     }
 
+
     private fun startLogging() {
-        val logFileName = "log-${System.currentTimeMillis()}"
+        val logFileName = "log-${System.currentTimeMillis()}.txt"
         Log.d(logTag, "logging to file $logFileName")
 
         try {

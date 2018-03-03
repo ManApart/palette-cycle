@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Palette Cycling LWP</string>
     <string name="wallpaper_description">Palette Cycling Pixel Art Wallpaper</string>
+    <string name="bugReportButtonId">Get Logs</string>
+    <string name="bugReportButtonTitle">Get Logs</string>
     <string name="credits">App by Austin Kucera \nArt by Mark Ferrari \nOriginal code (and BlendShift Technology) by Joseph Huckaby</string>
 </resources>

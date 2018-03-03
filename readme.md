@@ -1,7 +1,17 @@
 **TODO**
 * Make default image palette shiftable?
 * Thread leaks, performance, bugs?
+* Extract log logic to a log manager
+* Reduce log size
+* Fix surface lock by changing picture but not entire palette drawer?
+* Am I double logging?
 
+Internal storage path: data/data/rak.pixellwp/files
+Internal storage path: data/data/rak.pixellwp/app_logs
+External storage path: An
+
+
+**ID Table**
  | id  | name |
  |  ---  |  ---  |
  |  CORAL  |  Aquarius - Day  |
