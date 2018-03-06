@@ -43,7 +43,7 @@ class CyclingWallpaperService : WallpaperService() {
 
         private var drawRunner = PaletteDrawer(this, imageLoader.loadImage(defaultImage))
 
-        var imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, drawRunner.image.width), prefs.getInt(BOTTOM, drawRunner.image.height))
+        private var imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, drawRunner.image.width), prefs.getInt(BOTTOM, drawRunner.image.height))
         var screenDimensions = Rect(imageSrc)
         private var screenOffset: Float = 0f
         private var parallax = prefs.getBoolean(PARALLAX, true)
@@ -120,8 +120,9 @@ class CyclingWallpaperService : WallpaperService() {
                 return imageLoader.getImageInfoForCollection(imageCollection)
             } else if (singleImage != "") {
                 return imageLoader.getImageInfoForImage(singleImage)
+            } else {
+                return defaultImage
             }
-            throw IllegalArgumentException("No default image to load")
         }
 
         private fun changeCollection(collectionName: String) {

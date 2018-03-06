@@ -13,7 +13,8 @@
         android:summary="Choose a single image that won't change"/>
     <CheckBoxPreference
         android:key="parallax"
-        android:title="Enable Parallax"/>
+        android:title="Enable Parallax"
+        android:defaultValue="true"/>
     <Preference
         android:key="@string/bugReportButtonId"
         android:title="@string/bugReportButtonTitle"
