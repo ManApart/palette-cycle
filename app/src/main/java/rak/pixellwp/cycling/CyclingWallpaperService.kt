@@ -112,6 +112,7 @@ class CyclingWallpaperService : WallpaperService() {
 
         init {
             changeImage(loadInitialImage())
+            downloadFirstTimeImage()
             drawRunner.startDrawing()
         }
 
@@ -122,6 +123,12 @@ class CyclingWallpaperService : WallpaperService() {
                 return imageLoader.getImageInfoForImage(singleImage)
             } else {
                 return defaultImage
+            }
+        }
+
+        private fun downloadFirstTimeImage() {
+            if (imageCollection != "" && singleImage != "") {
+                changeCollection("Waterfall")
             }
         }
 
@@ -217,12 +224,13 @@ class CyclingWallpaperService : WallpaperService() {
 
         override fun onSurfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
             screenDimensions = Rect(0, 0, width, height)
-            if (orientationHasChanged(width, height)) {
-                val right = imageSrc.left + imageSrc.height()
-                val bottom = imageSrc.top + imageSrc.width()
-                imageSrc = Rect(imageSrc.left, imageSrc.top, right, bottom)
-            }
             determineMinScaleFactor()
+            if (orientationHasChanged(width, height)) {
+//                val right = imageSrc.left + imageSrc.height()
+//                val bottom = imageSrc.top + imageSrc.width()
+//                imageSrc = Rect(imageSrc.left, imageSrc.top, right, bottom)
+                adjustImageSrc(0f, 0f)
+            }
             super.onSurfaceChanged(holder, format, width, height)
         }
 
