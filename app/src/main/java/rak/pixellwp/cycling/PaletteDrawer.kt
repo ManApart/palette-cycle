@@ -10,7 +10,7 @@ import java.util.*
 class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaperEngine, val image: ColorCyclingImage) {
     private val logTag = "PaletteDrawer"
     private val handlerThread = HandlerThread("drawThread")
-    private val id = System.currentTimeMillis()
+    val id = System.currentTimeMillis()
 
     init {
         Log.d(logTag, "Creating drawer with id $id")
@@ -30,8 +30,8 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
     fun drawNow() {
         try {
             handler.post(runner)
-        } catch (e: Exception){
-            Log.e(logTag, "Failed to post, killing drawer")
+        } catch (e: Throwable){
+            Log.e(logTag, "Failed to post, killing drawer + $id")
             Log.e(logTag, e.toString())
             stop()
         }
@@ -70,7 +70,7 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
             try {
                 val canvas = surfaceHolder.lockCanvas()
                 if (canvas == null) {
-                    Log.e(logTag, "Can't lock canvas; killing this drawer")
+                    Log.e(logTag, "Can't lock canvas; killing drawer + $id")
                     stop()
                 } else {
                     if (image != null) {
@@ -79,7 +79,7 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
                     surfaceHolder.unlockCanvasAndPost(canvas)
                 }
             } catch (e: Exception) {
-                Log.e(logTag, "failed to draw frame")
+                Log.e(logTag, "failed to draw frame, id: $id")
                 Log.e(logTag, e.toString())
             }
             stopDrawing()

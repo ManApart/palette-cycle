@@ -35,12 +35,13 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
                 loadListener.imageLoadComplete(image)
             }
         } else {
-            Log.d(logTag, "${image.name} failed to download a proper json file.")
+            Log.d(logTag, "${image.name} failed to download a proper json file: ${if (json.length >= 100) json.substring(0, 100) else json}")
+            Toast.makeText(context, "${image.name} failed to download. Please try again.", Toast.LENGTH_LONG).show()
         }
     }
 
     private fun jsonIsValid(json: String): Boolean {
-        return json.length > 100
+        return json.length > 100 && json.startsWith("{filename") && json.endsWith("]}")
     }
 
     fun addLoadListener(loadListener: ImageLoadedListener) {

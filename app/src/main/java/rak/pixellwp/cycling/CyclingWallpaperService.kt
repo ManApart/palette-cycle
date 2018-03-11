@@ -180,16 +180,14 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         override fun onVisibilityChanged(visible: Boolean) {
-//            if (visible && !isPreview) {
-                reloadPrefs()
-//            }
+            reloadPrefs()
             if (!isPreview) {
                 drawRunner.setVisible(visible)
             }
         }
 
         private fun reloadPrefs() {
-            Log.i(logTag, "reload prefs: img= $singleImage")
+            Log.i(logTag, "reload prefs: img= $singleImage, drawer: ${drawRunner.id}")
             val prefCollectionVal = prefs.getString(IMAGE_COLLECTION, "")
             val prefImageVal = prefs.getString(SINGLE_IMAGE, "")
             parallax = prefs.getBoolean(PARALLAX, parallax)
