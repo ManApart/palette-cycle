@@ -127,7 +127,7 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         private fun downloadFirstTimeImage() {
-            if (imageCollection != "" && singleImage != "") {
+            if (imageCollection == "" && singleImage == "") {
                 changeCollection("Waterfall")
             }
         }
@@ -140,7 +140,7 @@ class CyclingWallpaperService : WallpaperService() {
         private fun changeImage(image: ImageInfo) {
             if (image != currentImage) {
                 Log.d(logTag, "Changing from ${currentImage.name} to ${image.name}.")
-                if (imageLoader.imageIsReady(image)){
+                if (imageLoader.imageIsReady(image)) {
                     currentImage = image
                     drawRunner.stop()
                     drawRunner = PaletteDrawer(this, imageLoader.loadImage(image))
@@ -154,9 +154,7 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         override fun imageLoadComplete(image: ImageInfo) {
-            if (isPreview){
-                changeImage(image)
-            }
+            changeImage(image)
         }
 
         override fun onCreate(surfaceHolder: SurfaceHolder?) {
@@ -182,10 +180,10 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         override fun onVisibilityChanged(visible: Boolean) {
-            if (visible && !isPreview){
+//            if (visible && !isPreview) {
                 reloadPrefs()
-            }
-            if (!isPreview){
+//            }
+            if (!isPreview) {
                 drawRunner.setVisible(visible)
             }
         }
@@ -204,9 +202,9 @@ class CyclingWallpaperService : WallpaperService() {
             imageCollection = prefCollectionVal
             singleImage = prefImageVal
 
-            if (prefCollectionVal != ""){
+            if (prefCollectionVal != "") {
                 changeCollection(imageCollection)
-            } else if (prefImageVal != ""){
+            } else if (prefImageVal != "") {
                 val image = imageLoader.getImageInfoForImage(singleImage)
                 changeImage(image)
             }
@@ -226,9 +224,6 @@ class CyclingWallpaperService : WallpaperService() {
             screenDimensions = Rect(0, 0, width, height)
             determineMinScaleFactor()
             if (orientationHasChanged(width, height)) {
-//                val right = imageSrc.left + imageSrc.height()
-//                val bottom = imageSrc.top + imageSrc.width()
-//                imageSrc = Rect(imageSrc.left, imageSrc.top, right, bottom)
                 adjustImageSrc(0f, 0f)
             }
             super.onSurfaceChanged(holder, format, width, height)

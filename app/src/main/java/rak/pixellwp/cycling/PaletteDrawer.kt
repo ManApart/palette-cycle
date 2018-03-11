@@ -24,7 +24,17 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
     private var visible = true
 
     fun startDrawing() {
-        handler.post(runner)
+        drawNow()
+    }
+
+    fun drawNow() {
+        try {
+            handler.post(runner)
+        } catch (e: Exception){
+            Log.e(logTag, "Failed to post, killing drawer")
+            Log.e(logTag, e.toString())
+            stop()
+        }
     }
 
     fun stop() {
@@ -39,10 +49,6 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
         } else {
             stopDrawing()
         }
-    }
-
-    fun drawNow() {
-        handler.post(runner)
     }
 
     private fun drawAfterDelay(delay: Long) {
@@ -61,15 +67,20 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
 
     private fun drawFrame(surfaceHolder: SurfaceHolder, imageSrc: Rect, screenDimensions: Rect) {
         if (visible && !surfaceHolder.isCreating) {
-            val canvas = surfaceHolder.lockCanvas()
-            if (canvas == null) {
-                Log.e(logTag, "Can't lock canvas; killing this drawer")
-                stop()
-            } else {
-                if (image != null) {
-                    canvas.drawBitmap(image.getBitmap(), imageSrc, screenDimensions, null)
+            try {
+                val canvas = surfaceHolder.lockCanvas()
+                if (canvas == null) {
+                    Log.e(logTag, "Can't lock canvas; killing this drawer")
+                    stop()
+                } else {
+                    if (image != null) {
+                        canvas.drawBitmap(image.getBitmap(), imageSrc, screenDimensions, null)
+                    }
+                    surfaceHolder.unlockCanvasAndPost(canvas)
                 }
-                surfaceHolder.unlockCanvasAndPost(canvas)
+            } catch (e: Exception) {
+                Log.e(logTag, "failed to draw frame")
+                Log.e(logTag, e.toString())
             }
             stopDrawing()
         }

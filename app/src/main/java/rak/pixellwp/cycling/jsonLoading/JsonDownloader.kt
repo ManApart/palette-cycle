@@ -33,14 +33,18 @@ class JsonDownloader(private val image: ImageInfo, private val listener: JsonDow
     override fun onPostExecute(result: String?) {
         if (result != null) {
             val json = cleanJson(result)
-            Log.d(logTag, "downloaded json from ${baseUrl + image.id} to ${image.fileName}: ${json.substring(0, 100)} ... ${json.substring(json.length - 100)}")
+            val jsonSample = if (json.length > 100) "${json.substring(0, 100)} ... ${json.substring(json.length - 100)}" else json
+            Log.d(logTag, "downloaded json from ${baseUrl + image.id} to ${image.fileName}: $jsonSample")
             listener.downloadComplete(image, json)
         }
         super.onPostExecute(result)
     }
 
     private fun cleanJson(json: String) : String{
-        return json.substring(25, json.length-4)
+        if (json.length > 25){
+            return json.substring(25, json.length-4)
+        }
+        return json
     }
 
 }

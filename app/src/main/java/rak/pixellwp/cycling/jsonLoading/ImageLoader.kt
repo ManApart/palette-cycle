@@ -29,13 +29,21 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
     }
 
     override fun downloadComplete(image: ImageInfo, json: String) {
-        saveImage(image, json)
-        for (loadListener in loadListeners){
-            loadListener.imageLoadComplete(image)
+        if (jsonIsValid(json)) {
+            saveImage(image, json)
+            for (loadListener in loadListeners) {
+                loadListener.imageLoadComplete(image)
+            }
+        } else {
+            Log.d(logTag, "${image.name} failed to download a proper json file.")
         }
     }
 
-    fun addLoadListener(loadListener: ImageLoadedListener){
+    private fun jsonIsValid(json: String): Boolean {
+        return json.length > 100
+    }
+
+    fun addLoadListener(loadListener: ImageLoadedListener) {
         loadListeners.add(loadListener)
     }
 
@@ -65,7 +73,7 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
         return ColorCyclingImage(parseJson(json))
     }
 
-    fun imageIsReady(image: ImageInfo) : Boolean {
+    fun imageIsReady(image: ImageInfo): Boolean {
         return context.getFileStreamPath(image.fileName).exists()
     }
 
@@ -80,12 +88,12 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
         }
     }
 
-    private fun saveImage(image: ImageInfo, json: String){
+    private fun saveImage(image: ImageInfo, json: String) {
         try {
             val stream = OutputStreamWriter(context.openFileOutput(image.fileName, Context.MODE_PRIVATE))
             stream.write(json)
             stream.close()
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Log.e(logTag, "Unable to save image")
             e.printStackTrace()
         }
