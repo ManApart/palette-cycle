@@ -13,7 +13,7 @@ class JsonDownloader(private val image: ImageInfo, private val listener: JsonDow
         return downloadImage()
     }
 
-    private fun downloadImage() : String {
+    private fun downloadImage(): String {
         var json = ""
         try {
             val inputStream = URL(baseUrl + image.id).openStream()
@@ -23,7 +23,7 @@ class JsonDownloader(private val image: ImageInfo, private val listener: JsonDow
 
             inputStream.close()
             return json
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Log.e(logTag, "Unable to download image from ${baseUrl + image.id}")
             e.printStackTrace()
         }
@@ -31,19 +31,16 @@ class JsonDownloader(private val image: ImageInfo, private val listener: JsonDow
     }
 
     override fun onPostExecute(result: String?) {
-        if (result != null) {
-            val json = cleanJson(result)
-            val jsonSample = if (json.length > 100) "${json.substring(0, 100)} ... ${json.substring(json.length - 100)}" else json
-            Log.d(logTag, "downloaded json from ${baseUrl + image.id} to ${image.fileName}: $jsonSample")
-            listener.downloadComplete(image, json)
-        }
+        val json = cleanJson(result)
+        val jsonSample = if (json.length > 100) "${json.substring(0, 100)} ... ${json.substring(json.length - 100)}" else json
+        Log.d(logTag, "downloaded json from ${baseUrl + image.id} to ${image.fileName}: $jsonSample")
+        listener.downloadComplete(image, json)
         super.onPostExecute(result)
     }
 
-    private fun cleanJson(json: String) : String{
-        if (json.length > 25){
-            return json.substring(25, json.length-4)
-        }
+    private fun cleanJson(json: String?): String {
+        if (json == null) return ""
+        if (json.length > 25) return json.substring(25, json.length - 4)
         return json
     }
 
