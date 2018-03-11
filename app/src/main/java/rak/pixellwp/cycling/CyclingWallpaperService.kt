@@ -93,6 +93,8 @@ class CyclingWallpaperService : WallpaperService() {
                     val image = imageLoader.getImageInfoForImage(singleImage)
                     changeImage(image)
                 }
+            } else {
+                reloadPrefs()
             }
         })
 
@@ -142,10 +144,8 @@ class CyclingWallpaperService : WallpaperService() {
                 Log.d(logTag, "Changing from ${currentImage.name} to ${image.name}.")
                 if (imageLoader.imageIsReady(image)) {
                     currentImage = image
-                    drawRunner.stop()
-                    drawRunner = PaletteDrawer(this, imageLoader.loadImage(image))
+                    drawRunner.image = imageLoader.loadImage(image)
                     determineMinScaleFactor()
-                    drawRunner.startDrawing()
 
                 } else {
                     imageLoader.downloadImage(image)
@@ -164,10 +164,10 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         override fun onDestroy() {
-            super.onDestroy()
+            drawRunner.stop()
             unregisterReceiver(timeReceiver)
             PreferenceManager.getDefaultSharedPreferences(applicationContext).unregisterOnSharedPreferenceChangeListener(imageCollectionListener)
-            drawRunner.stop()
+            super.onDestroy()
         }
 
         override fun onTouchEvent(event: MotionEvent?) {
@@ -175,19 +175,19 @@ class CyclingWallpaperService : WallpaperService() {
                 scaleDetector.onTouchEvent(event)
                 panDetector.onTouchEvent(event)
                 super.onTouchEvent(event)
-                drawRunner.startDrawing()
+                drawRunner.drawNow()
             }
         }
 
         override fun onVisibilityChanged(visible: Boolean) {
-            reloadPrefs()
-            if (!isPreview) {
-                drawRunner.setVisible(visible)
+            if (visible){
+                reloadPrefs()
             }
+            drawRunner.setVisible(visible)
         }
 
         private fun reloadPrefs() {
-            Log.i(logTag, "reload prefs: img= $singleImage, drawer: ${drawRunner.id}")
+            Log.v(logTag, "Reload prefs: img= $singleImage, drawer: ${drawRunner.id}")
             val prefCollectionVal = prefs.getString(IMAGE_COLLECTION, "")
             val prefImageVal = prefs.getString(SINGLE_IMAGE, "")
             parallax = prefs.getBoolean(PARALLAX, parallax)
@@ -209,13 +209,13 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         override fun onSurfaceDestroyed(holder: SurfaceHolder?) {
-            super.onSurfaceDestroyed(holder)
             drawRunner.stop()
+            super.onSurfaceDestroyed(holder)
         }
 
         override fun onSurfaceCreated(holder: SurfaceHolder?) {
-            super.onSurfaceCreated(holder)
             drawRunner.startDrawing()
+            super.onSurfaceCreated(holder)
         }
 
         override fun onSurfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {

@@ -49,14 +49,14 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
     }
 
     fun getImageInfoForImage(imageId: String): ImageInfo {
-        Log.d(logTag, "grabbing image info for $imageId")
+        Log.v(logTag, "Grabbing image info for $imageId")
         return images.first { it.id == imageId }
     }
 
     fun getImageInfoForCollection(collectionName: String): ImageInfo {
         val imageCollection = collection.first { it.name == collectionName }
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-        Log.d(logTag, "grabbing image info for $collectionName at hour $hour")
+        Log.v(logTag, "grabbing image info for $collectionName at hour $hour")
         val info = imageCollection.images
                 .filter { it.startHour < hour }
                 .sortedByDescending { it.startHour }

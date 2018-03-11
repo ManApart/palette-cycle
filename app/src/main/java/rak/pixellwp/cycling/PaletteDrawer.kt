@@ -7,23 +7,26 @@ import android.util.Log
 import android.view.SurfaceHolder
 import java.util.*
 
-class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaperEngine, val image: ColorCyclingImage) {
+class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaperEngine, var image: ColorCyclingImage) {
     private val logTag = "PaletteDrawer"
-    private val handlerThread = HandlerThread("drawThread")
+    private var handlerThread = HandlerThread("drawThread")
     val id = System.currentTimeMillis()
 
     init {
-        Log.d(logTag, "Creating drawer with id $id")
         handlerThread.start()
     }
-
-    private val handler = Handler(handlerThread.looper)
-    private val runner = Runnable { draw() }
+    private var handler = Handler(handlerThread.looper)
+    private val runner = Runnable { advanceAndDraw() }
     private val drawDelay = 50L
     private val startTime = Date().time
     private var visible = true
 
     fun startDrawing() {
+        Log.v(logTag, "$id: Start drawing")
+        handlerThread.quitSafely()
+        handlerThread = HandlerThread("drawThread")
+        handlerThread.start()
+        handler = Handler(handlerThread.looper)
         drawNow()
     }
 
@@ -38,6 +41,7 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
     }
 
     fun stop() {
+        Log.v(logTag, "$id: Stop drawing")
         setVisible(false)
         handlerThread.quitSafely()
     }
@@ -45,9 +49,9 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
     fun setVisible(visible: Boolean) {
         this.visible = visible
         if (visible) {
-            startDrawing()
+            drawNow()
         } else {
-            stopDrawing()
+            handler.removeCallbacks(runner)
         }
     }
 
@@ -55,11 +59,7 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
         handler.postDelayed(runner, delay)
     }
 
-    private fun stopDrawing() {
-        handler.removeCallbacks(runner)
-    }
-
-    private fun draw() {
+    private fun advanceAndDraw() {
         val timePassed = Math.floor((Date().time - startTime).toDouble()).toInt()
         image?.advance(timePassed)
         drawFrame(engine.surfaceHolder, engine.getOffsetImage(), engine.screenDimensions)
@@ -70,7 +70,7 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
             try {
                 val canvas = surfaceHolder.lockCanvas()
                 if (canvas == null) {
-                    Log.e(logTag, "Can't lock canvas; killing drawer + $id")
+                    Log.e(logTag, "$id: Can't lock canvas; killing drawer")
                     stop()
                 } else {
                     if (image != null) {
@@ -79,10 +79,10 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
                     surfaceHolder.unlockCanvasAndPost(canvas)
                 }
             } catch (e: Exception) {
-                Log.e(logTag, "failed to draw frame, id: $id")
+                Log.e(logTag, "$id: failed to advanceAndDraw frame")
                 Log.e(logTag, e.toString())
             }
-            stopDrawing()
+            handler.removeCallbacks(runner)
         }
         if (visible) drawAfterDelay(drawDelay)
     }
