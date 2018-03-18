@@ -30,7 +30,6 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
 
     init {
         getImageCollectionNames()
-        collection.forEach { collection ->  collection.images.forEach { image -> Log.d(logTag, "renamed: ${collection.name}: ${image.name}") } }
     }
 
     private fun getImageCollectionNames() {
@@ -120,8 +119,11 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
         return if (context.getFileStreamPath(fileName).exists()) {
             FileInputStream(context.getFileStreamPath(fileName))
         } else {
-            Log.e(logTag, "Couldn't load $fileName.")
-            context.assets.open("DefaultImage.json")
+            val defaultFileName = "DefaultImage.json";
+            if (fileName != defaultFileName){
+                Log.e(logTag, "Couldn't load $fileName.")
+            }
+            context.assets.open(defaultFileName)
         }
     }
 

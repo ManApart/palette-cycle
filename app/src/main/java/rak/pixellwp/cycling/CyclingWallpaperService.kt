@@ -38,7 +38,7 @@ class CyclingWallpaperService : WallpaperService() {
 
         private var imageCollection = prefs.getString(IMAGE_COLLECTION, "")
         private var singleImage = prefs.getString(SINGLE_IMAGE, "")
-        private val defaultImage = ImageInfo("DefaultImage", "none", 0)
+        private val defaultImage = ImageInfo("DefaultImage", "DefaultImage", 0)
         private var currentImage = defaultImage
 
         private var drawRunner = PaletteDrawer(this, imageLoader.loadImage(defaultImage))
@@ -119,12 +119,10 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         private fun loadInitialImage(): ImageInfo {
-            if (imageCollection != "") {
-                return imageLoader.getImageInfoForCollection(imageCollection)
-            } else if (singleImage != "") {
-                return imageLoader.getImageInfoForImage(singleImage)
-            } else {
-                return defaultImage
+            return when {
+                imageCollection != "" -> imageLoader.getImageInfoForCollection(imageCollection)
+                singleImage != "" -> imageLoader.getImageInfoForImage(singleImage)
+                else -> defaultImage
             }
         }
 
