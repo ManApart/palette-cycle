@@ -2,8 +2,10 @@
     <string-array name="ImageCollections">
         <item>Seascape</item>
         <item>Waterfall</item>
-        <item>MirrorPond</item>
-        <item>MountainStream</item>
-        <item>SnowyWood</item>
+        <item>Mirror Pond</item>
+        <item>Mountain Stream</item>
+        <item>Snowy Wood</item>
+        <item>Desert Heat</item>
+        <item>Ghost Castle</item>
     </string-array>
 </resources>

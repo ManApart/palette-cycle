@@ -38,7 +38,7 @@
     ]
   },
   {
-    "name": "MirrorPond",
+    "name": "Mirror Pond",
     "images": [
       {
         "id": "V16",
@@ -55,7 +55,7 @@
     ]
   },
   {
-    "name": "MountainStream",
+    "name": "Mountain Stream",
     "images": [
       {
         "id": "V19",
@@ -72,7 +72,7 @@
     ]
   },
   {
-    "name": "SnowyWood",
+    "name": "Snowy Wood",
     "images": [
       {
         "id": "V26",
@@ -89,6 +89,44 @@
       {
         "id": "V26NIGHT",
         "startHour": "21"
+      }
+    ]
+  },
+  {
+    "name": "Desert Heat",
+    "images": [
+      {
+        "id": "V25",
+        "startHour": "6"
+      },
+      {
+        "id": "V25HEAT",
+        "startHour": "11"
+      },
+      {
+        "id": "V25PM",
+        "startHour": "17"
+      }
+    ]
+  },
+  {
+    "name": "Ghost Castle",
+    "images": [
+      {
+        "id": "V05AM",
+        "startHour": "7"
+      },
+      {
+        "id": "V05RAIN",
+        "startHour": "12"
+      },
+      {
+        "id": "V05PM",
+        "startHour": "16"
+      },
+      {
+        "id": "V05HAUNT",
+        "startHour": "20"
       }
     ]
   }

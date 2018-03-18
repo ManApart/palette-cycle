@@ -5,7 +5,7 @@
         android:title="Image Collection"
         android:entries="@array/ImageCollections"
         android:entryValues="@array/ImageCollections"
-        android:summary="Choose an image that will react to the time of day"
+        android:summary="Choose an image that will change based on the time of day"
         android:defaultValue="Waterfall"/>
     <rak.pixellwp.cycling.ImagePreference
         android:key="singleImage"
@@ -15,7 +15,7 @@
         android:key="parallax"
         android:title="Enable Parallax"
         android:defaultValue="true"
-        android:summary="Pan the background as you swipe across screens"/>
+        android:summary="Pans the background when you swipe across screens"/>
     <Preference
         android:key="@string/bugReportButtonId"
         android:title="@string/bugReportButtonTitle"
