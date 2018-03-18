@@ -66,7 +66,7 @@ class CyclingWallpaperService : WallpaperService() {
             }
         })
 
-        private val imageCollectionListener = SharedPreferences.OnSharedPreferenceChangeListener({ preference: SharedPreferences, newValue: Any ->
+        private val preferenceListener = SharedPreferences.OnSharedPreferenceChangeListener({ preference: SharedPreferences, newValue: Any ->
             if (isPreview) {
                 val prefCollectionVal = preference.getString(IMAGE_COLLECTION, imageCollection)
                 val prefImageVal = preference.getString(SINGLE_IMAGE, singleImage)
@@ -158,7 +158,7 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         override fun onCreate(surfaceHolder: SurfaceHolder?) {
-            PreferenceManager.getDefaultSharedPreferences(applicationContext).registerOnSharedPreferenceChangeListener(imageCollectionListener)
+            PreferenceManager.getDefaultSharedPreferences(applicationContext).registerOnSharedPreferenceChangeListener(preferenceListener)
             registerReceiver(timeReceiver, IntentFilter(Intent.ACTION_TIME_TICK))
             super.onCreate(surfaceHolder)
         }
@@ -166,7 +166,7 @@ class CyclingWallpaperService : WallpaperService() {
         override fun onDestroy() {
             drawRunner.stop()
             unregisterReceiver(timeReceiver)
-            PreferenceManager.getDefaultSharedPreferences(applicationContext).unregisterOnSharedPreferenceChangeListener(imageCollectionListener)
+            PreferenceManager.getDefaultSharedPreferences(applicationContext).unregisterOnSharedPreferenceChangeListener(preferenceListener)
             super.onDestroy()
         }
 

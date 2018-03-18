@@ -14,7 +14,8 @@
     <CheckBoxPreference
         android:key="parallax"
         android:title="Enable Parallax"
-        android:defaultValue="true"/>
+        android:defaultValue="true"
+        android:summary="Pan the background as you swipe across screens"/>
     <Preference
         android:key="@string/bugReportButtonId"
         android:title="@string/bugReportButtonTitle"

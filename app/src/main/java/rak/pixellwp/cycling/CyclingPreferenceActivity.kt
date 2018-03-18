@@ -2,6 +2,7 @@ package rak.pixellwp.cycling
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceActivity
 import android.preference.PreferenceFragment
@@ -48,7 +49,9 @@ class CyclingPreferenceActivity : PreferenceActivity() {
 
     fun reportBug(view: View) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSIONS_WRITE_EXTERNAL_STORAGE)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSIONS_WRITE_EXTERNAL_STORAGE)
+            }
         } else {
             loggingManager.writeLogsToExternal()
             Toast.makeText(this, "Saved logs to Android/data/rak.pixellwp/files", Toast.LENGTH_LONG).show()

@@ -3,17 +3,14 @@
     "name": "Seascape",
     "images": [
       {
-        "name": "SeascapeFOG",
         "id": "V29FOG",
         "startHour": "6"
       },
       {
-        "name": "Seascape",
         "id": "V29",
         "startHour": "10"
       },
       {
-        "name": "SeascapePM",
         "id": "V29PM",
         "startHour": "18"
       }
@@ -23,22 +20,18 @@
     "name": "Waterfall",
     "images": [
       {
-        "name": "WaterfallAM",
         "id": "V08AM",
         "startHour": "6"
       },
       {
-        "name": "Waterfall",
         "id": "V08",
         "startHour": "11"
       },
       {
-        "name": "WaterfallRain",
         "id": "V08RAIN",
         "startHour": "16"
       },
       {
-        "name": "WaterfallPM",
         "id": "V08PM",
         "startHour": "18"
       }
@@ -48,17 +41,14 @@
     "name": "MirrorPond",
     "images": [
       {
-        "name": "MirrorPondAM",
         "id": "V16",
         "startHour": "6"
       },
       {
-        "name": "MirrorPondRain",
         "id": "V16RAIN",
         "startHour": "15"
       },
       {
-        "name": "MirrorPondPM",
         "id": "V16PM",
         "startHour": "18"
       }
@@ -68,18 +58,36 @@
     "name": "MountainStream",
     "images": [
       {
-        "name": "MountainStream",
         "id": "V19",
         "startHour": "6"
       },
       {
-        "name": "MountainStreamPM",
         "id": "V19PM",
         "startHour": "12"
       },
       {
-        "name": "MountainStreamAURA",
         "id": "V19AURA",
+        "startHour": "21"
+      }
+    ]
+  },
+  {
+    "name": "SnowyWood",
+    "images": [
+      {
+        "id": "V26",
+        "startHour": "6"
+      },
+      {
+        "id": "V26SNOW",
+        "startHour": "12"
+      },
+      {
+        "id": "V26PM",
+        "startHour": "17"
+      },
+      {
+        "id": "V26NIGHT",
         "startHour": "21"
       }
     ]

@@ -46,3 +46,30 @@ External storage path: Android/data/rak.pixellwp/files
  | V29PM | Seascape - Sunset |
  | V30 | Deep Forest - Day |
  | V30RAIN | Deep Forest - Rain |
+ 
+ 
+ Additional (Not on website)
+ 
+ **ID Table**
+  | id  | name |
+  |  ---  |  ---  |
+  | V26 | Winter Forest |
+  | V26PM | Winter Forest - Evening |
+  | V26NIGHT | Winter Forest - Night |
+  V12 | Stone Henge
+  V18 | Alpine Ruin
+  V21 | Elvin City
+  V22 | Unknown22
+  V23 | Desert Twilight
+  V24 | Red Canyon
+  V25 | Desert Heat Wave - Still
+  V06 | None
+  V19AM  | None
+  V26 Sunset | None
+  Unknown | Mirror Pond Dawn
+  Unknown | Mountain Stream Dawn
+  Unknown | Dark Castle - Lightning
+  Unknown | Ghost Castle
+  Unknown | Ghost Castle - Dawn
+  Unknown | Ghost Castle - Sunset
+  

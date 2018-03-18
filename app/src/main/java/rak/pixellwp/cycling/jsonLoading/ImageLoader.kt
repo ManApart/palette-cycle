@@ -13,19 +13,32 @@ import java.util.*
 
 class ImageLoader(private val context: Context) : JsonDownloadListener {
     private val logTag = "ImageLoader"
-    private val collection: List<ImageCollection> = loadCollection()
     private val images: List<ImageInfo> = loadImages()
+    private val collection: List<ImageCollection> = loadCollection()
     private val downloading: MutableList<ImageInfo> = mutableListOf()
     private val loadListeners: MutableList<ImageLoadedListener> = mutableListOf()
+
+    private fun loadImages(): List<ImageInfo> {
+        val json = context.assets.open("Images.json")
+        return jacksonObjectMapper().readValue(json)
+    }
 
     private fun loadCollection(): List<ImageCollection> {
         val json = context.assets.open("ImageCollections.json")
         return jacksonObjectMapper().readValue(json)
     }
 
-    private fun loadImages(): List<ImageInfo> {
-        val json = context.assets.open("Images.json")
-        return jacksonObjectMapper().readValue(json)
+    init {
+        getImageCollectionNames()
+        collection.forEach { collection ->  collection.images.forEach { image -> Log.d(logTag, "renamed: ${collection.name}: ${image.name}") } }
+    }
+
+    private fun getImageCollectionNames() {
+        collection.forEach { collection -> collection.images.forEach { image -> image.name = getImageName(image.id) } }
+    }
+
+    private fun getImageName(id: String): String {
+        return images.firstOrNull { image -> image.id == id }?.name ?: id
     }
 
     override fun downloadComplete(image: ImageInfo, json: String) {
@@ -81,12 +94,12 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
 
     fun downloadImage(image: ImageInfo) {
         if (downloading.contains(image)) {
-            Log.d(logTag, "Still attempting to download ${image.fileName}")
+            Log.d(logTag, "Still attempting to download ${image.name}")
         } else {
-            Log.d(logTag, "Unable to find ${image.fileName} locally, downloading using id ${image.id}")
+            Log.d(logTag, "Unable to find ${image.name} locally, downloading using id ${image.id}")
             downloading.add(image)
             JsonDownloader(image, this).execute()
-            Toast.makeText(context, "Unable to find ${image.fileName} locally. I'll change the image as soon as it's downloaded", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Unable to find ${image.name} locally. I'll change the image as soon as it's downloaded", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -99,7 +112,7 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
             Log.e(logTag, "Unable to save image")
             e.printStackTrace()
         }
-        Log.d(logTag, "saved ${image.fileName}")
+        Log.d(logTag, "saved ${image.name} as ${image.fileName}")
         downloading.remove(image)
     }
 
