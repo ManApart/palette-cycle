@@ -1,34 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference
-        android:key="imageCollection"
-        android:title="Image Collection"
+        android:defaultValue="Waterfall"
         android:entries="@array/ImageCollections"
         android:entryValues="@array/ImageCollections"
+        android:key="imageCollection"
         android:summary="Choose an image that will change at several points throughout the day"
-        android:defaultValue="Waterfall"/>
+        android:title="Image Collection" />
     <rak.pixellwp.cycling.preferences.TimelinePreference
         android:key="timelineImage"
-        android:title="Timeline Image"
-        android:summary="Choose a single image that will change constantly throughout the day"/>
+        android:summary="Choose a single image that will change constantly throughout the day"
+        android:title="Timeline Image" />
     <rak.pixellwp.cycling.preferences.ImagePreference
         android:key="singleImage"
-        android:title="Single Image"
-        android:summary="Choose a single image that won't change"/>
+        android:summary="Choose a single image that won't change"
+        android:title="Single Image" />
     <CheckBoxPreference
-        android:key="parallax"
-        android:title="Enable Parallax"
         android:defaultValue="true"
-        android:summary="Pans the background when you swipe across screens"/>
+        android:key="parallax"
+        android:summary="Pans the background when you swipe across screens"
+        android:title="Enable Parallax" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="overrideTimelines"
+        android:summary="Force Timeline Images to stay at a specific time."
+        android:title="Override Timeline Time" />
+    <!--<SeekBarPreference-->
+    <!--android:key="overrideTime"-->
+    <!--android:title="Override Time"-->
+    <!--android:defaultValue="false"-->
+    <!--android:summary="If Override Timeline Time is on, Timeline Images will stay at this time."/>-->
     <Preference
         android:key="@string/bugReportButtonId"
-        android:title="@string/bugReportButtonTitle"
         android:summary="Save logs to storage"
-        android:widgetLayout="@layout/bug_report"
-        />
+        android:title="@string/bugReportButtonTitle"
+        android:widgetLayout="@layout/bug_report" />
 
     <Preference
-        android:title="credits"
+        android:layout="@layout/credits"
         android:selectable="false"
-        android:layout="@layout/credits" />
+        android:title="credits" />
 </PreferenceScreen>

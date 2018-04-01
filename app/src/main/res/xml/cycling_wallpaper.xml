@@ -3,4 +3,4 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:thumbnail="@mipmap/mirror_lake_logo_square"
     android:description="@string/wallpaper_description"
-    android:settingsActivity="rak.pixellwp.cycling.CyclingPreferenceActivity"/>
+    android:settingsActivity="rak.pixellwp.cycling.preferences.CyclingPreferenceActivity"/>
