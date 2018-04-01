@@ -3,10 +3,9 @@ package rak.pixellwp.cycling
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.util.Log
-import rak.pixellwp.cycling.jsonModels.ImgJson
+import rak.pixellwp.cycling.jsonModels.ImageJson
 
-class ColorCyclingImage(img: ImgJson) {
+class ColorCyclingImage(img: ImageJson) {
     val width = img.width
     val height = img.height
     private val palette = Palette(img.getParsedColors(), img.cycles)

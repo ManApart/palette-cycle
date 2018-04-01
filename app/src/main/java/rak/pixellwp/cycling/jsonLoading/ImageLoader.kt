@@ -134,7 +134,7 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
         return json
     }
 
-    private fun parseJson(json: String): ImgJson {
+    private fun parseJson(json: String): ImageJson {
         val mapper = jacksonObjectMapper()
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
         mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)

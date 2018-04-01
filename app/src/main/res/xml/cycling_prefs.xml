@@ -5,9 +5,13 @@
         android:title="Image Collection"
         android:entries="@array/ImageCollections"
         android:entryValues="@array/ImageCollections"
-        android:summary="Choose an image that will change based on the time of day"
+        android:summary="Choose an image that will change at several points throughout the day"
         android:defaultValue="Waterfall"/>
-    <rak.pixellwp.cycling.ImagePreference
+    <rak.pixellwp.cycling.preferences.TimelinePreference
+        android:key="timelineImage"
+        android:title="Timeline Image"
+        android:summary="Choose a single image that will change constantly throughout the day"/>
+    <rak.pixellwp.cycling.preferences.ImagePreference
         android:key="singleImage"
         android:title="Single Image"
         android:summary="Choose a single image that won't change"/>

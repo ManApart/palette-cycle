@@ -1,4 +1,4 @@
-package rak.pixellwp.cycling
+package rak.pixellwp.cycling.preferences
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -8,11 +8,11 @@ import android.preference.PreferenceActivity
 import android.preference.PreferenceFragment
 import android.preference.PreferenceManager
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import rak.pixellwp.R
+import rak.pixellwp.cycling.LoggingManager
 
 
 class CyclingPreferenceActivity : PreferenceActivity() {

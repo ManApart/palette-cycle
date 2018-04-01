@@ -1,4 +1,4 @@
-package rak.pixellwp.cycling
+package rak.pixellwp.cycling.preferences
 
 import android.content.Context
 import android.preference.ListPreference
