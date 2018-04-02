@@ -2,6 +2,8 @@ package rak.pixellwp.cycling
 
 import junit.framework.Assert
 import org.junit.Test
+import rak.pixellwp.cycling.models.Cycle
+import rak.pixellwp.cycling.models.Palette
 import java.util.logging.Logger
 
 class PaletteTest {

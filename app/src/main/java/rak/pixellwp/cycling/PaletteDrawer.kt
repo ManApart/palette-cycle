@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
 import android.view.SurfaceHolder
+import rak.pixellwp.cycling.models.ColorCyclingImage
 import java.util.*
 
 class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaperEngine, var image: ColorCyclingImage) {

@@ -1,4 +1,4 @@
-package rak.pixellwp.cycling
+package rak.pixellwp.cycling.models
 
 const val precision: Double = 100.0
 const val precisionInt: Int = 100
@@ -10,7 +10,7 @@ data class Cycle(val rate: Int, private val reverse: Int, val low: Int, val high
     private val adjustedRate: Float = (rate / cycleSpeed).toFloat()
 
     private fun dFloatMod(a: Float, b: Int) : Double {
-        return (Math.floor((a*precision)) % Math.floor((b*precision))) / precision
+        return (Math.floor((a* precision)) % Math.floor((b* precision))) / precision
     }
 
     fun reverseColorsIfNecessary(colors: MutableList<Int>){

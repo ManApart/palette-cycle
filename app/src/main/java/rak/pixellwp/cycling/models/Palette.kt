@@ -1,7 +1,6 @@
-package rak.pixellwp.cycling
+package rak.pixellwp.cycling.models
 
 import android.graphics.Color
-import android.util.Log
 
 class Palette(colors: List<Int>, val cycles: List<Cycle>) {
     private val baseColors = colors

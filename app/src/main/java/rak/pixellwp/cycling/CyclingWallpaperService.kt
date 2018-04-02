@@ -13,6 +13,8 @@ import android.view.SurfaceHolder
 import rak.pixellwp.cycling.jsonLoading.ImageLoadedListener
 import rak.pixellwp.cycling.jsonLoading.ImageLoader
 import rak.pixellwp.cycling.jsonModels.ImageInfo
+import rak.pixellwp.cycling.jsonModels.TimelineImageJson
+import rak.pixellwp.cycling.models.TimelineImage
 import java.util.*
 
 
@@ -38,8 +40,10 @@ class CyclingWallpaperService : WallpaperService() {
 
         private var imageCollection = prefs.getString(IMAGE_COLLECTION, "")
         private var singleImage = prefs.getString(SINGLE_IMAGE, "")
+        private var timelineImage = prefs.getString(TIMELINE_IMAGE, "")
         private val defaultImage = ImageInfo("DefaultImage", "DefaultImage", 0)
         private var currentImage = defaultImage
+        private var currentTimelineImage: TimelineImage? = null
 
         private var drawRunner = PaletteDrawer(this, imageLoader.loadImage(defaultImage))
 
@@ -47,6 +51,7 @@ class CyclingWallpaperService : WallpaperService() {
         var screenDimensions = Rect(imageSrc)
         private var screenOffset: Float = 0f
         private var parallax = prefs.getBoolean(PARALLAX, true)
+        private var overrideTimeline = prefs.getBoolean(OVERRIDE_TIMELINE, false)
         private var scaleFactor = prefs.getFloat(SCALE_FACTOR, 5.3f)
         private var minScaleFactor = 0.1f
 
@@ -70,7 +75,9 @@ class CyclingWallpaperService : WallpaperService() {
             if (isPreview) {
                 val prefCollectionVal = preference.getString(IMAGE_COLLECTION, imageCollection)
                 val prefImageVal = preference.getString(SINGLE_IMAGE, singleImage)
+                val prefTimelineVal = prefs.getString(TIMELINE_IMAGE, timelineImage)
                 parallax = preference.getBoolean(PARALLAX, parallax)
+                overrideTimeline = preference.getBoolean(OVERRIDE_TIMELINE, overrideTimeline)
 
                 imageSrc = Rect(preference.getInt(LEFT, imageSrc.left),
                         preference.getInt(TOP, imageSrc.top),
@@ -82,16 +89,27 @@ class CyclingWallpaperService : WallpaperService() {
                     Log.d(logTag, "Image collection: $imageCollection > $prefCollectionVal for engine $this")
                     imageCollection = prefCollectionVal
                     singleImage = ""
+                    timelineImage = ""
                     preference.edit().putString(SINGLE_IMAGE, "").apply()
+                    preference.edit().putString(TIMELINE_IMAGE, "").apply()
                     changeCollection(imageCollection)
 
+                } else if (timelineImage != prefTimelineVal && prefTimelineVal != "") {
+                    Log.d(logTag, "Timeline image: $timelineImage > $prefTimelineVal for engine $this")
+                    timelineImage = prefTimelineVal
+                    imageCollection = ""
+                    singleImage = ""
+                    preference.edit().putString(SINGLE_IMAGE, "").apply()
+                    preference.edit().putString(IMAGE_COLLECTION, "").apply()
+                    changeTimeline(timelineImage)
                 } else if (singleImage != prefImageVal && prefImageVal != "") {
                     Log.d(logTag, "Single image: $singleImage > $prefImageVal for engine $this")
                     singleImage = prefImageVal
                     imageCollection = ""
+                    timelineImage = ""
+                    preference.edit().putString(TIMELINE_IMAGE, "").apply()
                     preference.edit().putString(IMAGE_COLLECTION, "").apply()
-                    val image = imageLoader.getImageInfoForImage(singleImage)
-                    changeImage(image)
+                    changeImage(singleImage)
                 }
             } else {
                 reloadPrefs()
@@ -137,12 +155,28 @@ class CyclingWallpaperService : WallpaperService() {
             changeImage(image)
         }
 
+        private fun changeImage(imageName: String) {
+            val image = imageLoader.getImageInfoForImage(singleImage)
+            changeImage(image)
+        }
+
+        private fun changeTimeline(timelineName: String) {
+            val image = imageLoader.getImageInfoForTimeline(timelineImage)
+            changeImage(image)
+        }
+
         private fun changeImage(image: ImageInfo) {
             if (image != currentImage) {
                 Log.d(logTag, "Changing from ${currentImage.name} to ${image.name}.")
                 if (imageLoader.imageIsReady(image)) {
                     currentImage = image
-                    drawRunner.image = imageLoader.loadImage(image)
+                    if (image.isTimeline){
+                        currentTimelineImage = imageLoader.loadTimelineImage(image)
+                        drawRunner.image = currentTimelineImage!!.base
+                        //TODO
+                    } else {
+                        drawRunner.image = imageLoader.loadImage(image)
+                    }
                     determineMinScaleFactor()
 
                 } else {
@@ -188,6 +222,7 @@ class CyclingWallpaperService : WallpaperService() {
             Log.v(logTag, "Reload prefs: img= $singleImage, drawer: ${drawRunner.id}")
             val prefCollectionVal = prefs.getString(IMAGE_COLLECTION, "")
             val prefImageVal = prefs.getString(SINGLE_IMAGE, "")
+            val prefTimelineVal = prefs.getString(SINGLE_IMAGE, "")
             parallax = prefs.getBoolean(PARALLAX, parallax)
 
             imageSrc = Rect(prefs.getInt(LEFT, imageSrc.left),

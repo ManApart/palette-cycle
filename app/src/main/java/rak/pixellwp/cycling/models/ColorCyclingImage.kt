@@ -1,4 +1,4 @@
-package rak.pixellwp.cycling
+package rak.pixellwp.cycling.models
 
 import android.graphics.Bitmap
 import android.graphics.Canvas

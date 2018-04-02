@@ -7,7 +7,8 @@ import java.net.URL
 
 
 class JsonDownloader(private val image: ImageInfo, private val listener: JsonDownloadListener) : AsyncTask<String, Void, String>() {
-    private val baseUrl = "http://www.effectgames.com/demos/canvascycle/image.php?file="
+    private val imageUrl = "http://www.effectgames.com/demos/canvascycle/image.php?file="
+    private val timelineImageUrl = "http://www.effectgames.com/demos/worlds/scene.php?file="
     private val logTag = "JsonDownloader"
     override fun doInBackground(vararg params: String?): String {
         return downloadImage()
@@ -16,7 +17,7 @@ class JsonDownloader(private val image: ImageInfo, private val listener: JsonDow
     private fun downloadImage(): String {
         var json = ""
         try {
-            val inputStream = URL(baseUrl + image.id).openStream()
+            val inputStream = URL(getFullUrl(image)).openStream()
 
             val s = java.util.Scanner(inputStream).useDelimiter("\\A")
             json = if (s.hasNext()) s.next() else ""
@@ -24,7 +25,7 @@ class JsonDownloader(private val image: ImageInfo, private val listener: JsonDow
             inputStream.close()
             return json
         } catch (e: Exception) {
-            Log.e(logTag, "Unable to download image from ${baseUrl + image.id}")
+            Log.e(logTag, "Unable to download image from ${getFullUrl(image)}")
             e.printStackTrace()
         }
         return json
@@ -33,18 +34,42 @@ class JsonDownloader(private val image: ImageInfo, private val listener: JsonDow
     override fun onPostExecute(result: String?) {
         val json = cleanJson(result)
         val jsonSample = if (json.length > 100) "${json.substring(0, 100)} ... ${json.substring(json.length - 100)}" else json
-        Log.d(logTag, "downloaded json for ${image.name} from ${baseUrl + image.id} to ${image.fileName}: $jsonSample")
+        Log.d(logTag, "downloaded json for ${image.name} from ${getFullUrl(image)} to ${image.fileName}: $jsonSample")
         listener.downloadComplete(image, json)
         super.onPostExecute(result)
     }
 
     private fun cleanJson(json: String?): String {
+        return if (image.isTimeline) {
+            cleanTimelineImageJson(json)
+        } else {
+            cleanImageJson(json)
+        }
+    }
+
+    private fun cleanImageJson(json: String?): String {
         if (json == null) return ""
         if (json.length > 25) {
             val start = json.indexOf("{filename")
             return json.substring(start, json.length - 4)
         }
         return json
+    }
+    private fun cleanTimelineImageJson(json: String?): String {
+        if (json == null) return ""
+        if (json.length > 25) {
+            val start = json.indexOf("{base")
+            return json.substring(start, json.length - 2)
+        }
+        return json
+    }
+
+    private fun getFullUrl(image: ImageInfo) : String {
+        return if (image.isTimeline){
+            timelineImageUrl + image.id + "&month=" + image.month
+        } else {
+            imageUrl + image.id
+        }
     }
 
 }

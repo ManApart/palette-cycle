@@ -6,14 +6,16 @@ import android.widget.Toast
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import rak.pixellwp.cycling.ColorCyclingImage
+import rak.pixellwp.cycling.models.ColorCyclingImage
 import rak.pixellwp.cycling.jsonModels.*
+import rak.pixellwp.cycling.models.TimelineImage
 import java.io.*
 import java.util.*
 
 class ImageLoader(private val context: Context) : JsonDownloadListener {
     private val logTag = "ImageLoader"
     private val images: List<ImageInfo> = loadImages()
+    private val timelineImages: List<ImageInfo> = loadTimelineImages()
     private val collection: List<ImageCollection> = loadCollection()
     private val downloading: MutableList<ImageInfo> = mutableListOf()
     private val loadListeners: MutableList<ImageLoadedListener> = mutableListOf()
@@ -21,6 +23,13 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
     private fun loadImages(): List<ImageInfo> {
         val json = context.assets.open("Images.json")
         return jacksonObjectMapper().readValue(json)
+    }
+
+    private fun loadTimelineImages(): List<ImageInfo> {
+        val json = context.assets.open("Timelines.json")
+        val timelines: List<ImageInfo> = jacksonObjectMapper().readValue(json)
+        timelines.forEach{ it.isTimeline = true }
+        return timelines
     }
 
     private fun loadCollection(): List<ImageCollection> {
@@ -54,7 +63,9 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
     }
 
     private fun jsonIsValid(json: String): Boolean {
-        return json.length > 100 && json.startsWith("{filename") && json.endsWith("]}")
+        return json.length > 100
+                && (json.startsWith("{filename") && json.endsWith("]}")
+                    || json.startsWith("{base") && json.endsWith("}}"))
     }
 
     fun addLoadListener(loadListener: ImageLoadedListener) {
@@ -64,6 +75,11 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
     fun getImageInfoForImage(imageId: String): ImageInfo {
         Log.v(logTag, "Grabbing image info for $imageId")
         return images.first { it.id == imageId }
+    }
+
+    fun getImageInfoForTimeline(imageId: String): ImageInfo {
+        Log.v(logTag, "Grabbing timeline info for $imageId")
+        return timelineImages.first { it.id == imageId }
     }
 
     fun getImageInfoForCollection(collectionName: String): ImageInfo {
@@ -84,7 +100,12 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
 
     fun loadImage(image: ImageInfo): ColorCyclingImage {
         val json: String = readJson(loadInputStream(image.fileName))
-        return ColorCyclingImage(parseJson(json))
+        return ColorCyclingImage(parseImageJson(json))
+    }
+
+    fun loadTimelineImage(image: ImageInfo): TimelineImage {
+        val json: String = readJson(loadInputStream(image.fileName))
+        return TimelineImage(parseImageJson(json))
     }
 
     fun imageIsReady(image: ImageInfo): Boolean {
@@ -134,7 +155,7 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
         return json
     }
 
-    private fun parseJson(json: String): ImageJson {
+    private fun parseImageJson(json: String): ImageJson {
         val mapper = jacksonObjectMapper()
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
         mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
