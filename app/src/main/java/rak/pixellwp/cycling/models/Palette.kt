@@ -1,8 +1,11 @@
 package rak.pixellwp.cycling.models
 
 import android.graphics.Color
+import rak.pixellwp.cycling.jsonModels.PaletteJson
 
 class Palette(colors: List<Int>, val cycles: List<Cycle>) {
+    constructor(paletteJson: PaletteJson) : this(paletteJson.colors, paletteJson.cycles)
+
     private val baseColors = colors
     var colors = baseColors.toMutableList()
 

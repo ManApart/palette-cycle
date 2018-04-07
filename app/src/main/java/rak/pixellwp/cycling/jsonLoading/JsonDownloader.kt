@@ -59,7 +59,7 @@ class JsonDownloader(private val image: ImageInfo, private val listener: JsonDow
         if (json == null) return ""
         if (json.length > 25) {
             val start = json.indexOf("{base")
-            return json.substring(start, json.length - 2)
+            return json.substring(start, json.length - 3)
         }
         return json
     }
