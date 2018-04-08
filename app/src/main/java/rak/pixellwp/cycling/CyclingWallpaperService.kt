@@ -173,7 +173,6 @@ class CyclingWallpaperService : WallpaperService() {
                     if (image.isTimeline){
                         currentTimelineImage = imageLoader.loadTimelineImage(image)
                         drawRunner.image = currentTimelineImage!!.base
-                        //TODO
                     } else {
                         drawRunner.image = imageLoader.loadImage(image)
                     }

@@ -56,7 +56,7 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
                 loadListener.imageLoadComplete(image)
             }
         } else {
-            val jsonSample = if (json.length > 100) "${json.substring(0, 100)} ... ${json.substring(json.length - 100)}" else json
+            val jsonSample = getSampleJson(json)
             Log.d(logTag, "${image.name} failed to download a proper json file: $jsonSample")
             downloading.remove(image)
             Toast.makeText(context, "${image.name} failed to download. Please try again.", Toast.LENGTH_LONG).show()
@@ -164,10 +164,15 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
     }
 
     private fun parseTimelineImageJson(json: String): TimelineImageJson {
+        Log.d(logTag, "Parsing json " + getSampleJson(json))
         val mapper = jacksonObjectMapper()
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
         mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
         return mapper.readValue(json)
+    }
+
+    private fun getSampleJson(json: String): String {
+        return if (json.length > 100) "${json.substring(0, 100)} ... ${json.substring(json.length - 100)}" else json
     }
 
 }
