@@ -100,17 +100,17 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
     }
 
     fun loadImage(image: ImageInfo): ColorCyclingImage {
-        val json: String = readJson(loadInputStream(image.fileName))
+        val json: String = readJson(loadInputStream(image.getFileName()))
         return ColorCyclingImage(parseImageJson(json))
     }
 
     fun loadTimelineImage(image: ImageInfo): TimelineImage {
-        val json: String = readJson(loadInputStream(image.fileName))
+        val json: String = readJson(loadInputStream(image.getFileName()))
         return TimelineImage(parseTimelineImageJson(json))
     }
 
     fun imageIsReady(image: ImageInfo): Boolean {
-        return context.getFileStreamPath(image.fileName).exists()
+        return context.getFileStreamPath(image.getFileName()).exists()
     }
 
     fun downloadImage(image: ImageInfo) {
@@ -126,14 +126,14 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
 
     private fun saveImage(image: ImageInfo, json: String) {
         try {
-            val stream = OutputStreamWriter(context.openFileOutput(image.fileName, Context.MODE_PRIVATE))
+            val stream = OutputStreamWriter(context.openFileOutput(image.getFileName(), Context.MODE_PRIVATE))
             stream.write(json)
             stream.close()
         } catch (e: Exception) {
             Log.e(logTag, "Unable to save image")
             e.printStackTrace()
         }
-        Log.d(logTag, "saved ${image.name} as ${image.fileName}")
+        Log.d(logTag, "saved ${image.name} as ${image.getFileName()}")
         downloading.remove(image)
     }
 
@@ -153,6 +153,7 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
         val s = Scanner(inputStream).useDelimiter("\\A")
         val json = if (s.hasNext()) s.next() else ""
         inputStream.close()
+        Log.d(logTag, "Reading json from disk: " + getSampleJson(json))
         return json
     }
 
@@ -164,7 +165,6 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
     }
 
     private fun parseTimelineImageJson(json: String): TimelineImageJson {
-        Log.d(logTag, "Parsing json " + getSampleJson(json))
         val mapper = jacksonObjectMapper()
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
         mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)

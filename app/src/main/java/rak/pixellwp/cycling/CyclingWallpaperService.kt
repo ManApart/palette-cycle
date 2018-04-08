@@ -43,11 +43,10 @@ class CyclingWallpaperService : WallpaperService() {
         private var timelineImage = prefs.getString(TIMELINE_IMAGE, "")
         private val defaultImage = ImageInfo("DefaultImage", "DefaultImage", 0)
         private var currentImage = defaultImage
-        private var currentTimelineImage: TimelineImage? = null
 
         private var drawRunner = PaletteDrawer(this, imageLoader.loadImage(defaultImage))
 
-        private var imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, drawRunner.image.width), prefs.getInt(BOTTOM, drawRunner.image.height))
+        private var imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, drawRunner.image.getImageWidth()), prefs.getInt(BOTTOM, drawRunner.image.getImageHeight()))
         var screenDimensions = Rect(imageSrc)
         private var screenOffset: Float = 0f
         private var parallax = prefs.getBoolean(PARALLAX, true)
@@ -171,8 +170,7 @@ class CyclingWallpaperService : WallpaperService() {
                 if (imageLoader.imageIsReady(image)) {
                     currentImage = image
                     if (image.isTimeline){
-                        currentTimelineImage = imageLoader.loadTimelineImage(image)
-                        drawRunner.image = currentTimelineImage!!.base
+                        drawRunner.image = imageLoader.loadTimelineImage(image)
                     } else {
                         drawRunner.image = imageLoader.loadImage(image)
                     }
@@ -267,7 +265,7 @@ class CyclingWallpaperService : WallpaperService() {
 
         fun getOffsetImage(): Rect {
             if (parallax && !isPreview) {
-                val totalPossibleOffset = drawRunner.image.width - imageSrc.width()
+                val totalPossibleOffset = drawRunner.image.getImageWidth() - imageSrc.width()
                 val offsetPixels = totalPossibleOffset * screenOffset
                 val left = offsetPixels.toInt()
                 return Rect(left, imageSrc.top, left + imageSrc.width(), imageSrc.bottom)
@@ -276,8 +274,8 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         private fun adjustImageSrc(distanceX: Float, distanceY: Float) {
-            val overlapLeft: Float = drawRunner.image.width - screenDimensions.width() / scaleFactor
-            val overLapTop: Float = drawRunner.image.height - screenDimensions.height() / scaleFactor
+            val overlapLeft: Float = drawRunner.image.getImageWidth() - screenDimensions.width() / scaleFactor
+            val overLapTop: Float = drawRunner.image.getImageHeight() - screenDimensions.height() / scaleFactor
 
             val left = clamp(imageSrc.left + distanceX / scaleFactor, 0f, overlapLeft)
             val top = clamp(imageSrc.top + distanceY / scaleFactor, 0f, overLapTop)
@@ -301,8 +299,8 @@ class CyclingWallpaperService : WallpaperService() {
 
         private fun determineMinScaleFactor() {
             //Find the smallest scale factor that leaves no border on one side
-            val w: Float = screenDimensions.width() / drawRunner.image.width.toFloat()
-            val h: Float = screenDimensions.height() / drawRunner.image.height.toFloat()
+            val w: Float = screenDimensions.width() / drawRunner.image.getImageWidth().toFloat()
+            val h: Float = screenDimensions.height() / drawRunner.image.getImageHeight().toFloat()
             minScaleFactor = Math.max(w, h)
         }
 

@@ -1,12 +1,134 @@
 [
   {
     "id": "V26",
+    "name": "Winter Forest Clear",
     "month": "01January",
-    "name": "Winter Forest Clear"
+    "script": "janclrscpt"
   },
   {
     "id": "V26SNOW",
+    "name": "Winter Forest Snow",
     "month": "01January",
-    "name": "Winter Forest Snow"
+    "script": "jansnowscpt"
+  },
+  {
+    "id": "V19",
+    "name": "Mountain Stream - Clear",
+    "month": "02February",
+    "script": "febclrscpt"
+  },
+  {
+    "id": "V19",
+    "name": "Mountain Stream - Cloudy",
+    "month": "02February",
+    "script": "febcldyscpt"
+  },
+  {
+    "id": "VW3BASIC",
+    "name": "Monolith Plains",
+    "month": "03March",
+    "script": "MARCLRSCPT"
+  },
+  {
+    "id": "V30",
+    "name": "Deep Forest - Clear",
+    "month": "04April",
+    "script": "aprclrscpt"
+  },
+  {
+    "id": "V30RAIN",
+    "name": "Deep Forest Rain",
+    "month": "04April",
+    "script": "aprrainscpt"
+  },
+  {
+    "id": "V08",
+    "name": "Jungle Waterfall - Clear",
+    "month": "05May",
+    "script": "MAYCLRSCPT"
+  },
+  {
+    "id": "V08",
+    "name": "Jungle Waterfall - Cloudy",
+    "month": "05May",
+    "script": "MAYCLDYSCPT"
+  },
+  {
+    "id": "V08RAIN",
+    "name": "Jungle Waterfall - Rain",
+    "month": "05May",
+    "script": "MAYRAINSCPT"
+  },
+  {
+    "id": "V20JOE",
+    "name": "Crystal Caves",
+    "month": "06June",
+    "script": "jundayscpt"
+  },
+  {
+    "id": "V25",
+    "name": "Desert - Clear",
+    "month": "07July",
+    "script": "julyclearscpt"
+  },
+  {
+    "id": "V25",
+    "name": "Desert - Cloudy",
+    "month": "07July",
+    "script": "julycloudyscpt"
+  },
+  {
+    "id": "CORAL",
+    "name": "Aquarius",
+    "month": "08August",
+    "script": "augclrscpt"
+  },
+  {
+    "id": "V29",
+    "name": "Seascape - Clear",
+    "month": "09September",
+    "script": "SEPTCLRCUMSCPT"
+  },
+  {
+    "id": "V29",
+    "name": "Seascape - Cloudy",
+    "month": "09September",
+    "script": "SEPTCLDYSCPT"
+  },
+  {
+    "id": "V05AM",
+    "name": "Haunted Ruins - Clear",
+    "month": "10October",
+    "script": "octbegclrscpt"
+  },
+  {
+    "id": "V05AM",
+    "name": "Haunted Ruins - Fall",
+    "month": "10October",
+    "script": "octendclrscpt"
+  },
+  {
+    "id": "V05RAIN",
+    "name": "Haunted Ruins - Rain",
+    "month": "10October",
+    "script": "octrainscpt"
+  },
+  {
+    "id": "V16",
+    "name": "Mirror Pond - Clear",
+    "month": "11November",
+    "script": "novclrscpt"
+  },
+  {
+    "id": "V16RAIN",
+    "name": "Mirror Pond - Rain",
+    "month": "11November",
+    "script": "novrainscpt"
+  },
+  {
+    "id": "V12BASIC",
+    "name": "Winter Manor",
+    "month": "12December",
+    "script": "DECCLRSCPT"
   }
 ]

@@ -5,10 +5,10 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import rak.pixellwp.cycling.jsonModels.ImageJson
 
-class ColorCyclingImage(img: ImageJson) {
-    val width = img.width
-    val height = img.height
-    private val palette = Palette(img.getParsedColors(), img.cycles)
+class ColorCyclingImage(img: ImageJson) : PaletteImage {
+    private val width = img.width
+    private val height = img.height
+    var palette = Palette(img.getParsedColors(), img.cycles)
     private val pixels = img.pixels.toList()
     private val optimizedPixels = optimizePixels(pixels)
 
@@ -22,13 +22,21 @@ class ColorCyclingImage(img: ImageJson) {
         return "image with dimensions $width x $height = ${width*height}, ${palette.colors.size} colors, ${palette.cycles.size} cycles and ${pixels.size} pixels"
     }
 
-    fun advance(timePassed: Int){
+    override fun advance(timePassed: Int){
         palette.cycle(timePassed)
         drawOptimizedImage()
     }
 
-    fun getBitmap() : Bitmap{
+    override fun getBitmap() : Bitmap{
         return bitmap
+    }
+
+    override fun getImageWidth(): Int {
+        return width
+    }
+
+    override fun getImageHeight(): Int {
+        return height
     }
 
     private fun optimizePixels(pixels: List<Int>) : List<Pixel> {

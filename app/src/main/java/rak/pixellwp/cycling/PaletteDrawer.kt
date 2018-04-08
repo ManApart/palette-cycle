@@ -6,9 +6,10 @@ import android.os.HandlerThread
 import android.util.Log
 import android.view.SurfaceHolder
 import rak.pixellwp.cycling.models.ColorCyclingImage
+import rak.pixellwp.cycling.models.PaletteImage
 import java.util.*
 
-class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaperEngine, var image: ColorCyclingImage) {
+class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaperEngine, var image: PaletteImage) {
     private val logTag = "PaletteDrawer"
     private var handlerThread = HandlerThread("drawThread")
     val id = System.currentTimeMillis()
