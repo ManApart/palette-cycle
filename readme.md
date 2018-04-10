@@ -1,6 +1,10 @@
 **TODO**
-* Make default image palette shiftable?
 * Thread leaks, performance, bugs?
+
+Timelines
+* Not blending correctly
+* Not retaining timeline preference
+* Add slider to override time of day
 
 Internal storage path: data/data/rak.pixellwp/files
 Internal storage path: data/data/rak.pixellwp/app_logs

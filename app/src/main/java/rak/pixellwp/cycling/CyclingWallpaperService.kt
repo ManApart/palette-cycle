@@ -139,6 +139,7 @@ class CyclingWallpaperService : WallpaperService() {
             return when {
                 imageCollection != "" -> imageLoader.getImageInfoForCollection(imageCollection)
                 singleImage != "" -> imageLoader.getImageInfoForImage(singleImage)
+                timelineImage != "" -> imageLoader.getImageInfoForTimeline(timelineImage)
                 else -> defaultImage
             }
         }

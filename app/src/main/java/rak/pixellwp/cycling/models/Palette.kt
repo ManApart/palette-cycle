@@ -13,7 +13,7 @@ class Palette(val id: String, colors: List<Int>, val cycles: List<Cycle>) {
     fun blendPalette(next: Palette, percent: Int): Palette {
         val mixedPalette = Palette(this.baseColors, this.cycles)
 
-        for (i in 0..baseColors.size){
+        for (i in 0 until baseColors.size){
             mixedPalette.colors[i] = fadeColors(baseColors[i], next.baseColors[i], percent)
         }
 
