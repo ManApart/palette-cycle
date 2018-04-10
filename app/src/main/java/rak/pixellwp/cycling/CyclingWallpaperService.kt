@@ -136,16 +136,17 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         private fun loadInitialImage(): ImageInfo {
+            Log.v(logTag, "Load initial image img= $singleImage, collection= $imageCollection, timeline= $timelineImage, drawer= ${drawRunner.id}")
             return when {
                 imageCollection != "" -> imageLoader.getImageInfoForCollection(imageCollection)
-                singleImage != "" -> imageLoader.getImageInfoForImage(singleImage)
                 timelineImage != "" -> imageLoader.getImageInfoForTimeline(timelineImage)
+                singleImage != "" -> imageLoader.getImageInfoForImage(singleImage)
                 else -> defaultImage
             }
         }
 
         private fun downloadFirstTimeImage() {
-            if (imageCollection == "" && singleImage == "") {
+            if (imageCollection == "" && singleImage == "" && timelineImage == "") {
                 changeCollection("Waterfall")
             }
         }
@@ -217,10 +218,12 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         private fun reloadPrefs() {
-            Log.v(logTag, "Reload prefs: img= $singleImage, drawer: ${drawRunner.id}")
             val prefCollectionVal = prefs.getString(IMAGE_COLLECTION, "")
             val prefImageVal = prefs.getString(SINGLE_IMAGE, "")
             val prefTimelineVal = prefs.getString(SINGLE_IMAGE, "")
+
+            Log.v(logTag, "Reload prefs: img= $singleImage: $prefImageVal, collection= $imageCollection: $prefCollectionVal, timeline= $timelineImage: $prefTimelineVal, drawer= ${drawRunner.id}")
+
             parallax = prefs.getBoolean(PARALLAX, parallax)
 
             imageSrc = Rect(prefs.getInt(LEFT, imageSrc.left),
@@ -230,12 +233,12 @@ class CyclingWallpaperService : WallpaperService() {
 
             imageCollection = prefCollectionVal
             singleImage = prefImageVal
+            timelineImage = prefTimelineVal
 
-            if (prefCollectionVal != "") {
-                changeCollection(imageCollection)
-            } else if (prefImageVal != "") {
-                val image = imageLoader.getImageInfoForImage(singleImage)
-                changeImage(image)
+            when {
+                prefCollectionVal != "" -> changeCollection(imageCollection)
+                prefImageVal != "" -> changeImage(singleImage)
+                prefTimelineVal != "" -> changeTimeline(timelineImage)
             }
         }
 

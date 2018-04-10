@@ -46,20 +46,17 @@ class TimelineImage(json: TimelineImageJson) : PaletteImage {
 
         val previous = timeline.getPreviousPalette(currentTime)
         if (currentTime == previous.key){
-            Log.d(logTag, "Current is previous: $currentTime, ${previous.key}")
             currentPalette = previous.value
             return currentPalette
         }
         val next = timeline.getNextPalette(currentTime)
         if (currentTime == next.key){
-            Log.d(logTag, "current is next $currentTime, ${next.key}")
             currentPalette = next.value
             return currentPalette
         }
 
         val totalDist = (next.key - previous.key)
         if (totalDist == 0){
-            Log.d(logTag, "No difference, using next $currentTime, ${next.key}")
             currentPalette = next.value
             return currentPalette
         }
@@ -68,7 +65,6 @@ class TimelineImage(json: TimelineImageJson) : PaletteImage {
         val percent: Int = ((current/ totalDist.toDouble()) * precisionInt).toInt()
 
         if (percent == lastPercent){
-            Log.d(logTag, "Blender percent hasn't changed")
             return currentPalette
         }
         lastPercent = percent
