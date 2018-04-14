@@ -5,7 +5,6 @@ import android.util.Log
 import rak.pixellwp.cycling.jsonModels.PaletteJson
 import rak.pixellwp.cycling.jsonModels.TimelineImageJson
 import java.util.*
-import kotlin.math.log
 
 class TimelineImage(json: TimelineImageJson) : PaletteImage {
     private val base: ColorCyclingImage = ColorCyclingImage(json.base)
@@ -15,6 +14,8 @@ class TimelineImage(json: TimelineImageJson) : PaletteImage {
     private var currentPalette = palettes.first()
     private val logTag = "Timeline Image"
     private var lastPercent = 0
+    private var useTimeOverride = false
+    private var overrideTime = 0
 
     private fun parsePalettes(jsonPalettes: Map<String, PaletteJson>): List<Palette> {
        return jsonPalettes.map { entry -> Palette(entry.key, entry.value) }.toList()
@@ -37,8 +38,19 @@ class TimelineImage(json: TimelineImageJson) : PaletteImage {
         return base.getImageHeight()
     }
 
+    fun setTimeOverride(time: Int){
+        useTimeOverride = true
+        overrideTime = time
+        Log.d(logTag, "Set time override to $time")
+    }
+
+    fun stopTimeOverride(){
+        useTimeOverride = false
+        Log.d(logTag, "Removed time override")
+    }
+
     private fun getCurrentPalette() : Palette {
-        val currentTime = getTimePassedInSeconds()
+        val currentTime = getSeconds()
         if (oldTimePassedInSeconds == currentTime){
             return currentPalette
         }
@@ -72,6 +84,14 @@ class TimelineImage(json: TimelineImageJson) : PaletteImage {
         Log.d(logTag, "Blending palettes for ${previous.key} and ${next.key} with current time $currentTime and percent blend $percent")
         currentPalette = previous.value.blendPalette(next.value, percent)
         return currentPalette
+    }
+
+    private fun getSeconds() : Int {
+        return if (useTimeOverride){
+            overrideTime
+        } else {
+            getTimePassedInSeconds()
+        }
     }
 
     private fun getTimePassedInSeconds() : Int {

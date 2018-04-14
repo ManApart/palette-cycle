@@ -25,11 +25,19 @@
         android:key="overrideTimelines"
         android:summary="Force Timeline Images to stay at a specific time."
         android:title="Override Timeline Time" />
-    <!--<SeekBarPreference-->
-    <!--android:key="overrideTime"-->
-    <!--android:title="Override Time"-->
-    <!--android:defaultValue="false"-->
-    <!--android:summary="If Override Timeline Time is on, Timeline Images will stay at this time."/>-->
+        <!--<Seekbar-->
+            <!--android:key="overrideTime"-->
+            <!--android:summary="If Override Timeline Time is on, Timeline Images will stay at this time."-->
+            <!--android:title="Override Time"-->
+            <!--/>-->
+
+    <!--<Preference-->
+        <!--android:layout="@layout/time_picker"-->
+        <!--android:title="stuff" />-->
+    <rak.pixellwp.cycling.preferences.TimePreference
+    android:summary="If Override Timeline Time is on, Timeline Images will stay at this time."
+        android:title="Override Time"
+        android:key="overrideTime"/>
     <Preference
         android:key="@string/bugReportButtonId"
         android:summary="Save logs to storage"
