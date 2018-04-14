@@ -12,14 +12,13 @@ import java.util.*
 
 
 class TimePreference @JvmOverloads constructor(ctxt: Context, attrs: AttributeSet? = null, defStyle: Int = android.R.attr.dialogPreferenceStyle) : DialogPreference(ctxt, attrs, defStyle) {
-    private val calendar: Calendar?
+    private val calendar = GregorianCalendar()
     private var picker: TimePicker? = null
 
     init {
 
         setPositiveButtonText(R.string.set)
         setNegativeButtonText(R.string.cancel)
-        calendar = GregorianCalendar()
     }
 
     override fun onCreateDialogView(): View {
@@ -29,20 +28,20 @@ class TimePreference @JvmOverloads constructor(ctxt: Context, attrs: AttributeSe
 
     override fun onBindDialogView(v: View) {
         super.onBindDialogView(v)
-        picker!!.currentHour = calendar!!.get(Calendar.HOUR_OF_DAY)
-        picker!!.currentMinute = calendar!!.get(Calendar.MINUTE)
+        picker!!.currentHour = calendar.get(Calendar.HOUR_OF_DAY)
+        picker!!.currentMinute = calendar.get(Calendar.MINUTE)
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {
         super.onDialogClosed(positiveResult)
 
         if (positiveResult) {
-            calendar!!.set(Calendar.HOUR_OF_DAY, picker!!.currentHour)
-            calendar!!.set(Calendar.MINUTE, picker!!.currentMinute)
+            calendar.set(Calendar.HOUR_OF_DAY, picker!!.currentHour)
+            calendar.set(Calendar.MINUTE, picker!!.currentMinute)
 
             setSummary(summary)
-            if (callChangeListener(calendar!!.timeInMillis)) {
-                persistLong(calendar!!.timeInMillis)
+            if (callChangeListener(calendar.timeInMillis)) {
+                persistLong(calendar.timeInMillis)
                 notifyChanged()
             }
         }
@@ -56,23 +55,21 @@ class TimePreference @JvmOverloads constructor(ctxt: Context, attrs: AttributeSe
 
         if (restoreValue) {
             if (defaultValue == null) {
-                calendar!!.setTimeInMillis(getPersistedLong(System.currentTimeMillis()))
+                calendar.timeInMillis = getPersistedLong(System.currentTimeMillis())
             } else {
-                calendar!!.setTimeInMillis(java.lang.Long.parseLong(getPersistedString(defaultValue as String?)))
+                calendar.timeInMillis = java.lang.Long.parseLong(getPersistedString(defaultValue as String?))
             }
         } else {
             if (defaultValue == null) {
-                calendar!!.setTimeInMillis(System.currentTimeMillis())
+                calendar.timeInMillis = System.currentTimeMillis()
             } else {
-                calendar!!.setTimeInMillis(java.lang.Long.parseLong(defaultValue as String?))
+                calendar.timeInMillis = java.lang.Long.parseLong(defaultValue as String?)
             }
         }
         setSummary(summary)
     }
 
     override fun getSummary(): CharSequence? {
-        return if (calendar == null) {
-            null
-        } else DateFormat.getTimeFormat(context).format(Date(calendar!!.timeInMillis))
+        return DateFormat.getTimeFormat(context).format(Date(calendar.timeInMillis))
     }
 }

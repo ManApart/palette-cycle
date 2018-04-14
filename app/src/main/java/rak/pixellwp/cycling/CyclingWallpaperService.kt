@@ -77,7 +77,7 @@ class CyclingWallpaperService : WallpaperService() {
                 val prefTimelineVal = prefs.getString(TIMELINE_IMAGE, timelineImage)
                 parallax = preference.getBoolean(PARALLAX, parallax)
                 val prefOverrideTimeline = preference.getBoolean(OVERRIDE_TIMELINE, overrideTimeline)
-                val prefOverrideTime = preference.getInt(OVERRIDE_TIME, 60*60*12)
+                val prefOverrideTime = preference.getLong(OVERRIDE_TIME, System.currentTimeMillis())
 
                 imageSrc = Rect(preference.getInt(LEFT, imageSrc.left),
                         preference.getInt(TOP, imageSrc.top),
@@ -226,7 +226,7 @@ class CyclingWallpaperService : WallpaperService() {
             val prefImageVal = prefs.getString(SINGLE_IMAGE, "")
             val prefTimelineVal = prefs.getString(TIMELINE_IMAGE, "")
             val prefOverrideTimeline = prefs.getBoolean(OVERRIDE_TIMELINE, overrideTimeline)
-            val prefOverrideTime = prefs.getInt(OVERRIDE_TIME, 60*60*12)
+            val prefOverrideTime = prefs.getLong(OVERRIDE_TIME, System.currentTimeMillis())
 
             Log.v(logTag, "Reload prefs: img= $singleImage: $prefImageVal, collection= $imageCollection: $prefCollectionVal, timeline= $timelineImage: $prefTimelineVal, timeline override: ${if (prefOverrideTimeline) "$prefOverrideTime" else "off" } drawer= ${drawRunner.id}")
 
@@ -250,7 +250,7 @@ class CyclingWallpaperService : WallpaperService() {
             }
         }
 
-        private fun updateTimelineOverride(prefOverrideTimeline: Boolean, prefOverrideTime: Int) {
+        private fun updateTimelineOverride(prefOverrideTimeline: Boolean, prefOverrideTime: Long) {
             Log.d(logTag, "Updating override time: ${if (prefOverrideTimeline) "$prefOverrideTime" else "off" }")
             if (prefOverrideTimeline != overrideTimeline && timelineImage != "" && drawRunner.image is TimelineImage) {
                 val image: TimelineImage = drawRunner.image as TimelineImage

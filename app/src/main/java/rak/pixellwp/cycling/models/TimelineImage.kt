@@ -18,15 +18,15 @@ class TimelineImage(json: TimelineImageJson) : PaletteImage {
     private var overrideTime = 0
 
     private fun parsePalettes(jsonPalettes: Map<String, PaletteJson>): List<Palette> {
-       return jsonPalettes.map { entry -> Palette(entry.key, entry.value) }.toList()
+        return jsonPalettes.map { entry -> Palette(entry.key, entry.value) }.toList()
     }
 
-    override fun advance(timePassed: Int){
+    override fun advance(timePassed: Int) {
         base.palette = getCurrentPalette()
         base.advance(timePassed)
     }
 
-    override fun getBitmap() : Bitmap {
+    override fun getBitmap(): Bitmap {
         return base.getBitmap()
     }
 
@@ -38,45 +38,47 @@ class TimelineImage(json: TimelineImageJson) : PaletteImage {
         return base.getImageHeight()
     }
 
-    fun setTimeOverride(time: Int){
+    fun setTimeOverride(time: Long) {
         useTimeOverride = true
-        overrideTime = time
+        val cal = GregorianCalendar()
+        cal.timeInMillis = time
+        overrideTime = getSecondsInDay(cal)
         Log.d(logTag, "Set time override to $time")
     }
 
-    fun stopTimeOverride(){
+    fun stopTimeOverride() {
         useTimeOverride = false
         Log.d(logTag, "Removed time override")
     }
 
-    private fun getCurrentPalette() : Palette {
+    private fun getCurrentPalette(): Palette {
         val currentTime = getSeconds()
-        if (oldTimePassedInSeconds == currentTime){
+        if (oldTimePassedInSeconds == currentTime) {
             return currentPalette
         }
         oldTimePassedInSeconds = currentTime
 
         val previous = timeline.getPreviousPalette(currentTime)
-        if (currentTime == previous.key){
+        if (currentTime == previous.key) {
             currentPalette = previous.value
             return currentPalette
         }
         val next = timeline.getNextPalette(currentTime)
-        if (currentTime == next.key){
+        if (currentTime == next.key) {
             currentPalette = next.value
             return currentPalette
         }
 
         val totalDist = (next.key - previous.key)
-        if (totalDist == 0){
+        if (totalDist == 0) {
             currentPalette = next.value
             return currentPalette
         }
 
         val current = currentTime - previous.key
-        val percent: Int = ((current/ totalDist.toDouble()) * precisionInt).toInt()
+        val percent: Int = ((current / totalDist.toDouble()) * precisionInt).toInt()
 
-        if (percent == lastPercent){
+        if (percent == lastPercent) {
             return currentPalette
         }
         lastPercent = percent
@@ -86,16 +88,21 @@ class TimelineImage(json: TimelineImageJson) : PaletteImage {
         return currentPalette
     }
 
-    private fun getSeconds() : Int {
-        return if (useTimeOverride){
+    private fun getSeconds(): Int {
+        return if (useTimeOverride) {
             overrideTime
         } else {
             getTimePassedInSeconds()
         }
     }
 
-    private fun getTimePassedInSeconds() : Int {
+    private fun getTimePassedInSeconds(): Int {
         val time = Calendar.getInstance()
-        return time.get(Calendar.SECOND) + time.get(Calendar.MINUTE)*60 + time.get(Calendar.HOUR)*60*60
+        return getSecondsInDay(time)
     }
+
+    private fun getSecondsInDay(time: Calendar): Int {
+        return time.get(Calendar.SECOND) + time.get(Calendar.MINUTE) * 60 + time.get(Calendar.HOUR) * 60 * 60
+    }
+
 }
