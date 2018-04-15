@@ -5,6 +5,6 @@
     <string name="bugReportButtonTitle">Get Logs</string>
     <string name="credits">App by Austin Kucera \nArt by Mark Ferrari \nOriginal code (and BlendShift Technology) by Joseph Huckaby</string>
     <string name="logSaveButton">Write Files</string>
-    <string name="set">set</string>
-    <string name="cancel">cancel</string>
+    <string name="set">Set</string>
+    <string name="cancel">Cancel</string>
 </resources>

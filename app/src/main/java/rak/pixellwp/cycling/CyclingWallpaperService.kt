@@ -15,6 +15,7 @@ import rak.pixellwp.cycling.jsonLoading.ImageLoader
 import rak.pixellwp.cycling.jsonModels.ImageInfo
 import rak.pixellwp.cycling.jsonModels.TimelineImageJson
 import rak.pixellwp.cycling.models.TimelineImage
+import rak.pixellwp.cycling.models.getHourFromSeconds
 import java.util.*
 
 
@@ -251,7 +252,7 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         private fun updateTimelineOverride(prefOverrideTimeline: Boolean, prefOverrideTime: Long) {
-            Log.d(logTag, "Updating override time: ${if (prefOverrideTimeline) "$prefOverrideTime" else "off" }")
+//            Log.d(logTag, "Updating override time: ${if (prefOverrideTimeline) "$prefOverrideTime (${getHourFromSeconds(prefOverrideTime.toInt())}" else "off" }")
             if (prefOverrideTimeline != overrideTimeline && timelineImage != "" && drawRunner.image is TimelineImage) {
                 val image: TimelineImage = drawRunner.image as TimelineImage
                 if (prefOverrideTimeline) {

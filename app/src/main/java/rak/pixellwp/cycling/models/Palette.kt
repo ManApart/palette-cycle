@@ -4,14 +4,14 @@ import android.graphics.Color
 import rak.pixellwp.cycling.jsonModels.PaletteJson
 
 class Palette(val id: String, colors: List<Int>, val cycles: List<Cycle>) {
-    constructor(colors: List<Int>, cycles: List<Cycle>) : this("", colors, cycles)
     constructor(id: String, paletteJson: PaletteJson) : this(id, paletteJson.parsedColors, paletteJson.cycles)
+    constructor(colors: List<Int>, cycles: List<Cycle>) : this("", colors, cycles)
 
     private val baseColors = colors
     var colors = baseColors.toMutableList()
 
     fun blendPalette(next: Palette, percent: Int): Palette {
-        val mixedPalette = Palette(this.baseColors, this.cycles)
+        val mixedPalette = Palette(colors = this.baseColors, cycles = this.cycles)
 
         for (i in 0 until baseColors.size){
             mixedPalette.colors[i] = fadeColors(baseColors[i], next.baseColors[i], percent)
@@ -33,7 +33,7 @@ class Palette(val id: String, colors: List<Int>, val cycles: List<Cycle>) {
                 }
     }
 
-    private fun shiftColors(colors: MutableList<Int>, cycle: Cycle, amount: Double) {
+    fun shiftColors(colors: MutableList<Int>, cycle: Cycle, amount: Double) {
         val intAmount = amount.toInt()
         for (i in 0 until intAmount) {
             val temp = colors[cycle.high]
