@@ -21,7 +21,7 @@ class TimelineImage(json: TimelineImageJson) : PaletteImage {
         if (!useTimeOverride) {
             overrideTime.setTime(System.currentTimeMillis())
         }
-        base.palette = timeline.getCurrentPalette(overrideTime.getTotalSeconds())
+        base.palette = timeline.getCurrentPalette(base.palette, overrideTime.getTotalSeconds())
         base.advance(timePassed)
     }
 

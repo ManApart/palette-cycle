@@ -18,8 +18,8 @@ class Timeline(entries: Map<String, String>, palettes: List<Palette>) {
         return map
     }
 
-    fun getCurrentPalette(currentTime: Int) : Palette{
-        return blender.getCurrentPalette(currentTime, getPreviousPalette(currentTime), getNextPalette(currentTime))
+    fun getCurrentPalette(current: Palette, currentTime: Int) : Palette{
+        return blender.getCurrentPalette(current, currentTime, getPreviousPalette(currentTime), getNextPalette(currentTime))
     }
 
     fun getPreviousPalette(currentTime: Int): Map.Entry<Int, Palette> {
