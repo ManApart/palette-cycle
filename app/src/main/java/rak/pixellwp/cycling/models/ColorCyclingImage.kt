@@ -8,9 +8,10 @@ import rak.pixellwp.cycling.jsonModels.ImageJson
 class ColorCyclingImage(img: ImageJson) : PaletteImage {
     private val width = img.width
     private val height = img.height
-    var palette = Palette(colors = img.getParsedColors(), cycles = img.cycles)
+    private var palette = Palette(colors = img.getParsedColors(), cycles = img.cycles)
     private val pixels = img.pixels.toList()
     private var optimizedPixels = optimizePixels(pixels)
+    private var drawUnOptimized = true
 
     private val bitmap: Bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
 
@@ -24,8 +25,7 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
 
     override fun advance(timePassed: Int){
         palette.cycle(timePassed)
-        drawImage()
-//        drawOptimizedImage()
+        draw()
     }
 
     override fun getBitmap() : Bitmap{
@@ -40,7 +40,16 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
         return height
     }
 
-    fun optimizePixels(){
+    fun setPalette(palette: Palette){
+        this.palette = palette
+        drawUnOptimized = true
+    }
+
+    fun getPalette(): Palette{
+        return palette
+    }
+
+    private fun optimizePixels(){
         optimizedPixels = optimizePixels(pixels)
     }
 
@@ -76,6 +85,16 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
             }
         }
     }
+
+    private fun draw() {
+        if (drawUnOptimized){
+            drawImage()
+            drawUnOptimized = false
+        } else {
+            drawOptimizedImage()
+        }
+    }
+
     private fun drawImage() {
         val canvas = Canvas(bitmap)
         val p = Paint()

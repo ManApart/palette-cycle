@@ -47,14 +47,13 @@ class TimelineBlender(defaultPalette: Map.Entry<Int, Palette>) {
         return (adjustedNext - previous)
     }
 
-    fun getPercent(currentTime: Int, previous: Int, totalDist: Int): Int {
+    private fun getPercent(currentTime: Int, previous: Int, totalDist: Int): Int {
         val adjustedCurrent = if (currentTime < previous) currentTime + getSecondsFromHour(24) else currentTime
-//        Log.d(logTag, "current: $currentTime, adj: $adjustedCurrent, previous: $previous, totalDist: $totalDist")
         val progress = adjustedCurrent - previous
         return ((progress / totalDist.toDouble()) * precisionInt).toInt()
     }
 
-    fun getBlendedPalette(current: Palette, currentTime: Int, percent: Int, previous: Map.Entry<Int, Palette>, next: Map.Entry<Int, Palette>) : Palette {
+    private fun getBlendedPalette(current: Palette, currentTime: Int, percent: Int, previous: Map.Entry<Int, Palette>, next: Map.Entry<Int, Palette>) : Palette {
         if (percent == lastPercent) {
             return currentPalette
         }
@@ -62,7 +61,6 @@ class TimelineBlender(defaultPalette: Map.Entry<Int, Palette>) {
 
         Log.d(logTag, "Blending palettes for ${previous.key} (${getTimeString(previous.key)}) and ${next.key} (${getTimeString(next.key)}) with current time $currentTime (${getTimeString(currentTime)}) and percent blend $percent")
         return current.blendPalette(previous.value, next.value, percent)
-//        return previous.value.blendPalette(next.value, percent)
     }
 
 

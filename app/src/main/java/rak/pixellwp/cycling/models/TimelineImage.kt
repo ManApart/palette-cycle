@@ -21,7 +21,10 @@ class TimelineImage(json: TimelineImageJson) : PaletteImage {
         if (!useTimeOverride) {
             overrideTime.setTime(System.currentTimeMillis())
         }
-        base.palette = timeline.getCurrentPalette(base.palette, overrideTime.getTotalSeconds())
+        val newPalette = timeline.getCurrentPalette(base.getPalette(), overrideTime.getTotalSeconds())
+        if (base.getPalette() != newPalette){
+            base.setPalette(newPalette)
+        }
         base.advance(timePassed)
     }
 

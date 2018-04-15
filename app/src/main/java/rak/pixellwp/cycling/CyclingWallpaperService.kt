@@ -229,7 +229,9 @@ class CyclingWallpaperService : WallpaperService() {
             val prefOverrideTimeline = prefs.getBoolean(OVERRIDE_TIMELINE, overrideTimeline)
             val prefOverrideTime = prefs.getLong(OVERRIDE_TIME, System.currentTimeMillis())
 
-            Log.v(logTag, "Reload prefs: img= $singleImage: $prefImageVal, collection= $imageCollection: $prefCollectionVal, timeline= $timelineImage: $prefTimelineVal, timeline override: ${if (prefOverrideTimeline) "$prefOverrideTime" else "off" } drawer= ${drawRunner.id}")
+            if (singleImage != prefImageVal || imageCollection != prefCollectionVal || timelineImage != prefTimelineVal || prefOverrideTimeline != overrideTimeline) {
+                Log.v(logTag, "Reload prefs: img= $singleImage: $prefImageVal, collection= $imageCollection: $prefCollectionVal, timeline= $timelineImage: $prefTimelineVal, timeline override: ${if (prefOverrideTimeline) "$prefOverrideTime" else "off"} drawer= ${drawRunner.id}")
+            }
 
             parallax = prefs.getBoolean(PARALLAX, parallax)
 

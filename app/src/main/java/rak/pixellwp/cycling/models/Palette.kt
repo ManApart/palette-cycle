@@ -9,32 +9,21 @@ class Palette(val id: String = "", colors: List<Int>, val cycles: List<Cycle>) {
     private val baseColors = colors
     var colors = baseColors.toMutableList()
 
-//    fun blendPalette(next: Palette, percent: Int): Palette {
-//        val mixedPalette = Palette(colors = this.baseColors, cycles = this.cycles)
-//
+//    fun blendPalette(previous: Palette, next: Palette, percent: Int): Palette {
+//        val mixedColors = IntArray(256)
 //        for (i in 0 until baseColors.size){
-//            mixedPalette.colors[i] = fadeColors(baseColors[i], next.baseColors[i], percent)
+//            mixedColors[i] = (fadeColors(previous.baseColors[i], next.baseColors[i], percent))
 //        }
-//
-//        return mixedPalette
+//        return Palette(colors = mixedColors.toList(), cycles = this.cycles)
 //    }
-
+//
     fun blendPalette(previous: Palette, next: Palette, percent: Int): Palette {
         val mixedColors = mutableListOf<Int>()
         for (i in 0 until baseColors.size){
             mixedColors.add(fadeColors(previous.baseColors[i], next.baseColors[i], percent))
         }
-        return Palette(colors = next.baseColors, cycles = this.cycles)
-//        return Palette(colors = this.baseColors, cycles = this.cycles)
+        return Palette(colors = mixedColors, cycles = this.cycles)
     }
-//
-//    fun blendPalette(previous: Palette, next: Palette, percent: Int): Palette {
-//        val mixedColors = mutableListOf<Int>()
-//        for (i in 0 until baseColors.size){
-//            mixedColors[i] = fadeColors(previous.baseColors[i], next.baseColors[i], percent)
-//        }
-//        return Palette(colors = mixedColors, cycles = this.cycles)
-//    }
 
     fun cycle(timePassed: Int) {
         //it's important we copy the base values as each time we cycle it 'starts from 0'; it's not additive

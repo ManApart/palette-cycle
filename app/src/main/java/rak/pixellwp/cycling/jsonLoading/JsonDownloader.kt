@@ -66,7 +66,7 @@ class JsonDownloader(private val image: ImageInfo, private val listener: JsonDow
 
     private fun getFullUrl(image: ImageInfo) : String {
         return if (image.isTimeline){
-            timelineImageUrl + image.id + "&month=" + image.month + "&script=" + image.script
+            timelineImageUrl + image.getJustId() + "&month=" + image.month + "&script=" + image.script
         } else {
             imageUrl + image.id
         }
