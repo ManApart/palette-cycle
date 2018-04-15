@@ -252,15 +252,16 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         private fun updateTimelineOverride(prefOverrideTimeline: Boolean, prefOverrideTime: Long) {
-//            Log.d(logTag, "Updating override time: ${if (prefOverrideTimeline) "$prefOverrideTime (${getHourFromSeconds(prefOverrideTime.toInt())}" else "off" }")
-            if (prefOverrideTimeline != overrideTimeline && timelineImage != "" && drawRunner.image is TimelineImage) {
+            if (timelineImage != "" && drawRunner.image is TimelineImage) {
                 val image: TimelineImage = drawRunner.image as TimelineImage
-                if (prefOverrideTimeline) {
-                    image.setTimeOverride(prefOverrideTime)
-                } else {
-                    image.stopTimeOverride()
+                if (prefOverrideTimeline != overrideTimeline || prefOverrideTime != image.getOverrideTime()){
+                    if (prefOverrideTimeline) {
+                        image.setTimeOverride(prefOverrideTime)
+                    } else {
+                        image.stopTimeOverride()
+                    }
+                    overrideTimeline = prefOverrideTimeline
                 }
-                overrideTimeline = prefOverrideTimeline
             }
         }
 

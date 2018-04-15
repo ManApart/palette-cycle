@@ -27,8 +27,8 @@ class TimePreference @JvmOverloads constructor(ctxt: Context, attrs: AttributeSe
 
     override fun onBindDialogView(v: View) {
         super.onBindDialogView(v)
-        picker.currentHour = calendar.getHour()
-        picker.currentMinute = calendar.getMinute()
+        picker.currentHour = calendar.getHours()
+        picker.currentMinute = calendar.getMinutes()
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {
@@ -68,6 +68,6 @@ class TimePreference @JvmOverloads constructor(ctxt: Context, attrs: AttributeSe
     }
 
     override fun getSummary(): CharSequence {
-        return calendar.getFormattedTime(context)
+        return calendar.get12HourFormattedString()
     }
 }

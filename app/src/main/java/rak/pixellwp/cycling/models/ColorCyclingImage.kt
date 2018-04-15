@@ -10,7 +10,7 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
     private val height = img.height
     var palette = Palette(img.getParsedColors(), img.cycles)
     private val pixels = img.pixels.toList()
-    private val optimizedPixels = optimizePixels(pixels)
+    private var optimizedPixels = optimizePixels(pixels)
 
     private val bitmap: Bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
 
@@ -37,6 +37,10 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
 
     override fun getImageHeight(): Int {
         return height
+    }
+
+    fun optimizePixels(){
+        optimizedPixels = optimizePixels(pixels)
     }
 
     private fun optimizePixels(pixels: List<Int>) : List<Pixel> {

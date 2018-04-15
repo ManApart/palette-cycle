@@ -43,14 +43,15 @@ class TimelineBlender(defaultPalette: Map.Entry<Int, Palette>) {
     }
 
     fun getDist(previous: Int, next: Int) : Int {
-        val adjustedNext = if (next < previous) next+ getSecondsFromHour(24) else next
+        val adjustedNext = if (next < previous) next + getSecondsFromHour(24) else next
         return (adjustedNext - previous)
     }
 
     fun getPercent(currentTime: Int, previous: Int, totalDist: Int): Int {
-        val current = currentTime - previous
-        val percent: Int = ((current / totalDist.toDouble()) * precisionInt).toInt()
-        return percent
+        val adjustedCurrent = if (currentTime < previous) currentTime + getSecondsFromHour(24) else currentTime
+//        Log.d(logTag, "current: $currentTime, adj: $adjustedCurrent, previous: $previous, totalDist: $totalDist")
+        val progress = adjustedCurrent - previous
+        return ((progress / totalDist.toDouble()) * precisionInt).toInt()
     }
 
     fun getBlendedPalette(currentTime: Int, percent: Int, previous: Map.Entry<Int, Palette>, next: Map.Entry<Int, Palette>) : Palette {

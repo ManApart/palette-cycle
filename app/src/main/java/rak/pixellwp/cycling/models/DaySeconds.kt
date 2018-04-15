@@ -1,62 +1,89 @@
 package rak.pixellwp.cycling.models
 
-import android.content.Context
-import android.text.format.DateFormat
 import android.widget.TimePicker
-import java.util.*
 
-
+/*
+    Class stores time for a single day as milliseconds
+ */
 class DaySeconds {
-    private val calendar = Calendar.getInstance()
+    private val maxMilliseconds = getMilliFromSeconds(getSecondsFromHour(24))
+    private var timeInMillis: Long = 0
 
     override fun toString(): String {
-        return getHourMinuteString() + ", milli: ${calendar.timeInMillis}"
+        return get24HourFormattedString() + ", milli: $timeInMillis"
     }
 
-    fun getHour(): Int {
-        return calendar[Calendar.HOUR_OF_DAY]
+    fun getHours(): Int {
+        return getHourFromSeconds(getSecondsFromMilli(timeInMillis))
     }
 
-    fun getMinute(): Int {
-        return calendar[Calendar.MINUTE]
+    fun getMinutes(): Int {
+        return getMinutesFromSeconds(getSecondsFromMilli(timeInMillis)) % 60
     }
 
-    fun setTime(time: Long) {
-        calendar.timeInMillis = time
-        System.out.print("set: $time, ${calendar.timeInMillis}")
-    }
-
-    fun setTime(picker: TimePicker) {
-        calendar.set(Calendar.HOUR_OF_DAY, picker.currentHour)
-        calendar.set(Calendar.MINUTE, picker.currentMinute)
+    fun getSeconds(): Int {
+        return getSecondsFromMilli(timeInMillis) % 60
     }
 
     fun getMilliseconds(): Long {
-        return calendar.timeInMillis
+        return timeInMillis
     }
 
-    fun getSecondsInDay(): Int {
-        return calendar.get(Calendar.SECOND) + calendar.get(Calendar.MINUTE) * 60 + calendar.get(Calendar.HOUR) * 60 * 60
+    fun getTotalSeconds(): Int {
+        return getSecondsFromMilli(timeInMillis)
     }
 
-    fun getFormattedTime(context: Context): String {
-        return DateFormat.getTimeFormat(context).format(Date(calendar.timeInMillis))
+    fun setTime(time: Long) {
+        val adjustedTime = if (time > maxMilliseconds){
+            time % maxMilliseconds
+        } else {
+            time
+        }
+//        Log.d("dayseconds", "set time from $time to $adjustedTime")
+        timeInMillis = adjustedTime
     }
 
-    fun getHourMinuteString() : String {
-        return "${getHour()}:${getMinute()}"
+    fun setTime(picker: TimePicker) {
+        timeInMillis = getMilliFromSeconds(getSecondsFromHour(picker.currentHour) + getSecondsFromMinute(picker.currentMinute))
+    }
+
+    fun get24HourFormattedString() : String {
+        return String.format("%02d:%02d", getHours(), getMinutes())
+    }
+    fun get12HourFormattedString() : String {
+        val hours = getHours()
+        val adjust = (hours > 12)
+        val adjustedHours = if (adjust) hours-12 else hours
+        val amPm = if (adjust) "pm" else "am"
+        return String.format("%02d:%02d", adjustedHours, getMinutes()) + amPm
     }
 
 }
 
 fun getTimeString(time: Int): String {
-    return getTimeString(time.toLong())
+    return getTimeString(getMilliFromSeconds(time))
 }
 
 fun getTimeString(time: Long): String {
     val cal = DaySeconds()
     cal.setTime(time)
-    return cal.getHourMinuteString()
+    return cal.get24HourFormattedString()
+}
+
+private fun getSecondsFromMilli(milli: Long) : Int{
+    return (milli / 1000).toInt()
+}
+
+private fun getMilliFromSeconds(seconds: Int) : Long{
+    return (seconds * 1000).toLong()
+}
+
+fun getSecondsFromMinute(minute: Int): Int {
+    return minute * 60
+}
+
+fun getMinutesFromSeconds(seconds: Int): Int {
+    return seconds / 60
 }
 
 fun getSecondsFromHour(hour: Int): Int {

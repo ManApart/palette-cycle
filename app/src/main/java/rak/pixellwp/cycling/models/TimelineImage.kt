@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.util.Log
 import rak.pixellwp.cycling.jsonModels.PaletteJson
 import rak.pixellwp.cycling.jsonModels.TimelineImageJson
-import java.util.*
 
 class TimelineImage(json: TimelineImageJson) : PaletteImage {
     private val base: ColorCyclingImage = ColorCyclingImage(json.base)
@@ -19,8 +18,10 @@ class TimelineImage(json: TimelineImageJson) : PaletteImage {
     }
 
     override fun advance(timePassed: Int) {
-        val currentTime = getSeconds()
-        base.palette = timeline.getCurrentPalette(currentTime)
+        if (!useTimeOverride) {
+            overrideTime.setTime(System.currentTimeMillis())
+        }
+        base.palette = timeline.getCurrentPalette(overrideTime.getTotalSeconds())
         base.advance(timePassed)
     }
 
@@ -39,19 +40,16 @@ class TimelineImage(json: TimelineImageJson) : PaletteImage {
     fun setTimeOverride(time: Long) {
         useTimeOverride = true
         overrideTime.setTime(time)
-        Log.d(logTag, "Set time override to $time, ${getTimeString(time)}, ${overrideTime.getHourMinuteString()}")
+//        Log.d(logTag, "Set time override to $time, ${getTimeString(time)}, ${overrideTime.get24HourFormattedString()}")
     }
 
     fun stopTimeOverride() {
         useTimeOverride = false
-        Log.d(logTag, "Removed time override")
+//        Log.d(logTag, "Removed time override")
     }
 
-    private fun getSeconds(): Int {
-        if (!useTimeOverride) {
-            overrideTime.setTime(System.currentTimeMillis())
-        }
-        return overrideTime.getSecondsInDay()
+    fun getOverrideTime() : Long {
+        return overrideTime.getMilliseconds()
     }
 
 }
