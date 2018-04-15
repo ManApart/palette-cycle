@@ -106,7 +106,9 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
 
     fun loadTimelineImage(image: ImageInfo): TimelineImage {
         val json: String = readJson(loadInputStream(image.getFileName()))
-        return TimelineImage(parseTimelineImageJson(json))
+        val timelineImage = TimelineImage(parseTimelineImageJson(json))
+        timelineImage.loadOverrides(image)
+        return timelineImage
     }
 
     fun imageIsReady(image: ImageInfo): Boolean {

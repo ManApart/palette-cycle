@@ -2,6 +2,8 @@ package rak.pixellwp.cycling.models
 
 import android.graphics.Bitmap
 import android.util.Log
+import rak.pixellwp.cycling.jsonModels.ColorJson
+import rak.pixellwp.cycling.jsonModels.ImageInfo
 import rak.pixellwp.cycling.jsonModels.PaletteJson
 import rak.pixellwp.cycling.jsonModels.TimelineImageJson
 
@@ -40,15 +42,25 @@ class TimelineImage(json: TimelineImageJson) : PaletteImage {
         return base.getImageHeight()
     }
 
+    fun loadOverrides(imageInfo: ImageInfo){
+        if (imageInfo.remap.isNotEmpty()){
+            Log.d(logTag, "remapping ${imageInfo.name} with map ${imageInfo.remap.keys}")
+            imageInfo.remap.entries.forEach { entry ->
+                for (palette in palettes){
+                    palette.baseColors[entry.key] = ColorJson(entry.value).rgb
+                }
+            }
+        }
+    }
+
+
     fun setTimeOverride(time: Long) {
         useTimeOverride = true
         overrideTime.setTime(time)
-//        Log.d(logTag, "Set time override to $time, ${getTimeString(time)}, ${overrideTime.get24HourFormattedString()}")
     }
 
     fun stopTimeOverride() {
         useTimeOverride = false
-//        Log.d(logTag, "Removed time override")
     }
 
     fun getOverrideTime() : Long {

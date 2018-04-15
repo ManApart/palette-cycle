@@ -1,28 +1,21 @@
 package rak.pixellwp.cycling.models
 
 import android.graphics.Color
+import android.util.Log
 import rak.pixellwp.cycling.jsonModels.PaletteJson
 
 class Palette(val id: String = "", colors: List<Int>, val cycles: List<Cycle>) {
     constructor(id: String = "", paletteJson: PaletteJson) : this(id, paletteJson.parsedColors, paletteJson.cycles)
 
-    private val baseColors = colors
+    val baseColors = colors.toMutableList()
     var colors = baseColors.toMutableList()
 
-//    fun blendPalette(previous: Palette, next: Palette, percent: Int): Palette {
-//        val mixedColors = IntArray(256)
-//        for (i in 0 until baseColors.size){
-//            mixedColors[i] = (fadeColors(previous.baseColors[i], next.baseColors[i], percent))
-//        }
-//        return Palette(colors = mixedColors.toList(), cycles = this.cycles)
-//    }
-//
     fun blendPalette(previous: Palette, next: Palette, percent: Int): Palette {
-        val mixedColors = mutableListOf<Int>()
+        val mixedColors = baseColors.toIntArray()
         for (i in 0 until baseColors.size){
-            mixedColors.add(fadeColors(previous.baseColors[i], next.baseColors[i], percent))
+            mixedColors[i] = (fadeColors(previous.baseColors[i], next.baseColors[i], percent))
         }
-        return Palette(colors = mixedColors, cycles = this.cycles)
+        return Palette(colors = mixedColors.toList(), cycles = this.cycles)
     }
 
     fun cycle(timePassed: Int) {
