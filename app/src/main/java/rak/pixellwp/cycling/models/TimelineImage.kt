@@ -6,6 +6,8 @@ import rak.pixellwp.cycling.jsonModels.ColorJson
 import rak.pixellwp.cycling.jsonModels.ImageInfo
 import rak.pixellwp.cycling.jsonModels.PaletteJson
 import rak.pixellwp.cycling.jsonModels.TimelineImageJson
+import java.util.*
+
 
 class TimelineImage(json: TimelineImageJson) : PaletteImage {
     private val base: ColorCyclingImage = ColorCyclingImage(json.base)
@@ -21,7 +23,7 @@ class TimelineImage(json: TimelineImageJson) : PaletteImage {
 
     override fun advance(timePassed: Int) {
         if (!useTimeOverride) {
-            overrideTime.setTime(System.currentTimeMillis())
+            overrideTime.setTimeToNow()
         }
         val newPalette = timeline.getCurrentPalette(base.getPalette(), overrideTime.getTotalSeconds())
         if (base.getPalette() != newPalette){

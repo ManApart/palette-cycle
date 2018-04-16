@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.TimePicker
 import rak.pixellwp.R
 import rak.pixellwp.cycling.models.DaySeconds
+import java.util.*
 
 
 class TimePreference @JvmOverloads constructor(ctxt: Context, attrs: AttributeSet? = null, defStyle: Int = android.R.attr.dialogPreferenceStyle) : DialogPreference(ctxt, attrs, defStyle) {
@@ -50,16 +51,15 @@ class TimePreference @JvmOverloads constructor(ctxt: Context, attrs: AttributeSe
     }
 
     override fun onSetInitialValue(restoreValue: Boolean, defaultValue: Any?) {
-
         if (restoreValue) {
             if (defaultValue == null) {
-                calendar.setTime(getPersistedLong(System.currentTimeMillis()))
+                calendar.setTime(getPersistedLong(GregorianCalendar().timeInMillis))
             } else {
                 calendar.setTime(java.lang.Long.parseLong(getPersistedString(defaultValue as String?)))
             }
         } else {
             if (defaultValue == null) {
-                calendar.setTime(System.currentTimeMillis())
+                calendar.setTime(GregorianCalendar().timeInMillis)
             } else {
                 calendar.setTime(java.lang.Long.parseLong(defaultValue as String?))
             }

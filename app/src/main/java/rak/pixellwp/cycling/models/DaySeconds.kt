@@ -1,6 +1,8 @@
 package rak.pixellwp.cycling.models
 
+import android.util.Log
 import android.widget.TimePicker
+import java.util.*
 
 /*
     Class stores time for a single day as milliseconds
@@ -39,12 +41,22 @@ class DaySeconds {
         } else {
             time
         }
-//        Log.d("dayseconds", "set time from $time to $adjustedTime")
         timeInMillis = adjustedTime
+        Log.d("dayseconds", "set time from $time to ${get24HourFormattedString()}")
     }
 
+    fun setTimeToNow(){
+        val now = GregorianCalendar()
+        setTime(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE))
+    }
+
+
     fun setTime(picker: TimePicker) {
-        timeInMillis = getMilliFromSeconds(getSecondsFromHour(picker.currentHour) + getSecondsFromMinute(picker.currentMinute))
+        setTime(picker.currentHour, picker.currentMinute)
+    }
+
+    fun setTime(hours: Int, minutes: Int){
+        timeInMillis = getMilliFromSeconds(getSecondsFromHour(hours) + getSecondsFromMinute(minutes))
     }
 
     fun get24HourFormattedString() : String {
