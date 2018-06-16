@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <rak.pixellwp.cycling.preferences.TimelinePreference
+        android:key="timelineImage"
+        android:summary="Choose a single image that will change constantly throughout the day"
+        android:title="Timeline Image" />
     <ListPreference
         android:defaultValue="Waterfall"
         android:entries="@array/ImageCollections"
@@ -7,10 +11,6 @@
         android:key="imageCollection"
         android:summary="Choose an image that will change at several points throughout the day"
         android:title="Image Collection" />
-    <rak.pixellwp.cycling.preferences.TimelinePreference
-        android:key="timelineImage"
-        android:summary="Choose a single image that will change constantly throughout the day"
-        android:title="Timeline Image" />
     <rak.pixellwp.cycling.preferences.ImagePreference
         android:key="singleImage"
         android:summary="Choose a single image that won't change"
