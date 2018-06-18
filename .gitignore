@@ -13,3 +13,7 @@ gradle/
 logs/
 keys/
 app/release/
+.project
+.settings/
+.vscode/
+app/.classpath
