@@ -24,10 +24,10 @@ class GetDistanceTest(private val previous: Int, private val next: Int, private 
         }
     }
 
-    @Test
-    fun getDistance() {
-        val blender = createTimelineBlender()
-        val distance = blender.getDist(getSecondsFromHour(previous), getSecondsFromHour(next))
-        Assert.assertEquals(expectedDistance, getHourFromSeconds(distance))
-    }
+//    @Test
+//    fun getDistance() {
+//        val blender = createTimelineBlender()
+//        val distance = blender.getDist(getSecondsFromHour(previous), getSecondsFromHour(next))
+//        Assert.assertEquals(expectedDistance, getHourFromSeconds(distance))
+//    }
 }
