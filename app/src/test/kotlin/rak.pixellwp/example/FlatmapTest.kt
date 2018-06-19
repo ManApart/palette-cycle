@@ -5,12 +5,12 @@ import org.junit.Test
 import rak.pixellwp.cycling.models.Cycle
 import rak.pixellwp.cycling.models.Pixel
 
-class OptimizeTest {
+class FlatmapTest {
 
 
     @Test
     @Throws(Exception::class)
-    fun first(){
+    fun flatMapBehavior(){
         val cycles = listOf(
                 Cycle(1,0,1,10),
                 Cycle(1,0,50,55)

@@ -28,7 +28,7 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
     private fun loadTimelineImages(): List<ImageInfo> {
         val json = context.assets.open("Timelines.json")
         val timelines: List<ImageInfo> = jacksonObjectMapper().readValue(json)
-        timelines.forEach{ it.isTimeline = true }
+        timelines.forEach { it.isTimeline = true }
         return timelines
     }
 
@@ -66,7 +66,7 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
     private fun jsonIsValid(json: String): Boolean {
         return json.length > 100
                 && (json.startsWith("{filename") && json.endsWith("]}")
-                    || json.startsWith("{base") && json.endsWith("}}"))
+                || json.startsWith("{base") && json.endsWith("}}"))
     }
 
     fun addLoadListener(loadListener: ImageLoadedListener) {
@@ -126,6 +126,12 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
         }
     }
 
+    fun downloadImage2(image: ImageInfo) {
+        Log.d(logTag, "Unable to find ${image.name} locally, downloading using id ${image.id}")
+        JsonDownloader(image, this).execute()
+        Toast.makeText(context, "Unable to find ${image.name} locally. I'll change the image as soon as it's downloaded", Toast.LENGTH_LONG).show()
+    }
+
     private fun saveImage(image: ImageInfo, json: String) {
         try {
             val stream = OutputStreamWriter(context.openFileOutput(image.getFileName(), Context.MODE_PRIVATE))
@@ -144,7 +150,7 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
             FileInputStream(context.getFileStreamPath(fileName))
         } else {
             val defaultFileName = "DefaultImage.json";
-            if (fileName != defaultFileName){
+            if (fileName != defaultFileName) {
                 Log.e(logTag, "Couldn't load $fileName.")
             }
             context.assets.open(defaultFileName)
