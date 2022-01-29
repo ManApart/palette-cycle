@@ -1,0 +1,15 @@
+Features include:
+* Over 20 images that match the current time of day
+* 7 collections that change images based on the time of day
+* Over 35 standalone animated images, as well as several still images
+* Pan and zoom to show only part of an image
+* Enable parallax to use the whole image: the image will scroll when you change screens
+* Download only the images you use
+
+Art created by Mark Ferrari. Code based on Joseph Huckaby's website code (including his blendshift technology).
+
+See the sites that this app is based on here: http://www.effectgames.com/demos/canvascycle/
+http://www.effectgames.com/demos/worlds/
+
+If you'd like to support the original authors (Mark Ferrari, Joseph Huckaby, and Ian Gilman), consider buying their Living Worlds app, which has some art and details not in this app.
+https://play.google.com/store/apps/details?id=com.pixfabrik.livingworlds
