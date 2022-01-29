@@ -1,4 +1,5 @@
 Features include:
+
 * Over 20 images that match the current time of day
 * 7 collections that change images based on the time of day
 * Over 35 standalone animated images, as well as several still images
