@@ -11,19 +11,18 @@ class SetWallpaperActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (!isFinishing){
-            showCyclingWallpaper()
-        }
-//        finish()
+        showCyclingWallpaper()
+        finish()
     }
 
-    private fun showCyclingWallpaper(){
+    private fun showCyclingWallpaper() {
         val intent = Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER)
         intent.putExtra(
-                WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
-                ComponentName(this@SetWallpaperActivity, CyclingWallpaperService::class.java
-                ))
+            WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
+            ComponentName(
+                this@SetWallpaperActivity, CyclingWallpaperService::class.java
+            )
+        )
         startActivity(intent)
-
     }
 }
