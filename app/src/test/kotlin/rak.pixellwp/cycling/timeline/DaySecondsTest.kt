@@ -1,6 +1,6 @@
 package rak.pixellwp.cycling.timeline
 
-import junit.framework.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -25,7 +25,7 @@ class DaySecondsTest(private val hour: Int, private val expectedString: String) 
     fun getTimeStringTest(){
         val seconds = getSecondsFromHour(hour).toLong()
         val actual = getTimeString(seconds)
-        System.out.print("Seconds: $seconds, actual: $actual")
-        Assert.assertEquals(expectedString, actual)
+        println("Seconds: $seconds, actual: $actual")
+        assertEquals(expectedString, actual)
     }
 }

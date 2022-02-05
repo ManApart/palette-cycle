@@ -47,7 +47,7 @@ class TimelineBlender(defaultPalette: Map.Entry<Int, Palette>) {
         return (adjustedNext - previous)
     }
 
-    private fun getPercent(currentTime: Int, previous: Int, totalDist: Int): Int {
+    fun getPercent(currentTime: Int, previous: Int, totalDist: Int): Int {
         val adjustedCurrent = if (currentTime < previous) currentTime + getSecondsFromHour(24) else currentTime
         val progress = adjustedCurrent - previous
         return ((progress / totalDist.toDouble()) * precisionInt).toInt()
