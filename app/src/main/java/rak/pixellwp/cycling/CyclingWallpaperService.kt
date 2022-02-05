@@ -5,9 +5,11 @@ import android.graphics.Rect
 import android.preference.PreferenceManager
 import android.service.wallpaper.WallpaperService
 import android.util.Log
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.SurfaceHolder
+import androidx.core.view.GestureDetectorCompat
 import rak.pixellwp.cycling.jsonLoading.ImageLoadedListener
 import rak.pixellwp.cycling.jsonLoading.ImageLoader
 import rak.pixellwp.cycling.jsonModels.ImageInfo
@@ -60,12 +62,12 @@ class CyclingWallpaperService : WallpaperService() {
             }
         })
 
-//        private val panDetector = GestureDetectorCompat(applicationContext, object : GestureDetector.SimpleOnGestureListener() {
-//            override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-//                adjustImageSrc(distanceX, distanceY)
-//                return super.onScroll(e1, e2, distanceX, distanceY)
-//            }
-//        })
+        private val panDetector = GestureDetectorCompat(applicationContext, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+                adjustImageSrc(distanceX, distanceY)
+                return super.onScroll(e1, e2, distanceX, distanceY)
+            }
+        })
 
         private val preferenceListener = SharedPreferences.OnSharedPreferenceChangeListener { preference: SharedPreferences, newValue: Any ->
             if (isPreview) {
@@ -214,7 +216,7 @@ class CyclingWallpaperService : WallpaperService() {
         override fun onTouchEvent(event: MotionEvent?) {
             if (isPreview) {
                 scaleDetector.onTouchEvent(event)
-//                panDetector.onTouchEvent(event)
+                panDetector.onTouchEvent(event)
                 super.onTouchEvent(event)
                 drawRunner.drawNow()
             }
