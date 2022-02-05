@@ -15,6 +15,8 @@ import rak.pixellwp.cycling.jsonLoading.ImageLoader
 import rak.pixellwp.cycling.jsonModels.ImageInfo
 import rak.pixellwp.cycling.models.TimelineImage
 import java.util.*
+import kotlin.math.max
+import kotlin.math.min
 
 
 class CyclingWallpaperService : WallpaperService() {
@@ -37,9 +39,9 @@ class CyclingWallpaperService : WallpaperService() {
 
         private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@CyclingWallpaperService)
 
-        private var imageCollection: String = prefs.getString(IMAGE_COLLECTION, "") ?: ""
-        private var singleImage: String = prefs.getString(SINGLE_IMAGE, "") ?: ""
-        private var timelineImage: String = prefs.getString(TIMELINE_IMAGE, "") ?: ""
+        private var imageCollection = prefs.getString(IMAGE_COLLECTION, "") ?: ""
+        private var singleImage = prefs.getString(SINGLE_IMAGE, "") ?: ""
+        private var timelineImage = prefs.getString(TIMELINE_IMAGE, "") ?: ""
         private val defaultImage = ImageInfo("DefaultImage", "DefaultImage", 0)
         private var currentImage = defaultImage
 
@@ -109,7 +111,7 @@ class CyclingWallpaperService : WallpaperService() {
                     singleImage = ""
                     preference.edit().putString(SINGLE_IMAGE, "").apply()
                     preference.edit().putString(IMAGE_COLLECTION, "").apply()
-                    changeTimeline(timelineImage)
+                    changeTimeline()
                 } else if (singleImage != prefImageVal && prefImageVal != "") {
                     Log.d(logTag, "Single image: $singleImage > $prefImageVal for engine $this")
                     singleImage = prefImageVal
@@ -117,7 +119,7 @@ class CyclingWallpaperService : WallpaperService() {
                     timelineImage = ""
                     preference.edit().putString(TIMELINE_IMAGE, "").apply()
                     preference.edit().putString(IMAGE_COLLECTION, "").apply()
-                    changeImage(singleImage)
+                    changeImage()
                 }
 
                 updateTimelineOverride(prefOverrideTimeline, prefOverrideTime)
@@ -135,7 +137,7 @@ class CyclingWallpaperService : WallpaperService() {
                     lastHourChecked = hour
                     prefs.edit().putInt(LAST_HOUR_CHECKED, lastHourChecked).apply()
                     if (imageCollection != "") {
-                        changeCollection(imageCollection!!)
+                        changeCollection(imageCollection)
                     }
                 }
             }
@@ -168,12 +170,12 @@ class CyclingWallpaperService : WallpaperService() {
             changeImage(image)
         }
 
-        private fun changeImage(imageName: String) {
-            val image = imageLoader.getImageInfoForImage(singleImage) //TODO - should this be image name?
+        private fun changeImage() {
+            val image = imageLoader.getImageInfoForImage(singleImage)
             changeImage(image)
         }
 
-        private fun changeTimeline(timelineName: String) {
+        private fun changeTimeline() {
             val image = imageLoader.getImageInfoForTimeline(timelineImage)
             changeImage(image)
         }
@@ -255,8 +257,8 @@ class CyclingWallpaperService : WallpaperService() {
 
             when {
                 prefCollectionVal != "" -> changeCollection(imageCollection)
-                prefImageVal != "" -> changeImage(singleImage)
-                prefTimelineVal != "" -> changeTimeline(timelineImage)
+                prefImageVal != "" -> changeImage()
+                prefTimelineVal != "" -> changeTimeline()
             }
         }
 
@@ -329,7 +331,7 @@ class CyclingWallpaperService : WallpaperService() {
 
         private fun incrementScaleFactor(incrementFactor: Float) {
             scaleFactor *= incrementFactor
-            scaleFactor = Math.max(minScaleFactor, Math.min(scaleFactor, 10f))
+            scaleFactor = max(minScaleFactor, min(scaleFactor, 10f))
             prefs.edit().putFloat(SCALE_FACTOR, scaleFactor).apply()
         }
 
@@ -337,11 +339,11 @@ class CyclingWallpaperService : WallpaperService() {
             //Find the smallest scale factor that leaves no border on one side
             val w: Float = screenDimensions.width() / drawRunner.image.getImageWidth().toFloat()
             val h: Float = screenDimensions.height() / drawRunner.image.getImageHeight().toFloat()
-            minScaleFactor = Math.max(w, h)
+            minScaleFactor = max(w, h)
         }
 
         private fun clamp(value: Float, min: Float, max: Float): Float {
-            return Math.min(Math.max(value, min), max)
+            return min(max(value, min), max)
         }
 
         private fun orientationHasChanged(width: Int, height: Int) =
