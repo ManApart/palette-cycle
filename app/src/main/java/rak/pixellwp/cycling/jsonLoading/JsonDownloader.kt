@@ -2,16 +2,22 @@ package rak.pixellwp.cycling.jsonLoading
 
 import android.os.AsyncTask
 import android.util.Log
+import kotlinx.coroutines.*
 import rak.pixellwp.cycling.jsonModels.ImageInfo
 import java.net.URL
 
 
-class JsonDownloader(private val image: ImageInfo, private val listener: JsonDownloadListener) : AsyncTask<String, Void, String>() {
+class JsonDownloader(private val image: ImageInfo, private val listener: (ImageInfo, String) -> Unit) {
     private val imageUrl = "http://www.effectgames.com/demos/canvascycle/image.php?file="
     private val timelineImageUrl = "http://www.effectgames.com/demos/worlds/scene.php?file="
     private val logTag = "JsonDownloader"
-    override fun doInBackground(vararg params: String?): String {
-        return downloadImage()
+    fun download() {
+        val json = runBlocking {
+            withContext(Dispatchers.Default) {
+                downloadImage()
+            }
+        }
+        completeDownload(json)
     }
 
     private fun downloadImage(): String {
@@ -31,12 +37,11 @@ class JsonDownloader(private val image: ImageInfo, private val listener: JsonDow
         return json
     }
 
-    override fun onPostExecute(result: String?) {
+    private fun completeDownload(result: String?) {
         val json = cleanJson(result)
         val jsonSample = if (json.length > 100) "${json.substring(0, 100)} ... ${json.substring(json.length - 100)}" else json
         Log.d(logTag, "downloaded json for ${image.name} from ${getFullUrl(image)} to ${image.getFileName()}: $jsonSample")
-        listener.downloadComplete(image, json)
-        super.onPostExecute(result)
+        listener(image, json)
     }
 
     private fun cleanJson(json: String?): String {

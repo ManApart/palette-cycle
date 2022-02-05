@@ -12,7 +12,7 @@ import rak.pixellwp.cycling.models.TimelineImage
 import java.io.*
 import java.util.*
 
-class ImageLoader(private val context: Context) : JsonDownloadListener {
+class ImageLoader(private val context: Context) {
     private val logTag = "ImageLoader"
     private val images: List<ImageInfo> = loadImages()
     private val timelineImages: List<ImageInfo> = loadTimelineImages()
@@ -49,7 +49,7 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
         return images.firstOrNull { image -> image.id == id }?.name ?: id
     }
 
-    override fun downloadComplete(image: ImageInfo, json: String) {
+    private fun downloadComplete(image: ImageInfo, json: String) {
         if (jsonIsValid(json)) {
             saveImage(image, json)
             for (loadListener in loadListeners) {
@@ -121,7 +121,7 @@ class ImageLoader(private val context: Context) : JsonDownloadListener {
         } else {
             Log.d(logTag, "Unable to find ${image.name} locally, downloading using id ${image.id}")
             downloading.add(image)
-            JsonDownloader(image, this).execute()
+            JsonDownloader(image, ::downloadComplete).download()
             Toast.makeText(context, "Unable to find ${image.name} locally. I'll change the image as soon as it's downloaded", Toast.LENGTH_LONG).show()
         }
     }
