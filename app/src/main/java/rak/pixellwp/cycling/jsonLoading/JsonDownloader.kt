@@ -1,17 +1,25 @@
 package rak.pixellwp.cycling.jsonLoading
 
-import android.os.AsyncTask
 import android.util.Log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import rak.pixellwp.cycling.jsonModels.ImageInfo
 import java.net.URL
+import kotlin.concurrent.thread
 
 
-class JsonDownloader(private val image: ImageInfo, private val listener: JsonDownloadListener) : AsyncTask<String, Void, String>() {
+class JsonDownloader(
+    private val image: ImageInfo,
+    private val listener: (ImageInfo, String) -> Unit
+) {
     private val imageUrl = "http://www.effectgames.com/demos/canvascycle/image.php?file="
     private val timelineImageUrl = "http://www.effectgames.com/demos/worlds/scene.php?file="
     private val logTag = "JsonDownloader"
-    override fun doInBackground(vararg params: String?): String {
-        return downloadImage()
+    fun download() {
+        thread {
+            completeDownload(downloadImage())
+        }
     }
 
     private fun downloadImage(): String {
@@ -31,12 +39,19 @@ class JsonDownloader(private val image: ImageInfo, private val listener: JsonDow
         return json
     }
 
-    override fun onPostExecute(result: String?) {
+    private fun completeDownload(result: String?) {
         val json = cleanJson(result)
-        val jsonSample = if (json.length > 100) "${json.substring(0, 100)} ... ${json.substring(json.length - 100)}" else json
-        Log.d(logTag, "downloaded json for ${image.name} from ${getFullUrl(image)} to ${image.getFileName()}: $jsonSample")
-        listener.downloadComplete(image, json)
-        super.onPostExecute(result)
+        val jsonSample = if (json.length > 100) "${
+            json.substring(
+                0,
+                100
+            )
+        } ... ${json.substring(json.length - 100)}" else json
+        Log.d(
+            logTag,
+            "downloaded json for ${image.name} from ${getFullUrl(image)} to ${image.getFileName()}: $jsonSample"
+        )
+        listener(image, json)
     }
 
     private fun cleanJson(json: String?): String {
@@ -55,6 +70,7 @@ class JsonDownloader(private val image: ImageInfo, private val listener: JsonDow
         }
         return json
     }
+
     private fun cleanTimelineImageJson(json: String?): String {
         if (json == null) return ""
         if (json.length > 25) {
@@ -64,8 +80,8 @@ class JsonDownloader(private val image: ImageInfo, private val listener: JsonDow
         return json
     }
 
-    private fun getFullUrl(image: ImageInfo) : String {
-        return if (image.isTimeline){
+    private fun getFullUrl(image: ImageInfo): String {
+        return if (image.isTimeline) {
             timelineImageUrl + image.getJustId() + "&month=" + image.month + "&script=" + image.script
         } else {
             imageUrl + image.id

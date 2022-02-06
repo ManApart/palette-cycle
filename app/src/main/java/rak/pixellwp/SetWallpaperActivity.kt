@@ -15,12 +15,14 @@ class SetWallpaperActivity : Activity() {
         finish()
     }
 
-    private fun showCyclingWallpaper(){
+    private fun showCyclingWallpaper() {
         val intent = Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER)
         intent.putExtra(
-                WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
-                ComponentName(this, CyclingWallpaperService::class.java
-                ))
+            WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
+            ComponentName(
+                this@SetWallpaperActivity, CyclingWallpaperService::class.java
+            )
+        )
         startActivity(intent)
     }
 }

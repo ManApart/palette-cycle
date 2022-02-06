@@ -1,31 +1,31 @@
 package rak.pixellwp.cycling.timeline
 
-import junit.framework.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import rak.pixellwp.cycling.models.getSecondsFromHour
 import rak.pixellwp.cycling.models.getTimeString
 
-@RunWith(Parameterized::class)
-class DaySecondsTest(private val hour: Int, private val expectedString: String) {
-
-    companion object {
-        @JvmStatic
-        @Parameterized.Parameters
-        fun data(): Collection<Array<Any>> {
-            return listOf(
-                    arrayOf(12, "12:0"),
-                    arrayOf(15, "15:0")
-            )
-        }
-    }
+class DaySecondsTest {
 
     @Test
     fun getTimeStringTest(){
-        val seconds = getSecondsFromHour(hour).toLong()
+        val hour = 12
+        val expectedString = "12:00"
+        val seconds = getSecondsFromHour(hour)
         val actual = getTimeString(seconds)
-        System.out.print("Seconds: $seconds, actual: $actual")
-        Assert.assertEquals(expectedString, actual)
+        println("Seconds: $seconds, actual: $actual")
+        assertEquals(expectedString, actual)
+    }
+
+    @Test
+    fun getTimeStringTest2(){
+        val hour = 15
+        val expectedString = "15:00"
+        val seconds = getSecondsFromHour(hour)
+        val actual = getTimeString(seconds)
+        println("Seconds: $seconds, actual: $actual")
+        assertEquals(expectedString, actual)
     }
 }
