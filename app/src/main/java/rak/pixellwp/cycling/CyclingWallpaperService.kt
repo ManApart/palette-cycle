@@ -24,7 +24,7 @@ class CyclingWallpaperService : WallpaperService() {
     private lateinit var imageLoader: ImageLoader
 
     override fun onCreate() {
-        imageLoader = ImageLoader(this@CyclingWallpaperService)
+        imageLoader = ImageLoader(this)
         super.onCreate()
     }
 

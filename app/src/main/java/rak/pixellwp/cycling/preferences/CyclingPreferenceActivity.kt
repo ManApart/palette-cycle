@@ -13,12 +13,14 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import rak.pixellwp.R
 import rak.pixellwp.cycling.LoggingManager
+import rak.pixellwp.cycling.jsonLoading.ImageLoader
 
 
 class CyclingPreferenceActivity : PreferenceActivity() {
     private val logTag = "Prefs"
     private val loggingManager = LoggingManager(this)
     private val PERMISSIONS_WRITE_EXTERNAL_STORAGE = 1
+    private lateinit var imageLoader: ImageLoader
 
     class MyPreferenceFragment : PreferenceFragment() {
         override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +31,7 @@ class CyclingPreferenceActivity : PreferenceActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        imageLoader = ImageLoader(this)
         super.onCreate(savedInstanceState)
         fragmentManager.beginTransaction().replace(android.R.id.content, MyPreferenceFragment()).commit()
     }
@@ -56,6 +59,10 @@ class CyclingPreferenceActivity : PreferenceActivity() {
             loggingManager.writeLogsToExternal()
             Toast.makeText(this, "Saved logs to Android/data/rak.pixellwp/files", Toast.LENGTH_LONG).show()
         }
+    }
+
+    fun preload(view: View) {
+        imageLoader.preloadImages()
     }
 
 }

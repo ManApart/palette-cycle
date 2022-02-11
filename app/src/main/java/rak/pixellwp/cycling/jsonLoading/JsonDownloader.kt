@@ -16,10 +16,9 @@ class JsonDownloader(
     private val imageUrl = "http://www.effectgames.com/demos/canvascycle/image.php?file="
     private val timelineImageUrl = "http://www.effectgames.com/demos/worlds/scene.php?file="
     private val logTag = "JsonDownloader"
+
     fun download() {
-        thread {
-            completeDownload(downloadImage())
-        }
+        completeDownload(downloadImage())
     }
 
     private fun downloadImage(): String {
@@ -41,16 +40,8 @@ class JsonDownloader(
 
     private fun completeDownload(result: String?) {
         val json = cleanJson(result)
-        val jsonSample = if (json.length > 100) "${
-            json.substring(
-                0,
-                100
-            )
-        } ... ${json.substring(json.length - 100)}" else json
-        Log.d(
-            logTag,
-            "downloaded json for ${image.name} from ${getFullUrl(image)} to ${image.getFileName()}: $jsonSample"
-        )
+        val jsonSample = json.getSample()
+        Log.d(logTag, "downloaded json for ${image.name} from ${getFullUrl(image)} to ${image.getFileName()}: $jsonSample")
         listener(image, json)
     }
 
@@ -86,6 +77,10 @@ class JsonDownloader(
         } else {
             imageUrl + image.id
         }
+    }
+
+    private fun String.getSample(): String {
+        return if (length > 100) "${substring(0, 100)} ... ${substring(length - 100)}" else this
     }
 
 }

@@ -11,28 +11,29 @@ import rak.pixellwp.cycling.jsonModels.*
 import rak.pixellwp.cycling.models.TimelineImage
 import java.io.*
 import java.util.*
+import kotlin.concurrent.thread
 
 class ImageLoader(private val context: Context) {
     private val logTag = "ImageLoader"
-    private val images: List<ImageInfo> = loadImages()
-    private val timelineImages: List<ImageInfo> = loadTimelineImages()
-    private val collection: List<ImageCollection> = loadCollection()
-    private val downloading: MutableList<ImageInfo> = mutableListOf()
-    private val loadListeners: MutableList<ImageLoadedListener> = mutableListOf()
+    private val images = parseImages()
+    private val timelineImages = parseTimelineImages()
+    private val collection = parseCollection()
+    private val downloading = mutableSetOf<ImageInfo>()
+    private val loadListeners = mutableListOf<ImageLoadedListener>()
 
-    private fun loadImages(): List<ImageInfo> {
+    private fun parseImages(): List<ImageInfo> {
         val json = context.assets.open("Images.json")
         return jacksonObjectMapper().readValue(json)
     }
 
-    private fun loadTimelineImages(): List<ImageInfo> {
+    private fun parseTimelineImages(): List<ImageInfo> {
         val json = context.assets.open("Timelines.json")
         val timelines: List<ImageInfo> = jacksonObjectMapper().readValue(json)
-        timelines.forEach{ it.isTimeline = true }
+        timelines.forEach { it.isTimeline = true }
         return timelines
     }
 
-    private fun loadCollection(): List<ImageCollection> {
+    private fun parseCollection(): List<ImageCollection> {
         val json = context.assets.open("ImageCollections.json")
         return jacksonObjectMapper().readValue(json)
     }
@@ -49,24 +50,35 @@ class ImageLoader(private val context: Context) {
         return images.firstOrNull { image -> image.id == id }?.name ?: id
     }
 
-    private fun downloadComplete(image: ImageInfo, json: String) {
+    private fun saveAndLoadImage(image: ImageInfo, json: String) {
+        saveImage(image, json, true)
+    }
+
+    private fun saveImageWithoutLoading(image: ImageInfo, json: String) {
+        saveImage(image, json, false)
+    }
+
+    private fun saveImage(image: ImageInfo, json: String, alsoChangeImage: Boolean) {
         if (jsonIsValid(json)) {
             saveImage(image, json)
-            for (loadListener in loadListeners) {
-                loadListener.imageLoadComplete(image)
+            if (alsoChangeImage) {
+                for (loadListener in loadListeners) {
+                    loadListener.imageLoadComplete(image)
+                }
             }
         } else {
-            val jsonSample = getSampleJson(json)
+            val jsonSample = json.getSample()
             Log.d(logTag, "${image.name} failed to download a proper json file: $jsonSample")
             downloading.remove(image)
-            Toast.makeText(context, "${image.name} failed to download. Please try again.", Toast.LENGTH_LONG).show()
+            //Can't toast in other thread
+//            Toast.makeText(context, "${image.name} failed to download. Please try again.", Toast.LENGTH_LONG).show()
         }
     }
 
     private fun jsonIsValid(json: String): Boolean {
         return json.length > 100
                 && (json.startsWith("{filename") && json.endsWith("]}")
-                    || json.startsWith("{base") && json.endsWith("}}"))
+                || json.startsWith("{base") && json.endsWith("}}"))
     }
 
     fun addLoadListener(loadListener: ImageLoadedListener) {
@@ -88,12 +100,8 @@ class ImageLoader(private val context: Context) {
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         Log.v(logTag, "grabbing image info for collection $collectionName at hour $hour")
         val info = imageCollection.images
-                .filter { it.startHour < hour }
-                .sortedByDescending { it.startHour }
-                .firstOrNull()
-                ?: imageCollection.images
-                        .sortedByDescending { it.startHour }
-                        .last()
+            .filter { it.startHour < hour }.maxByOrNull { it.startHour }
+            ?: imageCollection.images.minByOrNull { it.startHour }!!
 
         Log.d(logTag, "grabbed ${info.name} with hour ${info.startHour}")
         return info
@@ -121,8 +129,35 @@ class ImageLoader(private val context: Context) {
         } else {
             Log.d(logTag, "Unable to find ${image.name} locally, downloading using id ${image.id}")
             downloading.add(image)
-            JsonDownloader(image, ::downloadComplete).download()
+            thread {
+                JsonDownloader(image, ::saveAndLoadImage).download()
+            }
             Toast.makeText(context, "Unable to find ${image.name} locally. I'll change the image as soon as it's downloaded", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    fun preloadImages() {
+        val imagesToDownload = (images.filterNot { imageIsReady(it) } +
+                timelineImages.filterNot { imageIsReady(it) } +
+                collection.flatMap { it.images }.filterNot { imageIsReady(it) })
+            .filterNot { downloading.contains(it) }
+
+        if (imagesToDownload.isNotEmpty()) {
+            Log.d(logTag, "Downloading ${imagesToDownload.size} images.")
+            Toast.makeText(context, "Downloading ${imagesToDownload.size} images.", Toast.LENGTH_LONG).show()
+            thread {
+                imagesToDownload.forEach { downloadImageWithoutChanging(it) }
+            }
+        } else {
+            Log.d(logTag, "All images downloaded.")
+            Toast.makeText(context, "All images downloaded.", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun downloadImageWithoutChanging(image: ImageInfo) {
+        if (!downloading.contains(image)) {
+            downloading.add(image)
+            JsonDownloader(image, ::saveImageWithoutLoading).download()
         }
     }
 
@@ -144,7 +179,7 @@ class ImageLoader(private val context: Context) {
             FileInputStream(context.getFileStreamPath(fileName))
         } else {
             val defaultFileName = "DefaultImage.json";
-            if (fileName != defaultFileName){
+            if (fileName != defaultFileName) {
                 Log.e(logTag, "Couldn't load $fileName.")
             }
             context.assets.open(defaultFileName)
@@ -155,7 +190,7 @@ class ImageLoader(private val context: Context) {
         val s = Scanner(inputStream).useDelimiter("\\A")
         val json = if (s.hasNext()) s.next() else ""
         inputStream.close()
-        Log.d(logTag, "Reading json from disk: " + getSampleJson(json))
+        Log.d(logTag, "Reading json from disk: " + json.getSample())
         return json
     }
 
@@ -173,8 +208,8 @@ class ImageLoader(private val context: Context) {
         return mapper.readValue(json)
     }
 
-    private fun getSampleJson(json: String): String {
-        return if (json.length > 100) "${json.substring(0, 100)} ... ${json.substring(json.length - 100)}" else json
+    private fun String.getSample(): String {
+        return if (length > 100) "${substring(0, 100)} ... ${substring(length - 100)}" else this
     }
 
 }
