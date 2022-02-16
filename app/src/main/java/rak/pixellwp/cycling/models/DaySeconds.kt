@@ -7,8 +7,9 @@ import java.util.*
 /*
     Class stores time for a single day as milliseconds
  */
+val maxMilliseconds = getMilliFromSeconds(getSecondsFromHour(24))
+
 class DaySeconds {
-    private val maxMilliseconds = getMilliFromSeconds(getSecondsFromHour(24))
     private var timeInMillis: Long = 0
 
     override fun toString(): String {
@@ -36,7 +37,7 @@ class DaySeconds {
     }
 
     fun setTime(time: Long) {
-        val adjustedTime = if (time > maxMilliseconds){
+        val adjustedTime = if (time > maxMilliseconds) {
             time % maxMilliseconds
         } else {
             time
@@ -45,7 +46,7 @@ class DaySeconds {
         Log.d("dayseconds", "set time from $time to ${get24HourFormattedString()}")
     }
 
-    fun setTimeToNow(){
+    fun setTimeToNow() {
         val now = GregorianCalendar()
         setTime(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE))
     }
@@ -55,17 +56,18 @@ class DaySeconds {
         setTime(picker.currentHour, picker.currentMinute)
     }
 
-    fun setTime(hours: Int, minutes: Int){
+    fun setTime(hours: Int, minutes: Int) {
         timeInMillis = getMilliFromSeconds(getSecondsFromHour(hours) + getSecondsFromMinute(minutes))
     }
 
-    fun get24HourFormattedString() : String {
+    fun get24HourFormattedString(): String {
         return String.format("%02d:%02d", getHours(), getMinutes())
     }
-    fun get12HourFormattedString() : String {
+
+    fun get12HourFormattedString(): String {
         val hours = getHours()
         val adjust = (hours > 12)
-        val adjustedHours = if (adjust) hours-12 else hours
+        val adjustedHours = if (adjust) hours - 12 else hours
         val amPm = if (adjust) "pm" else "am"
         return String.format("%02d:%02d", adjustedHours, getMinutes()) + amPm
     }
@@ -82,11 +84,11 @@ fun getTimeString(time: Long): String {
     return cal.get24HourFormattedString()
 }
 
-private fun getSecondsFromMilli(milli: Long) : Int{
+private fun getSecondsFromMilli(milli: Long): Int {
     return (milli / 1000).toInt()
 }
 
-fun getMilliFromSeconds(seconds: Int) : Long{
+fun getMilliFromSeconds(seconds: Int): Long {
     return (seconds * 1000).toLong()
 }
 
