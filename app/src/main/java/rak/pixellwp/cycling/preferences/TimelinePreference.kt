@@ -1,13 +1,13 @@
 package rak.pixellwp.cycling.preferences
 
 import android.content.Context
-import android.preference.ListPreference
 import android.util.AttributeSet
+import androidx.preference.DropDownPreference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import rak.pixellwp.cycling.jsonModels.ImageInfo
 
-class TimelinePreference(context: Context, attributeSet: AttributeSet) : ListPreference(context, attributeSet) {
+class TimelinePreference(context: Context, attributeSet: AttributeSet) : DropDownPreference(context, attributeSet) {
 
     init {
         val images = loadImages()

@@ -86,7 +86,7 @@ private fun getSecondsFromMilli(milli: Long) : Int{
     return (milli / 1000).toInt()
 }
 
-private fun getMilliFromSeconds(seconds: Int) : Long{
+fun getMilliFromSeconds(seconds: Int) : Long{
     return (seconds * 1000).toLong()
 }
 

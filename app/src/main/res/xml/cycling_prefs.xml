@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <DropDownPreference
+        android:defaultValue="Timeline"
+        android:entries="@array/ImageType"
+        android:entryValues="@array/ImageTypeValues"
+        android:key="imageType"
+        android:summary="Choose what type of image to show"
+        android:title="Image Type" />
     <rak.pixellwp.cycling.preferences.TimelinePreference
         android:key="timelineImage"
         android:summary="Choose a single image that will change constantly throughout the day"
         android:title="Timeline Image" />
-    <ListPreference
+    <DropDownPreference
         android:defaultValue="Waterfall"
         android:entries="@array/ImageCollections"
         android:entryValues="@array/ImageCollections"
@@ -16,20 +23,19 @@
         android:summary="Choose a single image that won't change"
         android:title="Single Image" />
     <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="parallax"
-        android:summary="Pans the background when you swipe across screens"
-        android:title="Enable Parallax" />
-    <CheckBoxPreference
         android:defaultValue="false"
         android:key="overrideTimelines"
         android:summary="Force Timeline Images to stay at a specific time."
         android:title="Override Timeline Time" />
-    <rak.pixellwp.cycling.preferences.TimePreference
+    <SeekBarPreference
         android:title="Override Time"
-
-        android:dialogMessage="dialogue message"
-        android:summary="If Override Timeline Time is on, Timeline Images will stay at this time." />
+        android:key="dayPercent"
+        android:summary="If Override Timeline Time is on, Timeline Images will stay at this part of the day." />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="parallax"
+        android:summary="Pans the background when you swipe across screens"
+        android:title="Enable Parallax" />
     <Preference
         android:key="@string/bugReportButtonId"
         android:summary="Save logs to storage"

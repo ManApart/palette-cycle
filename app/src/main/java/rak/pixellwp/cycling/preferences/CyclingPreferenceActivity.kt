@@ -1,39 +1,81 @@
 package rak.pixellwp.cycling.preferences
 
 import android.Manifest
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceActivity
-import android.preference.PreferenceFragment
-import android.preference.PreferenceManager
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
+import androidx.preference.*
 import rak.pixellwp.R
-import rak.pixellwp.cycling.LoggingManager
+import rak.pixellwp.cycling.*
 import rak.pixellwp.cycling.jsonLoading.ImageLoader
 
 
-class CyclingPreferenceActivity : PreferenceActivity() {
+class CyclingPreferenceActivity : FragmentActivity() {
     private val logTag = "Prefs"
     private val loggingManager = LoggingManager(this)
     private val PERMISSIONS_WRITE_EXTERNAL_STORAGE = 1
     private lateinit var imageLoader: ImageLoader
 
-    class MyPreferenceFragment : PreferenceFragment() {
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            PreferenceManager.setDefaultValues(activity, R.xml.cycling_prefs, false)
+    class MyPreferenceFragment : PreferenceFragmentCompat() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            PreferenceManager.setDefaultValues(requireContext(), R.xml.cycling_prefs, false)
             addPreferencesFromResource(R.xml.cycling_prefs)
+            val imageType = findPreference<DropDownPreference>(IMAGE_TYPE)?.value.toImageType()
+            setOptionsVisibility(imageType)
+            PreferenceManager.getDefaultSharedPreferences(requireContext()).registerOnSharedPreferenceChangeListener(preferenceListener)
+        }
+
+        override fun onDestroy() {
+            PreferenceManager.getDefaultSharedPreferences(requireContext()).unregisterOnSharedPreferenceChangeListener(preferenceListener)
+            super.onDestroy()
+        }
+
+        private val preferenceListener = SharedPreferences.OnSharedPreferenceChangeListener { preference: SharedPreferences, newValue: Any ->
+            if (newValue == IMAGE_TYPE){
+                val prefImageType = preference.getString(IMAGE_TYPE, TIMELINE_IMAGE).toImageType()
+                setOptionsVisibility(prefImageType)
+            }
+        }
+
+        private fun setOptionsVisibility(imageType: ImageType) {
+            val timelineList = findPreference<DropDownPreference>(TIMELINE_IMAGE)
+            val collectionList = findPreference<DropDownPreference>(IMAGE_COLLECTION)
+            val singleImageList = findPreference<DropDownPreference>(SINGLE_IMAGE)
+            val timelineOverride = findPreference<CheckBoxPreference>(OVERRIDE_TIMELINE)
+            val timelinePercent = findPreference<SeekBarPreference>(OVERRIDE_TIME_PERCENT)
+
+            timelineList?.isVisible = false
+            collectionList?.isVisible = false
+            singleImageList?.isVisible = false
+            timelineOverride?.isVisible = false
+            timelinePercent?.isVisible = false
+
+            when (imageType) {
+                ImageType.TIMELINE -> {
+                    timelineList?.isVisible = true
+                    timelineOverride?.isVisible = true
+                    timelinePercent?.isVisible = true
+                }
+                ImageType.COLLECTION -> collectionList?.isVisible = true
+                else -> singleImageList?.isVisible = true
+            }
+
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        imageLoader = ImageLoader(this)
         super.onCreate(savedInstanceState)
-        fragmentManager.beginTransaction().replace(android.R.id.content, MyPreferenceFragment()).commit()
+        imageLoader = ImageLoader(this)
+        supportFragmentManager
+            .beginTransaction()
+            .replace(android.R.id.content, MyPreferenceFragment())
+            .commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

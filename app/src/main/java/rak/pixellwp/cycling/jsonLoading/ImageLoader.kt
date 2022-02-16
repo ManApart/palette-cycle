@@ -87,12 +87,12 @@ class ImageLoader(private val context: Context) {
 
     fun getImageInfoForImage(imageId: String): ImageInfo {
         Log.v(logTag, "Grabbing image info for image $imageId")
-        return images.first { it.id == imageId }
+        return images.firstOrNull { it.id == imageId } ?: throw IllegalArgumentException("Could not find single image for $imageId")
     }
 
     fun getImageInfoForTimeline(imageId: String): ImageInfo {
         Log.v(logTag, "Grabbing timeline info for $imageId")
-        return timelineImages.first { it.id == imageId }
+        return timelineImages.firstOrNull { it.id == imageId } ?: throw IllegalArgumentException("Could not find timeline for $imageId")
     }
 
     fun getImageInfoForCollection(collectionName: String): ImageInfo {
