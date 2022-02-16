@@ -72,7 +72,11 @@ class CyclingWallpaperService : WallpaperService() {
 
         private val panDetector = GestureDetectorCompat(applicationContext, object : GestureDetector.SimpleOnGestureListener() {
             override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-                adjustImageSrc(distanceX, distanceY)
+//                if (e1?.pointerCount ?: 0 > 1) {
+                adjustTimeOverride(distanceX)
+//                } else {
+//                    adjustImageSrc(distanceX, distanceY)
+//                }
                 return super.onScroll(e1, e2, distanceX, distanceY)
             }
         })
@@ -90,6 +94,7 @@ class CyclingWallpaperService : WallpaperService() {
                 val prefOverrideTimePercent = preference.getInt(OVERRIDE_TIME_PERCENT, 50)
                 currentImageType = preference.getString(IMAGE_TYPE, TIMELINE_IMAGE).toImageType()
 
+//                preference.edit().putLong()
 
                 imageSrc = Rect(
                     preference.getInt(LEFT, imageSrc.left),
@@ -107,7 +112,7 @@ class CyclingWallpaperService : WallpaperService() {
                         Log.d(logTag, "Image collection: $imageCollection for engine $this")
                         changeCollection()
                     }
-                    prevSingleImage != singleImage  -> {
+                    prevSingleImage != singleImage -> {
                         Log.d(logTag, "Single image: $singleImage for engine $this")
                         changeImage()
                     }
@@ -258,9 +263,20 @@ class CyclingWallpaperService : WallpaperService() {
             }
         }
 
+        private fun adjustTimeOverride(distanceX: Float) {
+            val prefOverrideTimeline = prefs.getBoolean(OVERRIDE_TIMELINE, overrideTimeline)
+            val newOverrideTime = overrideTime + distanceX.toLong() * 10000
+            prefs.edit().putLong(OVERRIDE_TIME, newOverrideTime).apply()
+            updateTimelineOverride(prefOverrideTimeline, newOverrideTime)
+        }
+
         private fun updateTimelineOverride(prefOverrideTimeline: Boolean, dayPercent: Int) {
-            if (timelineImage != "" && drawRunner.image is TimelineImage) {
-                val newOverrideTime = getMilliFromSeconds(getSecondsFromHour(24)) * dayPercent / 100
+            val newOverrideTime = getMilliFromSeconds(getSecondsFromHour(24)) * dayPercent / 100
+            updateTimelineOverride(prefOverrideTimeline, newOverrideTime)
+        }
+
+        private fun updateTimelineOverride(prefOverrideTimeline: Boolean, newOverrideTime: Long) {
+            if (drawRunner.image is TimelineImage) {
                 val image: TimelineImage = drawRunner.image as TimelineImage
                 if (prefOverrideTimeline != overrideTimeline || newOverrideTime != image.getOverrideTime()) {
                     if (prefOverrideTimeline) {
