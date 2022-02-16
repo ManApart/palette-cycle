@@ -97,7 +97,7 @@ class CyclingWallpaperService : WallpaperService() {
                 parallax = preference.getBoolean(PARALLAX, parallax)
                 val prefOverrideTimeline = preference.getBoolean(OVERRIDE_TIMELINE, overrideTimeline)
                 dayPercent = preference.getInt(OVERRIDE_TIME_PERCENT, 50)
-                val newOverrideTime = getMilliFromSeconds(getSecondsFromHour(24)) * dayPercent / 100
+                val newOverrideTime = maxMilliseconds * dayPercent / 100
                 prefs.edit().putLong(OVERRIDE_TIME, newOverrideTime).apply()
                 currentImageType = preference.getString(IMAGE_TYPE, TIMELINE_IMAGE).toImageType()
 

@@ -8,6 +8,7 @@ import android.view.SurfaceHolder
 import rak.pixellwp.cycling.models.ColorCyclingImage
 import rak.pixellwp.cycling.models.PaletteImage
 import java.util.*
+import kotlin.math.floor
 
 class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaperEngine, var image: PaletteImage) {
     private val logTag = "PaletteDrawer"
@@ -62,22 +63,16 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
     }
 
     private fun advanceAndDraw() {
-        val timePassed = Math.floor((Date().time - startTime).toDouble()).toInt()
-        image?.advance(timePassed)
+        val timePassed = floor((Date().time - startTime).toDouble()).toInt()
+        image.advance(timePassed)
         drawFrame(engine.surfaceHolder, engine.getOffsetImage(), engine.screenDimensions)
     }
 
     private fun drawFrame(surfaceHolder: SurfaceHolder, imageSrc: Rect, screenDimensions: Rect) {
         if (visible && !surfaceHolder.isCreating) {
             try {
-                val canvas = surfaceHolder.lockCanvas()
-                if (canvas == null) {
-                    Log.e(logTag, "$id: Can't lock canvas; killing drawer")
-                    stop()
-                } else {
-                    if (image != null) {
-                        canvas.drawBitmap(image.getBitmap(), imageSrc, screenDimensions, null)
-                    }
+                surfaceHolder.lockCanvas()?.let { canvas ->
+                    canvas.drawBitmap(image.getBitmap(), imageSrc, screenDimensions, null)
                     surfaceHolder.unlockCanvasAndPost(canvas)
                 }
             } catch (e: Exception) {

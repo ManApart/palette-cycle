@@ -10,7 +10,7 @@ class TimelineBlender(defaultPalette: Map.Entry<Int, Palette>) {
     private var lastPercent = 0
 
     fun getCurrentPalette(current: Palette, currentTime: Int, previous: Map.Entry<Int, Palette>, next: Map.Entry<Int, Palette>): Palette {
-        if(returnImmediatly(currentTime, previous, next)){
+        if(returnImmediately(currentTime, previous, next)){
             return currentPalette
         }
 
@@ -25,7 +25,7 @@ class TimelineBlender(defaultPalette: Map.Entry<Int, Palette>) {
         return currentPalette
     }
 
-    private fun returnImmediatly(currentTime: Int, previous: Map.Entry<Int, Palette>, next: Map.Entry<Int, Palette>) : Boolean {
+    private fun returnImmediately(currentTime: Int, previous: Map.Entry<Int, Palette>, next: Map.Entry<Int, Palette>) : Boolean {
         if (oldTimePassedInSeconds == currentTime) {
             return true
         }
