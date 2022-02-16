@@ -16,15 +16,15 @@ class DaySeconds {
         return get24HourFormattedString() + ", milli: $timeInMillis"
     }
 
-    fun getHours(): Int {
+    private fun getHours(): Int {
         return getHourFromSeconds(getSecondsFromMilli(timeInMillis))
     }
 
-    fun getMinutes(): Int {
+    private fun getMinutes(): Int {
         return getMinutesFromSeconds(getSecondsFromMilli(timeInMillis)) % 60
     }
 
-    fun getSeconds(): Int {
+    private fun getSeconds(): Int {
         return getSecondsFromMilli(timeInMillis) % 60
     }
 
@@ -37,13 +37,12 @@ class DaySeconds {
     }
 
     fun setTime(time: Long) {
-        val adjustedTime = if (time > maxMilliseconds) {
-            time % maxMilliseconds
-        } else {
-            time
+        val adjustedTime = when {
+            time > maxMilliseconds  -> time % maxMilliseconds
+            time < 0 -> maxMilliseconds - (time % maxMilliseconds)
+            else -> time
         }
         timeInMillis = adjustedTime
-        Log.d("dayseconds", "set time from $time to ${get24HourFormattedString()}")
     }
 
     fun setTimeToNow() {
@@ -51,25 +50,12 @@ class DaySeconds {
         setTime(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE))
     }
 
-
-    fun setTime(picker: TimePicker) {
-        setTime(picker.currentHour, picker.currentMinute)
-    }
-
-    fun setTime(hours: Int, minutes: Int) {
+    private fun setTime(hours: Int, minutes: Int) {
         timeInMillis = getMilliFromSeconds(getSecondsFromHour(hours) + getSecondsFromMinute(minutes))
     }
 
     fun get24HourFormattedString(): String {
         return String.format("%02d:%02d", getHours(), getMinutes())
-    }
-
-    fun get12HourFormattedString(): String {
-        val hours = getHours()
-        val adjust = (hours > 12)
-        val adjustedHours = if (adjust) hours - 12 else hours
-        val amPm = if (adjust) "pm" else "am"
-        return String.format("%02d:%02d", adjustedHours, getMinutes()) + amPm
     }
 
 }
