@@ -10,11 +10,11 @@ import androidx.core.view.GestureDetectorCompat
 import androidx.preference.PreferenceManager
 import rak.pixellwp.cycling.jsonLoading.ImageLoadedListener
 import rak.pixellwp.cycling.jsonLoading.ImageLoader
+import rak.pixellwp.cycling.jsonModels.ColorJson
 import rak.pixellwp.cycling.jsonModels.ImageInfo
-import rak.pixellwp.cycling.models.TimelineImage
-import rak.pixellwp.cycling.models.getMilliFromSeconds
-import rak.pixellwp.cycling.models.getSecondsFromHour
-import rak.pixellwp.cycling.models.maxMilliseconds
+import rak.pixellwp.cycling.jsonModels.ImageJson
+import rak.pixellwp.cycling.jsonModels.defaultImageJson
+import rak.pixellwp.cycling.models.*
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
@@ -29,7 +29,7 @@ fun String?.toImageType(): ImageType {
 
 class CyclingWallpaperService : WallpaperService() {
     private val logTag = "CyclingWallpaperService"
-    private val imageLoader = ImageLoader(this)
+    private val imageLoader: ImageLoader by lazy { ImageLoader(this) }
 
     override fun onCreateEngine(): Engine {
         return CyclingWallpaperEngine()
@@ -48,8 +48,7 @@ class CyclingWallpaperService : WallpaperService() {
         private val defaultImage = ImageInfo("DefaultImage", "DefaultImage", 0)
         private var currentImage = defaultImage
         private var currentImageType = ImageType.TIMELINE
-
-        private var drawRunner = PaletteDrawer(this, imageLoader.loadImage(defaultImage))
+        private var drawRunner = PaletteDrawer(this, ColorCyclingImage(defaultImageJson()))
 
         private var imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, drawRunner.image.getImageWidth()), prefs.getInt(BOTTOM, drawRunner.image.getImageHeight()))
         var screenDimensions = Rect(imageSrc)

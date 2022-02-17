@@ -4,11 +4,11 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import rak.pixellwp.cycling.models.ColorCyclingImage
 import rak.pixellwp.cycling.jsonModels.*
 import rak.pixellwp.cycling.models.TimelineImage
+import rak.pixellwp.mapper
 import java.io.*
 import java.util.*
 import kotlin.concurrent.thread
@@ -23,19 +23,19 @@ class ImageLoader(private val context: Context) {
 
     private fun parseImages(): List<ImageInfo> {
         val json = context.assets.open("Images.json")
-        return jacksonObjectMapper().readValue(json)
+        return mapper.readValue(json)
     }
 
     private fun parseTimelineImages(): List<ImageInfo> {
         val json = context.assets.open("Timelines.json")
-        val timelines: List<ImageInfo> = jacksonObjectMapper().readValue(json)
+        val timelines: List<ImageInfo> = mapper.readValue(json)
         timelines.forEach { it.isTimeline = true }
         return timelines
     }
 
     private fun parseCollection(): List<ImageCollection> {
         val json = context.assets.open("ImageCollections.json")
-        return jacksonObjectMapper().readValue(json)
+        return mapper.readValue(json)
     }
 
     init {
@@ -195,14 +195,12 @@ class ImageLoader(private val context: Context) {
     }
 
     private fun parseImageJson(json: String): ImageJson {
-        val mapper = jacksonObjectMapper()
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
         mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
         return mapper.readValue(json)
     }
 
     private fun parseTimelineImageJson(json: String): TimelineImageJson {
-        val mapper = jacksonObjectMapper()
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
         mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
         return mapper.readValue(json)

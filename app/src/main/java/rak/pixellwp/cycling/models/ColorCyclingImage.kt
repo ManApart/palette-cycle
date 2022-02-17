@@ -55,7 +55,7 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
 
     private fun optimizePixels(pixels: List<Int>) : List<Pixel> {
         val optPixels = mutableListOf<Pixel>()
-        val optColors = BooleanArray(pixels.size, { _ -> false}).toMutableList()
+        val optColors = BooleanArray(pixels.size) { false }.toMutableList()
 
         palette.cycles
                 .filter { it.rate != 0 }
