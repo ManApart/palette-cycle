@@ -58,8 +58,8 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
         }
     }
 
-    private fun drawAfterDelay(delay: Long) {
-        handler.postDelayed(runner, delay)
+    private fun drawAfterDelay() {
+        handler.postDelayed(runner, drawDelay)
     }
 
     private fun advanceAndDraw() {
@@ -76,11 +76,10 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
                     surfaceHolder.unlockCanvasAndPost(canvas)
                 }
             } catch (e: Exception) {
-                Log.e(logTag, "$id: failed to advanceAndDraw frame")
-                Log.e(logTag, e.toString())
+                Log.e(logTag, "$id: failed to advanceAndDraw frame; probably couldn't lock surface")
             }
             handler.removeCallbacks(runner)
         }
-        if (visible) drawAfterDelay(drawDelay)
+        if (visible) drawAfterDelay()
     }
 }

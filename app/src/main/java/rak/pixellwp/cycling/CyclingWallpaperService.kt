@@ -78,7 +78,6 @@ class CyclingWallpaperService : WallpaperService() {
         })
 
         private val preferenceListener = SharedPreferences.OnSharedPreferenceChangeListener { preference: SharedPreferences, newValue: Any ->
-            val localDayPercent = dayPercent
             if (newValue == OVERRIDE_TIME || dayPercent == preference.getInt(OVERRIDE_TIME_PERCENT, 50)) return@OnSharedPreferenceChangeListener
 
             dayPercent = preference.getInt(OVERRIDE_TIME_PERCENT, 50)
