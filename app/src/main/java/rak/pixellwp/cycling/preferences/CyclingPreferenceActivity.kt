@@ -46,7 +46,7 @@ class CyclingPreferenceActivity : FragmentActivity() {
             val timelineList = findPreference<DropDownPreference>(TIMELINE_IMAGE)
             val collectionList = findPreference<DropDownPreference>(IMAGE_COLLECTION)
             val singleImageList = findPreference<DropDownPreference>(SINGLE_IMAGE)
-            val timelineOverride = findPreference<CheckBoxPreference>(OVERRIDE_TIMELINE)
+            val timelineOverride = findPreference<SwitchPreference>(OVERRIDE_TIMELINE)
             val timelinePercent = findPreference<SeekBarPreference>(OVERRIDE_TIME_PERCENT)
 
             timelineList?.isVisible = false

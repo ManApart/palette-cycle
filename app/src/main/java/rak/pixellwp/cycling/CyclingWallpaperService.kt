@@ -4,17 +4,20 @@ import android.content.*
 import android.graphics.Rect
 import android.service.wallpaper.WallpaperService
 import android.util.Log
-import android.view.*
+import android.view.GestureDetector
+import android.view.MotionEvent
+import android.view.ScaleGestureDetector
+import android.view.SurfaceHolder
 import androidx.core.content.edit
 import androidx.core.view.GestureDetectorCompat
 import androidx.preference.PreferenceManager
 import rak.pixellwp.cycling.jsonLoading.ImageLoadedListener
 import rak.pixellwp.cycling.jsonLoading.ImageLoader
-import rak.pixellwp.cycling.jsonModels.ColorJson
 import rak.pixellwp.cycling.jsonModels.ImageInfo
-import rak.pixellwp.cycling.jsonModels.ImageJson
 import rak.pixellwp.cycling.jsonModels.defaultImageJson
-import rak.pixellwp.cycling.models.*
+import rak.pixellwp.cycling.models.ColorCyclingImage
+import rak.pixellwp.cycling.models.TimelineImage
+import rak.pixellwp.cycling.models.maxMilliseconds
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
@@ -54,6 +57,7 @@ class CyclingWallpaperService : WallpaperService() {
         var screenDimensions = Rect(imageSrc)
         private var screenOffset: Float = 0f
         private var parallax = prefs.getBoolean(PARALLAX, true)
+        private var adjustMode = prefs.getBoolean(ADJUST_MODE, false)
         private var overrideTimeline = prefs.getBoolean(OVERRIDE_TIMELINE, false)
         private var overrideTime = 500L
         private var dayPercent = 0
@@ -92,6 +96,7 @@ class CyclingWallpaperService : WallpaperService() {
                 singleImage = preference.getString(SINGLE_IMAGE, singleImage) ?: singleImage
                 timelineImage = preference.getString(TIMELINE_IMAGE, timelineImage) ?: timelineImage
                 parallax = preference.getBoolean(PARALLAX, parallax)
+                adjustMode = preference.getBoolean(ADJUST_MODE, false)
                 val prefOverrideTimeline = preference.getBoolean(OVERRIDE_TIMELINE, overrideTimeline)
 
                 currentImageType = preference.getString(IMAGE_TYPE, TIMELINE_IMAGE).toImageType()
@@ -225,14 +230,13 @@ class CyclingWallpaperService : WallpaperService() {
 
         override fun onTouchEvent(event: MotionEvent?) {
             if (isPreview && event != null) {
-                if (event.pointerCount > 2) {
-                    val distance = event.x - previousX
-//                    Log.d(logTag, "X: ${event.x}, $distance")
-                    adjustTimeOverride(distance)
-                    previousX = event.x
-                } else {
+                if (adjustMode) {
                     scaleDetector.onTouchEvent(event)
                     panDetector.onTouchEvent(event)
+                } else {
+                    val distance = event.x - previousX
+                    adjustTimeOverride(distance)
+                    previousX = event.x
                 }
                 super.onTouchEvent(event)
                 drawRunner.drawNow()
@@ -255,6 +259,7 @@ class CyclingWallpaperService : WallpaperService() {
             currentImageType = prefs.getString(IMAGE_TYPE, TIMELINE_IMAGE).toImageType()
 
             parallax = prefs.getBoolean(PARALLAX, parallax)
+            adjustMode = prefs.getBoolean(ADJUST_MODE, false)
 
             imageSrc = Rect(
                 prefs.getInt(LEFT, imageSrc.left),
@@ -274,7 +279,7 @@ class CyclingWallpaperService : WallpaperService() {
 
         private fun adjustTimeOverride(distanceX: Float) {
             val prefOverrideTimeline = prefs.getBoolean(OVERRIDE_TIMELINE, overrideTimeline)
-            val newOverrideTime = overrideTime + distanceX.toLong() * 15000
+            val newOverrideTime = overrideTime + distanceX.toLong() * 1500
             Log.d(logTag, "Time change from ${overrideTime / 1000} to ${newOverrideTime / 1000}")
             dayPercent = (maxMilliseconds / newOverrideTime).toInt()
             prefs.edit {

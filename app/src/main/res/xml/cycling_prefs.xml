@@ -22,7 +22,7 @@
         android:key="singleImage"
         android:summary="Choose a single image that won't change"
         android:title="Single Image" />
-    <CheckBoxPreference
+    <SwitchPreference
         android:defaultValue="false"
         android:key="overrideTimelines"
         android:summary="Force Timeline Images to stay at a specific time."
@@ -31,7 +31,12 @@
         android:title="Override Time"
         android:key="dayPercent"
         android:summary="If Override Timeline Time is on, Timeline Images will stay at this part of the day." />
-    <CheckBoxPreference
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="adjustMode"
+        android:summary="Off: pan to change time. On: pan to move and scale. "
+        android:title="Pan Override" />
+    <SwitchPreference
         android:defaultValue="true"
         android:key="parallax"
         android:summary="Pans the background when you swipe across screens"
