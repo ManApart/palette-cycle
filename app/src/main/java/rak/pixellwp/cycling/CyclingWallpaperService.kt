@@ -19,6 +19,7 @@ import rak.pixellwp.cycling.models.ColorCyclingImage
 import rak.pixellwp.cycling.models.TimelineImage
 import rak.pixellwp.cycling.models.maxMilliseconds
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
@@ -63,7 +64,6 @@ class CyclingWallpaperService : WallpaperService() {
         private var dayPercent = 0
         private var scaleFactor = prefs.getFloat(SCALE_FACTOR, 5.3f)
         private var minScaleFactor = 0.1f
-        private var previousX = 0f
 
         private var lastHourChecked = prefs.getInt(LAST_HOUR_CHECKED, 0)
 
@@ -76,7 +76,12 @@ class CyclingWallpaperService : WallpaperService() {
 
         private val panDetector = GestureDetectorCompat(applicationContext, object : GestureDetector.SimpleOnGestureListener() {
             override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-                adjustImageSrc(distanceX, distanceY)
+                if (adjustMode) {
+                    adjustImageSrc(distanceX, distanceY)
+                } else {
+                    val distance = if (abs(distanceX) > abs(distanceY)) distanceX else -distanceY
+                    adjustTimeOverride(distance)
+                }
                 return super.onScroll(e1, e2, distanceX, distanceY)
             }
         })
@@ -230,14 +235,8 @@ class CyclingWallpaperService : WallpaperService() {
 
         override fun onTouchEvent(event: MotionEvent?) {
             if (isPreview && event != null) {
-                if (adjustMode) {
-                    scaleDetector.onTouchEvent(event)
-                    panDetector.onTouchEvent(event)
-                } else {
-                    val distance = event.x - previousX
-                    adjustTimeOverride(distance)
-                    previousX = event.x
-                }
+                scaleDetector.onTouchEvent(event)
+                panDetector.onTouchEvent(event)
                 super.onTouchEvent(event)
                 drawRunner.drawNow()
             }
@@ -279,8 +278,7 @@ class CyclingWallpaperService : WallpaperService() {
 
         private fun adjustTimeOverride(distanceX: Float) {
             val prefOverrideTimeline = prefs.getBoolean(OVERRIDE_TIMELINE, overrideTimeline)
-            val newOverrideTime = overrideTime + distanceX.toLong() * 1500
-            Log.d(logTag, "Time change from ${overrideTime / 1000} to ${newOverrideTime / 1000}")
+            val newOverrideTime = overrideTime + distanceX.toLong() * 9000
             dayPercent = (maxMilliseconds / newOverrideTime).toInt()
             prefs.edit {
                 putLong(OVERRIDE_TIME, newOverrideTime)

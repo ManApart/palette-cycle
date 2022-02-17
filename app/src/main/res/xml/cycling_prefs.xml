@@ -34,7 +34,7 @@
     <SwitchPreference
         android:defaultValue="true"
         android:key="adjustMode"
-        android:summary="Off: pan to change time. On: pan to move and scale. "
+        android:summary="Off: pan to change time. On: pan to move image."
         android:title="Pan Override" />
     <SwitchPreference
         android:defaultValue="true"
