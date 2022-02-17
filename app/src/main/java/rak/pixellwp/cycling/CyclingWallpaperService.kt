@@ -78,7 +78,12 @@ class CyclingWallpaperService : WallpaperService() {
         })
 
         private val preferenceListener = SharedPreferences.OnSharedPreferenceChangeListener { preference: SharedPreferences, newValue: Any ->
+            val localDayPercent = dayPercent
             if (newValue == OVERRIDE_TIME || dayPercent == preference.getInt(OVERRIDE_TIME_PERCENT, 50)) return@OnSharedPreferenceChangeListener
+
+            dayPercent = preference.getInt(OVERRIDE_TIME_PERCENT, 50)
+            val newOverrideTime = maxMilliseconds * dayPercent / 100
+            prefs.edit().putLong(OVERRIDE_TIME, newOverrideTime).apply()
 
             if (isPreview) {
                 val prevImageCollection = imageCollection
@@ -89,9 +94,7 @@ class CyclingWallpaperService : WallpaperService() {
                 timelineImage = preference.getString(TIMELINE_IMAGE, timelineImage) ?: timelineImage
                 parallax = preference.getBoolean(PARALLAX, parallax)
                 val prefOverrideTimeline = preference.getBoolean(OVERRIDE_TIMELINE, overrideTimeline)
-                dayPercent = preference.getInt(OVERRIDE_TIME_PERCENT, 50)
-                val newOverrideTime = maxMilliseconds * dayPercent / 100
-                prefs.edit().putLong(OVERRIDE_TIME, newOverrideTime).apply()
+
                 currentImageType = preference.getString(IMAGE_TYPE, TIMELINE_IMAGE).toImageType()
 
                 imageSrc = Rect(
