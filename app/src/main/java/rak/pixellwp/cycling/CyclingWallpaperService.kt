@@ -127,13 +127,15 @@ class CyclingWallpaperService : WallpaperService() {
 
         private val timeReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-                if (lastHourChecked != hour) {
-                    Log.d(logTag, "Hour passed ($lastHourChecked > $hour). Assessing possible image change")
-                    lastHourChecked = hour
-                    prefs.edit().putInt(LAST_HOUR_CHECKED, lastHourChecked).apply()
-                    if (imageCollection != "") {
-                        changeCollection()
+                if (currentImageType == ImageType.COLLECTION) {
+                    val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+                    if (lastHourChecked != hour) {
+                        Log.d(logTag, "Hour passed ($lastHourChecked > $hour). Assessing possible image change")
+                        lastHourChecked = hour
+                        prefs.edit().putInt(LAST_HOUR_CHECKED, lastHourChecked).apply()
+                        if (imageCollection != "") {
+                            changeCollection()
+                        }
                     }
                 }
             }
@@ -273,7 +275,7 @@ class CyclingWallpaperService : WallpaperService() {
         private fun adjustTimeOverride(distanceX: Float) {
             val prefOverrideTimeline = prefs.getBoolean(OVERRIDE_TIMELINE, overrideTimeline)
             val newOverrideTime = overrideTime + distanceX.toLong() * 15000
-            Log.d(logTag, "Time change from ${overrideTime/1000} to ${newOverrideTime/1000}")
+            Log.d(logTag, "Time change from ${overrideTime / 1000} to ${newOverrideTime / 1000}")
             dayPercent = (maxMilliseconds / newOverrideTime).toInt()
             prefs.edit {
                 putLong(OVERRIDE_TIME, newOverrideTime)
