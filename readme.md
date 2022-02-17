@@ -1,3 +1,7 @@
+
+http://www.effectgames.com/demos/worlds/
+http://www.effectgames.com/demos/canvascycle/
+
 **TODO**
 * Thread leaks, performance, bugs?
 

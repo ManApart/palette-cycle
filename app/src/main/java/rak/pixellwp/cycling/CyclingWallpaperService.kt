@@ -48,7 +48,7 @@ class CyclingWallpaperService : WallpaperService() {
         private val defaultImage = ImageInfo("DefaultImage", "DefaultImage", 0)
         private var currentImage = defaultImage
         private var currentImageType = ImageType.TIMELINE
-        private var drawRunner = PaletteDrawer(this, ColorCyclingImage(defaultImageJson()))
+        private var drawRunner = PaletteDrawer(this, imageLoader.loadImage(defaultImage))
 
         private var imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, drawRunner.image.getImageWidth()), prefs.getInt(BOTTOM, drawRunner.image.getImageHeight()))
         var screenDimensions = Rect(imageSrc)
