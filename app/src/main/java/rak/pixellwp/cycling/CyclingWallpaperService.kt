@@ -4,10 +4,7 @@ import android.content.*
 import android.graphics.Rect
 import android.service.wallpaper.WallpaperService
 import android.util.Log
-import android.view.GestureDetector
-import android.view.MotionEvent
-import android.view.ScaleGestureDetector
-import android.view.SurfaceHolder
+import android.view.*
 import androidx.core.content.edit
 import androidx.core.view.GestureDetectorCompat
 import androidx.preference.PreferenceManager
@@ -32,7 +29,7 @@ fun String?.toImageType(): ImageType {
 
 class CyclingWallpaperService : WallpaperService() {
     private val logTag = "CyclingWallpaperService"
-    private val imageLoader: ImageLoader by lazy { ImageLoader(this) }
+    private val imageLoader = ImageLoader(this)
 
     override fun onCreateEngine(): Engine {
         return CyclingWallpaperEngine()
@@ -63,6 +60,7 @@ class CyclingWallpaperService : WallpaperService() {
         private var dayPercent = 0
         private var scaleFactor = prefs.getFloat(SCALE_FACTOR, 5.3f)
         private var minScaleFactor = 0.1f
+        private var previousX = 0f
 
         private var lastHourChecked = prefs.getInt(LAST_HOUR_CHECKED, 0)
 
@@ -75,11 +73,7 @@ class CyclingWallpaperService : WallpaperService() {
 
         private val panDetector = GestureDetectorCompat(applicationContext, object : GestureDetector.SimpleOnGestureListener() {
             override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-//                if (e1?.pointerCount ?: 0 > 1) {
-                adjustTimeOverride(distanceX)
-//                } else {
-//                    adjustImageSrc(distanceX, distanceY)
-//                }
+                adjustImageSrc(distanceX, distanceY)
                 return super.onScroll(e1, e2, distanceX, distanceY)
             }
         })
@@ -227,9 +221,16 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         override fun onTouchEvent(event: MotionEvent?) {
-            if (isPreview) {
-                scaleDetector.onTouchEvent(event)
-                panDetector.onTouchEvent(event)
+            if (isPreview && event != null) {
+                if (event.pointerCount > 2) {
+                    val distance = event.x - previousX
+//                    Log.d(logTag, "X: ${event.x}, $distance")
+                    adjustTimeOverride(distance)
+                    previousX = event.x
+                } else {
+                    scaleDetector.onTouchEvent(event)
+                    panDetector.onTouchEvent(event)
+                }
                 super.onTouchEvent(event)
                 drawRunner.drawNow()
             }
@@ -247,7 +248,7 @@ class CyclingWallpaperService : WallpaperService() {
             singleImage = prefs.getString(SINGLE_IMAGE, "") ?: singleImage
             timelineImage = prefs.getString(TIMELINE_IMAGE, "") ?: timelineImage
             val prefOverrideTimeline = prefs.getBoolean(OVERRIDE_TIMELINE, overrideTimeline)
-            val newOverrideTime =  prefs.getLong(OVERRIDE_TIME, 5000L)
+            val newOverrideTime = prefs.getLong(OVERRIDE_TIME, 5000L)
             currentImageType = prefs.getString(IMAGE_TYPE, TIMELINE_IMAGE).toImageType()
 
             parallax = prefs.getBoolean(PARALLAX, parallax)
@@ -271,6 +272,7 @@ class CyclingWallpaperService : WallpaperService() {
         private fun adjustTimeOverride(distanceX: Float) {
             val prefOverrideTimeline = prefs.getBoolean(OVERRIDE_TIMELINE, overrideTimeline)
             val newOverrideTime = overrideTime + distanceX.toLong() * 15000
+            Log.d(logTag, "Time change from ${overrideTime/1000} to ${newOverrideTime/1000}")
             dayPercent = (maxMilliseconds / newOverrideTime).toInt()
             prefs.edit {
                 putLong(OVERRIDE_TIME, newOverrideTime)

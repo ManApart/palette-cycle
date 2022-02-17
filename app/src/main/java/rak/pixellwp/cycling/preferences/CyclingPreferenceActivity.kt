@@ -20,7 +20,6 @@ class CyclingPreferenceActivity : FragmentActivity() {
     private val logTag = "Prefs"
     private val loggingManager = LoggingManager(this)
     private val PERMISSIONS_WRITE_EXTERNAL_STORAGE = 1
-    private lateinit var imageLoader: ImageLoader
 
     class MyPreferenceFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -71,7 +70,6 @@ class CyclingPreferenceActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        imageLoader = ImageLoader(this)
         supportFragmentManager
             .beginTransaction()
             .replace(android.R.id.content, MyPreferenceFragment())
@@ -104,6 +102,7 @@ class CyclingPreferenceActivity : FragmentActivity() {
     }
 
     fun preload(view: View) {
+        val imageLoader = ImageLoader(this)
         imageLoader.preloadImages()
     }
 
