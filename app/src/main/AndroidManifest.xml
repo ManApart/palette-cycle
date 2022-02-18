@@ -36,7 +36,6 @@
             android:name=".cycling.CyclingWallpaperService"
             android:enabled="true"
             android:exported="true"
-            android:label="Cycling Wallpaper"
             android:permission="android.permission.BIND_WALLPAPER">
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />
