@@ -15,9 +15,7 @@ import rak.pixellwp.cycling.jsonLoading.ImageLoadedListener
 import rak.pixellwp.cycling.jsonLoading.ImageLoader
 import rak.pixellwp.cycling.jsonModels.ImageInfo
 import rak.pixellwp.cycling.jsonModels.defaultImageJson
-import rak.pixellwp.cycling.models.ColorCyclingImage
-import rak.pixellwp.cycling.models.TimelineImage
-import rak.pixellwp.cycling.models.maxMilliseconds
+import rak.pixellwp.cycling.models.*
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.max
@@ -278,13 +276,13 @@ class CyclingWallpaperService : WallpaperService() {
 
         private fun adjustTimeOverride(distanceX: Float) {
             val prefOverrideTimeline = prefs.getBoolean(OVERRIDE_TIMELINE, overrideTimeline)
-            val newOverrideTime = overrideTime + distanceX.toLong() * 9000
-            dayPercent = (maxMilliseconds / newOverrideTime).toInt()
+            val newOverrideTime = getTimeWithinDay(overrideTime + distanceX.toLong() * 9000)
+            dayPercent = getDayPercent(newOverrideTime)
+            updateTimelineOverride(prefOverrideTimeline, newOverrideTime)
             prefs.edit {
-                putLong(OVERRIDE_TIME, newOverrideTime)
+                putLong(OVERRIDE_TIME, overrideTime)
                 putInt(OVERRIDE_TIME_PERCENT, dayPercent)
             }
-            updateTimelineOverride(prefOverrideTimeline, newOverrideTime)
         }
 
         private fun updateTimelineOverride(prefOverrideTimeline: Boolean, newOverrideTime: Long) {

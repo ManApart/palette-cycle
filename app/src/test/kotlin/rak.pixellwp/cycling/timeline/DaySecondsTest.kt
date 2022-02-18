@@ -4,8 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import rak.pixellwp.cycling.models.getSecondsFromHour
-import rak.pixellwp.cycling.models.getTimeString
+import rak.pixellwp.cycling.models.*
 
 class DaySecondsTest {
 
@@ -27,5 +26,18 @@ class DaySecondsTest {
         val actual = getTimeString(seconds)
         println("Seconds: $seconds, actual: $actual")
         assertEquals(expectedString, actual)
+    }
+
+    @Test
+    fun getTimeWithinDayLoops(){
+        assertEquals(1000, getTimeWithinDay(1000))
+        assertEquals(2000, getTimeWithinDay(maxMilliseconds + 2000))
+    }
+
+    @Test
+    fun getDayPercentIsCorrect(){
+        assertEquals(0, getDayPercent(0L))
+        assertEquals(50, getDayPercent(maxMilliseconds/2))
+        assertEquals(100, getDayPercent(maxMilliseconds))
     }
 }

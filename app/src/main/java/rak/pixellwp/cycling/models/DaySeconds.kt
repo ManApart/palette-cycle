@@ -1,13 +1,12 @@
 package rak.pixellwp.cycling.models
 
-import android.util.Log
-import android.widget.TimePicker
 import java.util.*
 
 /*
     Class stores time for a single day as milliseconds
  */
 val maxMilliseconds = getMilliFromSeconds(getSecondsFromHour(24))
+val maxMilliDouble = maxMilliseconds.toDouble()
 
 class DaySeconds {
     private var timeInMillis: Long = 0
@@ -37,12 +36,7 @@ class DaySeconds {
     }
 
     fun setTime(time: Long) {
-        val adjustedTime = when {
-            time > maxMilliseconds  -> time % maxMilliseconds
-            time < 0 -> maxMilliseconds - (time % maxMilliseconds)
-            else -> time
-        }
-        timeInMillis = adjustedTime
+        timeInMillis = getTimeWithinDay(time)
     }
 
     fun setTimeToNow() {
@@ -92,4 +86,16 @@ fun getSecondsFromHour(hour: Int): Int {
 
 fun getHourFromSeconds(seconds: Int): Int {
     return seconds / 60 / 60
+}
+
+fun getTimeWithinDay(time: Long): Long {
+    return  when {
+        time > maxMilliseconds  -> time % maxMilliseconds
+        time < 0 -> maxMilliseconds - (time % maxMilliseconds)
+        else -> time
+    }
+}
+
+fun getDayPercent(millis: Long): Int {
+    return (100 - (maxMilliseconds - millis) / maxMilliDouble * 100).toInt()
 }
