@@ -10,7 +10,7 @@ import rak.pixellwp.mapper
 class ImagePreference(context: Context, attributeSet: AttributeSet) : DropDownPreference(context, attributeSet) {
 
     init {
-        val images = loadImages()
+        val images = loadImages().sortedBy { it.name }
         entries = images.map { image -> image.name }.toTypedArray()
         entryValues = images.map { image -> image.id }.toTypedArray()
     }
