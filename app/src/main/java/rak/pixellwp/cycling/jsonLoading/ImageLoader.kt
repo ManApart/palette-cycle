@@ -95,9 +95,8 @@ class ImageLoader(private val context: Context) {
         return timelineImages.firstOrNull { it.id == imageId } ?: throw IllegalArgumentException("Could not find timeline for $imageId")
     }
 
-    fun getImageInfoForCollection(collectionName: String): ImageInfo {
+    fun getImageInfoForCollection(collectionName: String, hour: Int): ImageInfo {
         val imageCollection = collection.first { it.name == collectionName }
-        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         Log.v(logTag, "grabbing image info for collection $collectionName at hour $hour")
         val info = imageCollection.images
             .filter { it.startHour < hour }.maxByOrNull { it.startHour }

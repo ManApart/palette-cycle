@@ -62,8 +62,8 @@ class CyclingWallpaperService : WallpaperService() {
         private var dayPercent = 0
         private var scaleFactor = prefs.getFloat(SCALE_FACTOR, 5.3f)
         private var minScaleFactor = 0.1f
-
         private var lastHourChecked = prefs.getInt(LAST_HOUR_CHECKED, 0)
+        private val calendar = Calendar.getInstance()
 
         private val scaleDetector = ScaleGestureDetector(applicationContext, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector?): Boolean {
@@ -74,7 +74,7 @@ class CyclingWallpaperService : WallpaperService() {
 
         private val panDetector = GestureDetectorCompat(applicationContext, object : GestureDetector.SimpleOnGestureListener() {
             override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-                if (adjustMode || currentImageType != ImageType.TIMELINE) {
+                if (adjustMode || currentImageType != ImageType.TIMELINE || !overrideTimeline) {
                     adjustImageSrc(distanceX, distanceY)
                 } else {
                     val distance = if (abs(distanceX) > abs(distanceY)) distanceX else -distanceY
@@ -131,19 +131,32 @@ class CyclingWallpaperService : WallpaperService() {
             } else {
                 reloadPrefs()
             }
+            if (newValue == OVERRIDE_TIME_PERCENT) updateCollectionTime(newOverrideTime)
         }
 
         private val timeReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                if (currentImageType == ImageType.COLLECTION) {
-                    val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-                    if (lastHourChecked != hour) {
-                        Log.d(logTag, "Hour passed ($lastHourChecked > $hour). Assessing possible image change")
-                        lastHourChecked = hour
-                        prefs.edit().putInt(LAST_HOUR_CHECKED, lastHourChecked).apply()
-                        if (imageCollection != "") {
-                            changeCollection()
-                        }
+                updateCollectionTime(overrideTime)
+            }
+        }
+
+        private fun getHour(overrideTime: Long): Int {
+            return if (overrideTimeline) {
+                getHourFromSeconds(getSecondsFromMilli(overrideTime))
+            } else {
+                calendar.get(Calendar.HOUR_OF_DAY)
+            }
+        }
+
+        private fun updateCollectionTime(overrideTime: Long) {
+            if (currentImageType == ImageType.COLLECTION) {
+                val hour = getHour(overrideTime)
+                if (lastHourChecked != hour) {
+                    Log.d(logTag, "Hour passed ($lastHourChecked > $hour). Assessing possible image change")
+                    lastHourChecked = hour
+                    prefs.edit().putInt(LAST_HOUR_CHECKED, lastHourChecked).apply()
+                    if (imageCollection != "") {
+                        changeCollection(overrideTime)
                     }
                 }
             }
@@ -159,7 +172,7 @@ class CyclingWallpaperService : WallpaperService() {
             Log.v(logTag, "Load initial image img= $singleImage, collection= $imageCollection, timeline= $timelineImage, drawer= ${drawRunner.id}")
             return when {
                 currentImageType == ImageType.TIMELINE && timelineImage != "" -> imageLoader.getImageInfoForTimeline(timelineImage)
-                currentImageType == ImageType.COLLECTION && imageCollection != "" -> imageLoader.getImageInfoForCollection(imageCollection)
+                currentImageType == ImageType.COLLECTION && imageCollection != "" -> imageLoader.getImageInfoForCollection(imageCollection, getHour(overrideTime))
                 currentImageType == ImageType.SINGLE && singleImage != "" -> imageLoader.getImageInfoForImage(singleImage)
                 else -> defaultImage
             }
@@ -172,9 +185,10 @@ class CyclingWallpaperService : WallpaperService() {
             }
         }
 
-        private fun changeCollection() {
+        private fun changeCollection(overrideTime: Long = this.overrideTime) {
+            val hour = getHour(overrideTime)
             if (imageCollection.isNotBlank()) {
-                val image = imageLoader.getImageInfoForCollection(imageCollection)
+                val image = imageLoader.getImageInfoForCollection(imageCollection, hour)
                 changeImage(image)
             }
         }

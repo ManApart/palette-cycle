@@ -64,7 +64,7 @@ fun getTimeString(time: Long): String {
     return cal.get24HourFormattedString()
 }
 
-private fun getSecondsFromMilli(milli: Long): Int {
+fun getSecondsFromMilli(milli: Long): Int {
     return (milli / 1000).toInt()
 }
 

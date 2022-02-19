@@ -40,4 +40,10 @@ class DaySecondsTest {
         assertEquals(50, getDayPercent(maxMilliseconds/2))
         assertEquals(100, getDayPercent(maxMilliseconds))
     }
+
+    @Test
+    fun hoursFromSeconds(){
+        assertEquals(24, getHourFromSeconds(86400))
+        assertEquals(12, getHourFromSeconds(43200))
+    }
 }
