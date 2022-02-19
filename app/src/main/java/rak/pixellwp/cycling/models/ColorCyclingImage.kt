@@ -14,6 +14,7 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
     private var drawUnOptimized = true
 
     private val bitmap: Bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    private val canvas = Canvas(bitmap)
 
     init {
         createBitmap()
@@ -47,10 +48,6 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
 
     fun getPalette(): Palette{
         return palette
-    }
-
-    private fun optimizePixels(){
-        optimizedPixels = optimizePixels(pixels)
     }
 
     private fun optimizePixels(pixels: List<Int>) : List<Pixel> {
@@ -96,7 +93,6 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
     }
 
     private fun drawImage() {
-        val canvas = Canvas(bitmap)
         val p = Paint()
         var j = 0
         for (y in 0 until height){
@@ -109,7 +105,6 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
     }
 
     private fun drawOptimizedImage(){
-        val canvas = Canvas(bitmap)
         val p = Paint()
         for (pixel in optimizedPixels){
             p.color = palette.colors[pixels[pixel.index]]

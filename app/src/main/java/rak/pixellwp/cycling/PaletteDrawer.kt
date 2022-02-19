@@ -20,7 +20,7 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
     }
     private var handler = Handler(handlerThread.looper)
     private val runner = Runnable { advanceAndDraw() }
-    private val drawDelay = 50L
+    private val drawDelay = 20L
     private val startTime = Date().time
     private var visible = true
 

@@ -3,6 +3,9 @@ package rak.pixellwp.cycling.models
 import android.graphics.Color
 import android.util.Log
 import rak.pixellwp.cycling.jsonModels.PaletteJson
+import kotlin.math.floor
+import kotlin.math.max
+import kotlin.math.min
 
 class Palette(val id: String = "", colors: List<Int>, val cycles: List<Cycle>) {
     constructor(id: String = "", paletteJson: PaletteJson) : this(id, paletteJson.parsedColors, paletteJson.cycles)
@@ -46,7 +49,7 @@ class Palette(val id: String = "", colors: List<Int>, val cycles: List<Cycle>) {
     private fun blendShiftColors(colors: MutableList<Int>, cycle: Cycle, amount: Double) {
         shiftColors(colors, cycle, amount)
 
-        val remainder = Math.floor((amount - Math.floor(amount)) * precision).toInt()
+        val remainder = floor((amount - floor(amount)) * precision).toInt()
         val temp = colors[cycle.high]
         for (j in (cycle.high - 1) downTo cycle.low) {
             colors[j + 1] = fadeColors(colors[j+1], colors[j], remainder)
@@ -59,7 +62,7 @@ class Palette(val id: String = "", colors: List<Int>, val cycles: List<Cycle>) {
             return sourceColor
         }
 
-        val amount = Math.min(precisionInt, Math.max(0, frame))
+        val amount = min(precisionInt, max(0, frame))
 
         val red = blendColor(Color.red(sourceColor), Color.red(destColor), amount)
         val green = blendColor(Color.green(sourceColor), Color.green(destColor), amount)

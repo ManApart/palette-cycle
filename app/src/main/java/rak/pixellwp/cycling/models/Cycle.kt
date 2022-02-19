@@ -1,5 +1,8 @@
 package rak.pixellwp.cycling.models
 
+import kotlin.math.floor
+import kotlin.math.sin
+
 const val precision: Double = 100.0
 const val precisionInt: Int = 100
 
@@ -10,7 +13,7 @@ data class Cycle(val rate: Int, private val reverse: Int, val low: Int, val high
     private val adjustedRate: Float = (rate / cycleSpeed).toFloat()
 
     private fun dFloatMod(a: Float, b: Int) : Double {
-        return (Math.floor((a* precision)) % Math.floor((b* precision))) / precision
+        return (floor((a* precision)) % floor((b* precision))) / precision
     }
 
     fun reverseColorsIfNecessary(colors: MutableList<Int>){
@@ -38,7 +41,7 @@ data class Cycle(val rate: Int, private val reverse: Int, val low: Int, val high
         } else if (reverse < 6){
             //sine wave
             cycleAmount = dFloatMod(timePassed / (1000/adjustedRate), size)
-            cycleAmount = (Math.sin(cycleAmount * Math.PI * 2/size) + 1)
+            cycleAmount = (sin(cycleAmount * Math.PI * 2/size) + 1)
             if (reverse == 4){
                 cycleAmount *= size/4
             } else if (reverse == 5){
