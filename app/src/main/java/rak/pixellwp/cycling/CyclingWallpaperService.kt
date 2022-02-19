@@ -74,7 +74,7 @@ class CyclingWallpaperService : WallpaperService() {
 
         private val panDetector = GestureDetectorCompat(applicationContext, object : GestureDetector.SimpleOnGestureListener() {
             override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-                if (adjustMode) {
+                if (adjustMode || currentImageType != ImageType.TIMELINE) {
                     adjustImageSrc(distanceX, distanceY)
                 } else {
                     val distance = if (abs(distanceX) > abs(distanceY)) distanceX else -distanceY

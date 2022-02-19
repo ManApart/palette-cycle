@@ -17,7 +17,6 @@ import rak.pixellwp.cycling.jsonLoading.ImageLoader
 
 
 class CyclingPreferenceActivity : FragmentActivity() {
-    private val logTag = "Prefs"
     private val loggingManager = LoggingManager(this)
     private val PERMISSIONS_WRITE_EXTERNAL_STORAGE = 1
 
@@ -48,18 +47,21 @@ class CyclingPreferenceActivity : FragmentActivity() {
             val singleImageList = findPreference<DropDownPreference>(SINGLE_IMAGE)
             val timelineOverride = findPreference<SwitchPreference>(OVERRIDE_TIMELINE)
             val timelinePercent = findPreference<SeekBarPreference>(OVERRIDE_TIME_PERCENT)
+            val panOverride = findPreference<SwitchPreference>(ADJUST_MODE)
 
             timelineList?.isVisible = false
             collectionList?.isVisible = false
             singleImageList?.isVisible = false
             timelineOverride?.isVisible = false
             timelinePercent?.isVisible = false
+            panOverride?.isVisible = false
 
             when (imageType) {
                 ImageType.TIMELINE -> {
                     timelineList?.isVisible = true
                     timelineOverride?.isVisible = true
                     timelinePercent?.isVisible = true
+                    panOverride?.isVisible = true
                 }
                 ImageType.COLLECTION -> collectionList?.isVisible = true
                 else -> singleImageList?.isVisible = true
