@@ -42,47 +42,31 @@ class CyclingWallpaperService : WallpaperService() {
             imageLoader.addLoadListener(this)
         }
 
-        private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@CyclingWallpaperService)
+        val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@CyclingWallpaperService)
 
-        private var imageCollection = prefs.getString(IMAGE_COLLECTION, "") ?: "Seascape"
-        private var singleImage = prefs.getString(SINGLE_IMAGE, "") ?: "CORAL"
-        private var timelineImage = prefs.getString(TIMELINE_IMAGE, "") ?: "V26"
-        private val defaultImage = ImageInfo("DefaultImage", "DefaultImage", 0)
-        private var currentImage = defaultImage
-        private var currentImageType = ImageType.TIMELINE
-        private var drawRunner = PaletteDrawer(this, ColorCyclingImage(defaultImageJson()))
+        var imageCollection = prefs.getString(IMAGE_COLLECTION, "") ?: "Seascape"
+        var singleImage = prefs.getString(SINGLE_IMAGE, "") ?: "CORAL"
+        var timelineImage = prefs.getString(TIMELINE_IMAGE, "") ?: "V26"
+        val defaultImage = ImageInfo("DefaultImage", "DefaultImage", 0)
+        var currentImage = defaultImage
+        var currentImageType = ImageType.TIMELINE
+        var drawRunner = PaletteDrawer(this, ColorCyclingImage(defaultImageJson()))
 
-        private var imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, drawRunner.image.getImageWidth()), prefs.getInt(BOTTOM, drawRunner.image.getImageHeight()))
+        var imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, drawRunner.image.getImageWidth()), prefs.getInt(BOTTOM, drawRunner.image.getImageHeight()))
         var screenDimensions = Rect(imageSrc)
-        private var screenOffset: Float = 0f
-        private var parallax = prefs.getBoolean(PARALLAX, true)
-        private var adjustMode = prefs.getBoolean(ADJUST_MODE, false)
-        private var overrideTimeline = prefs.getBoolean(OVERRIDE_TIMELINE, false)
-        private var overrideTime = 500L
-        private var dayPercent = 0
-        private var scaleFactor = prefs.getFloat(SCALE_FACTOR, 5.3f)
-        private var minScaleFactor = 0.1f
+        var screenOffset: Float = 0f
+        var parallax = prefs.getBoolean(PARALLAX, true)
+        var adjustMode = prefs.getBoolean(ADJUST_MODE, false)
+        var overrideTimeline = prefs.getBoolean(OVERRIDE_TIMELINE, false)
+        var overrideTime = 500L
+        var dayPercent = 0
+        var scaleFactor = prefs.getFloat(SCALE_FACTOR, 5.3f)
+        var minScaleFactor = 0.1f
 
-        private var lastHourChecked = prefs.getInt(LAST_HOUR_CHECKED, 0)
+        var lastHourChecked = prefs.getInt(LAST_HOUR_CHECKED, 0)
 
-        private val scaleDetector = ScaleGestureDetector(applicationContext, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-            override fun onScale(detector: ScaleGestureDetector?): Boolean {
-                incrementScaleFactor(detector?.scaleFactor ?: 1f)
-                return true
-            }
-        })
-
-        private val panDetector = GestureDetectorCompat(applicationContext, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-                if (adjustMode || currentImageType != ImageType.TIMELINE) {
-                    adjustImageSrc(distanceX, distanceY)
-                } else {
-                    val distance = if (abs(distanceX) > abs(distanceY)) distanceX else -distanceY
-                    adjustTimeOverride(distance)
-                }
-                return super.onScroll(e1, e2, distanceX, distanceY)
-            }
-        })
+        private val scaleDetector = scaleDetector(applicationContext)
+        private val panDetector = panDetector(applicationContext)
 
         private val preferenceListener = SharedPreferences.OnSharedPreferenceChangeListener { preference: SharedPreferences, newValue: Any ->
             if (newValue == OVERRIDE_TIME
@@ -356,12 +340,6 @@ class CyclingWallpaperService : WallpaperService() {
                 .putInt(TOP, imageSrc.top)
                 .putInt(RIGHT, imageSrc.right)
                 .putInt(BOTTOM, imageSrc.bottom).apply()
-        }
-
-        private fun incrementScaleFactor(incrementFactor: Float) {
-            scaleFactor *= incrementFactor
-            scaleFactor = max(minScaleFactor, min(scaleFactor, 10f))
-            prefs.edit().putFloat(SCALE_FACTOR, scaleFactor).apply()
         }
 
         private fun determineMinScaleFactor() {
