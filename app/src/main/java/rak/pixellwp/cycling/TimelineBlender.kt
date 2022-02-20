@@ -59,7 +59,7 @@ class TimelineBlender(defaultPalette: Map.Entry<Int, Palette>) {
         }
         lastPercent = percent
 
-        Log.d(logTag, "Blending palettes for ${previous.key} (${getTimeString(previous.key)}) and ${next.key} (${getTimeString(next.key)}) with current time $currentTime (${getTimeString(currentTime)}) and percent blend $percent")
+        Log.d(logTag, "Blending palettes for ${previous.key} and ${next.key} with current time $currentTime and percent blend $percent")
         return current.blendPalette(previous.value, next.value, percent)
     }
 

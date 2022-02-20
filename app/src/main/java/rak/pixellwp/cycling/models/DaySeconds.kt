@@ -54,16 +54,6 @@ class DaySeconds {
 
 }
 
-fun getTimeString(time: Int): String {
-    return getTimeString(getMilliFromSeconds(time))
-}
-
-fun getTimeString(time: Long): String {
-    val cal = DaySeconds()
-    cal.setTime(time)
-    return cal.get24HourFormattedString()
-}
-
 private fun getSecondsFromMilli(milli: Long): Int {
     return (milli / 1000).toInt()
 }

@@ -9,7 +9,7 @@ class Timeline(entries: Map<String, String>, palettes: List<Palette>) {
     private val blender = TimelineBlender(timeToPalette.entries.first())
 
     init {
-        Log.d(logTag, "Initing timeline image with palettes at " + timeToPalette.keys.sorted().map { time -> "$time (${getTimeString(time)})" }.toList())
+        Log.d(logTag, "Initing timeline image with palettes at " + timeToPalette.keys.sorted().map { time -> "$time" }.toList())
     }
 
     private fun parseEntries(entries: Map<String, String>, palettes: List<Palette>): Map<Int, Palette> {

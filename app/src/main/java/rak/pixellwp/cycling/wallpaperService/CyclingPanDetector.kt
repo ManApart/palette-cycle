@@ -18,7 +18,7 @@ fun CyclingWallpaperService.CyclingWallpaperEngine.panDetector(applicationContex
             if (adjustMode || currentImageType != ImageType.TIMELINE) {
                 adjustImageSrc(distanceX, distanceY)
             } else {
-                val distance = if (abs(distanceX) > abs(distanceY)) distanceX else -distanceY
+                val distance = if (abs(distanceX) > abs(distanceY)) -distanceX else distanceY
                 adjustTimeOverride(distance)
             }
             return super.onScroll(e1, e2, distanceX, distanceY)
