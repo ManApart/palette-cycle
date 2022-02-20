@@ -16,7 +16,7 @@ internal fun CyclingWallpaperService.CyclingWallpaperEngine.loadInitialImage(): 
 
 internal fun CyclingWallpaperService.CyclingWallpaperEngine.downloadFirstTimeImage() {
     if (imageCollection == "" && timelineImage == "") {
-        imageCollection = "Waterfall"
+        imageCollection = "Jungle Waterfall"
         changeCollection()
     }
 }

@@ -4,15 +4,18 @@
     "images": [
       {
         "id": "V29FOG",
+        "name": "Seascape - Fog",
         "startHour": "6",
         "weather": "CLOUDY"
       },
       {
         "id": "V29",
+        "name": "Seascape - Day",
         "startHour": "10"
       },
       {
         "id": "V29PM",
+        "name": "Seascape - Sunset",
         "startHour": "18"
       }
     ]
@@ -22,19 +25,23 @@
     "images": [
       {
         "id": "V08AM",
+        "name": "Waterfall - Morning",
         "startHour": "6"
       },
       {
         "id": "V08",
+        "name": "Waterfall - Day",
         "startHour": "11"
       },
       {
         "id": "V08RAIN",
+        "name": "Waterfall - Rain",
         "startHour": "16",
         "weather": "RAIN"
       },
       {
         "id": "V08PM",
+        "name": "Waterfall - Night",
         "startHour": "18"
       }
     ]
@@ -44,15 +51,18 @@
     "images": [
       {
         "id": "V16",
+        "name": "Mirror Pond - Day",
         "startHour": "6"
       },
       {
         "id": "V16RAIN",
+        "name": "Mirror Pond - Rain",
         "startHour": "15",
         "weather": "RAIN"
       },
       {
         "id": "V16PM",
+        "name": "Mirror Pond - Night",
         "startHour": "18"
       }
     ]
@@ -62,14 +72,17 @@
     "images": [
       {
         "id": "V19",
+        "name": "Mountain Stream - Day",
         "startHour": "6"
       },
       {
         "id": "V19PM",
+        "name": "Mountain Stream - Night",
         "startHour": "12"
       },
       {
         "id": "V19AURA",
+        "name": "Mountain Stream - Aurora",
         "startHour": "21",
         "weather": "CLOUDY"
       }
@@ -80,15 +93,18 @@
     "images": [
       {
         "id": "V26",
+        "name": "Snowy Wood - Day",
         "startHour": "6"
       },
       {
         "id": "V26SNOW",
+        "name": "Snowy Wood - Snow",
         "startHour": "12",
         "weather": "RAIN"
       },
       {
         "id": "V26PM",
+        "name": "Snowy Wood - Night",
         "startHour": "17"
       },
       {
@@ -102,15 +118,18 @@
     "images": [
       {
         "id": "V25",
+        "name": "Desert Heat - Day",
         "startHour": "6"
       },
       {
         "id": "V25HEAT",
+        "name": "Desert Heat - Heat",
         "startHour": "11",
         "weather": "CLOUDY"
       },
       {
         "id": "V25PM",
+        "name": "Desert Heat - Night",
         "startHour": "17"
       }
     ]
@@ -120,24 +139,23 @@
     "images": [
       {
         "id": "V05AM",
+        "name": "Ghost Castle - Morning",
         "startHour": "7"
       },
       {
         "id": "V05RAIN",
+        "name": "Ghost Castle - Rain",
         "startHour": "12",
         "weather": "RAIN"
       },
       {
-        "id": "V04",
-        "name": "Highland Ruins - Rain",
-        "startHour": "14"
-      },
-      {
         "id": "V05PM",
+        "name": "Ghost Castle - Evening",
         "startHour": "16"
       },
       {
         "id": "V05HAUNT",
+        "name": "Ghost Castle - Night",
         "startHour": "20"
       }
     ]
@@ -156,6 +174,11 @@
         "weather": "RAIN"
       }
     ]
+  },
+  {
+    "id": "V04",
+    "name": "Highland Ruins - Rain",
+    "startHour": "14"
   },
   {
     "id": "CORAL",
