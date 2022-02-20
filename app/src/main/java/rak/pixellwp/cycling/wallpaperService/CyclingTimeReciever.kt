@@ -40,3 +40,11 @@ internal fun CyclingWallpaperService.CyclingWallpaperEngine.updateTimelineOverri
         }
     }
 }
+
+internal fun CyclingWallpaperService.CyclingWallpaperEngine.getTime(): Long {
+    return if (overrideTimeline) {
+        overrideTime
+    } else {
+        Calendar.getInstance().get(Calendar.MILLISECOND).toLong()
+    }
+}

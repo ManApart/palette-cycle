@@ -30,7 +30,8 @@ fun CyclingWallpaperService.CyclingWallpaperEngine.preferenceListener(): SharedP
             adjustMode = preference.getBoolean(ADJUST_MODE, false)
             val prefOverrideTimeline = preference.getBoolean(OVERRIDE_TIMELINE, overrideTimeline)
 
-            currentImageType = preference.getString(IMAGE_TYPE, TIMELINE_IMAGE).toImageType()
+            currentImageType = preference.getString(IMAGE_TYPE, "")?.toImageType() ?: ImageType.TIMELINE
+            weather = preference.getString(WEATHER_TYPE, "")?.toWeatherType() ?: WeatherType.ANY
 
             imageSrc = Rect(
                 preference.getInt(LEFT, imageSrc.left),
@@ -68,7 +69,8 @@ internal fun CyclingWallpaperService.CyclingWallpaperEngine.reloadPrefs() {
     timelineImage = prefs.getString(TIMELINE_IMAGE, "") ?: timelineImage
     val prefOverrideTimeline = prefs.getBoolean(OVERRIDE_TIMELINE, overrideTimeline)
     val newOverrideTime = prefs.getLong(OVERRIDE_TIME, 5000L)
-    currentImageType = prefs.getString(IMAGE_TYPE, TIMELINE_IMAGE).toImageType()
+    currentImageType = prefs.getString(IMAGE_TYPE, "")?.toImageType() ?: ImageType.TIMELINE
+    weather = prefs.getString(WEATHER_TYPE, "")?.toWeatherType() ?: WeatherType.ANY
 
     parallax = prefs.getBoolean(PARALLAX, parallax)
     adjustMode = prefs.getBoolean(ADJUST_MODE, false)

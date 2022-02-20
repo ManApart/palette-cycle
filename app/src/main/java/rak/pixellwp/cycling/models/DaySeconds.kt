@@ -54,7 +54,7 @@ class DaySeconds {
 
 }
 
-private fun getSecondsFromMilli(milli: Long): Int {
+fun getSecondsFromMilli(milli: Long): Int {
     return (milli / 1000).toInt()
 }
 

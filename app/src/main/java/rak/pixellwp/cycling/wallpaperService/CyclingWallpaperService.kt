@@ -3,7 +3,6 @@ package rak.pixellwp.cycling.wallpaperService
 import android.content.*
 import android.graphics.Rect
 import android.service.wallpaper.WallpaperService
-import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import androidx.preference.PreferenceManager
@@ -38,7 +37,8 @@ class CyclingWallpaperService : WallpaperService() {
         internal var timelineImage = prefs.getString(TIMELINE_IMAGE, "") ?: "V26"
         internal val defaultImage = ImageInfo("DefaultImage", "DefaultImage", 0)
         internal var currentImage = defaultImage
-        internal var currentImageType = ImageType.TIMELINE
+        internal var currentImageType = prefs.getString(IMAGE_TYPE, "")?.toImageType() ?: ImageType.TIMELINE
+        internal var weather = prefs.getString(WEATHER_TYPE, "")?.toWeatherType() ?: WeatherType.ANY
         internal var drawRunner = PaletteDrawer(this, ColorCyclingImage(defaultImageJson()))
 
         internal var imageSrc = Rect(prefs.getInt(LEFT, 0), prefs.getInt(TOP, 0), prefs.getInt(RIGHT, drawRunner.image.getImageWidth()), prefs.getInt(BOTTOM, drawRunner.image.getImageHeight()))

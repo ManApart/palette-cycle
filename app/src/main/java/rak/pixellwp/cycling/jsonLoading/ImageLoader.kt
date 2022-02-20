@@ -8,6 +8,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import rak.pixellwp.cycling.models.ColorCyclingImage
 import rak.pixellwp.cycling.jsonModels.*
 import rak.pixellwp.cycling.models.TimelineImage
+import rak.pixellwp.cycling.wallpaperService.WeatherType
 import rak.pixellwp.mapper
 import java.io.*
 import java.util.*
@@ -17,7 +18,7 @@ class ImageLoader(private val context: Context) {
     private val logTag = "ImageLoader"
     private val images = parseImages()
     private val timelineImages = parseTimelineImages()
-    private val collection = parseCollection()
+    private val imageCollections = parseCollection()
     private val downloading = mutableSetOf<ImageInfo>()
     private val loadListeners = mutableListOf<ImageLoadedListener>()
 
@@ -29,7 +30,7 @@ class ImageLoader(private val context: Context) {
     private fun parseTimelineImages(): List<ImageCollection> {
         val json = context.assets.open("Timelines.json")
         val timelines: List<ImageCollection> = mapper.readValue(json)
-        timelines.forEach{collection -> collection.images.forEach { it.isTimeline = true }}
+        timelines.forEach { collection -> collection.images.forEach { it.isTimeline = true } }
         return timelines
     }
 
@@ -43,7 +44,7 @@ class ImageLoader(private val context: Context) {
     }
 
     private fun getImageCollectionNames() {
-        collection.forEach { collection -> collection.images.forEach { image -> image.name = getImageName(image.id) } }
+        imageCollections.forEach { collection -> collection.images.forEach { image -> image.name = getImageName(image.id) } }
     }
 
     private fun getImageName(id: String): String {
@@ -90,27 +91,16 @@ class ImageLoader(private val context: Context) {
         return images.firstOrNull { it.id == imageId } ?: throw IllegalArgumentException("Could not find single image for $imageId")
     }
 
-    fun getImageInfoForTimeline(imageId: String): ImageInfo {
-        val collection = timelineImages.firstOrNull { it.name == imageId } ?: throw IllegalArgumentException("Could not find timeline for $imageId")
-        return getImageInfoForCollection(collection)
+    fun getImageInfoForTimeline(name: String, time: Long, weather: WeatherType): ImageInfo {
+        return timelineImages.getImageInfo(name, time, weather)
     }
 
-    fun getImageInfoForCollection(collectionName: String): ImageInfo {
-        val imageCollection = collection.first { it.name == collectionName }
-        return getImageInfoForCollection(imageCollection)
+    fun getImageInfoForCollection(name: String, time: Long, weather: WeatherType): ImageInfo {
+        return imageCollections.getImageInfo(name, time, weather)
     }
 
-    private fun getImageInfoForCollection(collection: ImageCollection): ImageInfo {
-        //TODO - grab weather
-        // TODO - override time
-        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-        Log.v(logTag, "grabbing image info for collection ${collection.name} at hour $hour")
-        val info = collection.images
-            .filter { it.startHour < hour }.maxByOrNull { it.startHour }
-            ?: collection.images.minByOrNull { it.startHour }!!
-
-        Log.d(logTag, "grabbed ${info.name} with hour ${info.startHour}")
-        return info
+    private fun List<ImageCollection>.getImageInfo(name: String, time: Long, weather: WeatherType):  ImageInfo{
+        return firstOrNull { it.name == name }?.getImageInfoForCollection(time, weather) ?: throw IllegalArgumentException("Could not find collection for $name")
     }
 
     fun loadImage(image: ImageInfo): ColorCyclingImage {
@@ -145,7 +135,7 @@ class ImageLoader(private val context: Context) {
     fun preloadImages() {
         val imagesToDownload = (images.filterNot { imageIsReady(it) } +
                 timelineImages.flatMap { it.images }.filterNot { imageIsReady(it) } +
-                collection.flatMap { it.images }.filterNot { imageIsReady(it) })
+                imageCollections.flatMap { it.images }.filterNot { imageIsReady(it) })
             .filterNot { downloading.contains(it) }
 
         if (imagesToDownload.isNotEmpty()) {

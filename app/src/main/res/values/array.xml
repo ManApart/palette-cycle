@@ -19,9 +19,9 @@
         <item>Ghost Castle</item>
     </string-array>
     <string-array name="WeatherTypes">
+        <item>Any</item>
         <item>Clear</item>
         <item>Cloudy</item>
         <item>Rain</item>
-        <item>Random</item>
     </string-array>
 </resources>

@@ -8,8 +8,8 @@ import rak.pixellwp.cycling.models.TimelineImage
 internal fun CyclingWallpaperService.CyclingWallpaperEngine.loadInitialImage(): ImageInfo {
     Log.v(cyclingWallpaperLogTag, "Load initial image img= $singleImage, collection= $imageCollection, timeline= $timelineImage, drawer= ${drawRunner.id}")
     return when {
-        currentImageType == ImageType.TIMELINE && timelineImage != "" -> imageLoader.getImageInfoForTimeline(timelineImage)
-        currentImageType == ImageType.COLLECTION && imageCollection != "" -> imageLoader.getImageInfoForCollection(imageCollection)
+        currentImageType == ImageType.TIMELINE && timelineImage != "" -> imageLoader.getImageInfoForTimeline(timelineImage, getTime(), weather)
+        currentImageType == ImageType.COLLECTION && imageCollection != "" -> imageLoader.getImageInfoForCollection(imageCollection, getTime(), weather)
         currentImageType == ImageType.SINGLE && singleImage != "" -> imageLoader.getImageInfoForImage(singleImage)
         else -> defaultImage
     }
@@ -24,7 +24,7 @@ internal fun CyclingWallpaperService.CyclingWallpaperEngine.downloadFirstTimeIma
 
 internal fun CyclingWallpaperService.CyclingWallpaperEngine.changeCollection() {
     if (imageCollection.isNotBlank()) {
-        val image = imageLoader.getImageInfoForCollection(imageCollection)
+        val image = imageLoader.getImageInfoForCollection(imageCollection, getTime(), weather)
         changeImage(image)
     }
 }
@@ -38,7 +38,7 @@ internal fun CyclingWallpaperService.CyclingWallpaperEngine.changeImage() {
 
 internal fun CyclingWallpaperService.CyclingWallpaperEngine.changeTimeline() {
     if (timelineImage.isNotBlank()) {
-        val image = imageLoader.getImageInfoForTimeline(timelineImage)
+        val image = imageLoader.getImageInfoForTimeline(timelineImage, getTime(), weather)
         changeImage(image)
     }
 }
