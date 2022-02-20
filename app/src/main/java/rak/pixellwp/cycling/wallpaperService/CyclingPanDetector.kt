@@ -1,4 +1,4 @@
-package rak.pixellwp.cycling
+package rak.pixellwp.cycling.wallpaperService
 
 import android.content.Context
 import android.graphics.Rect
@@ -7,7 +7,7 @@ import android.view.MotionEvent
 import androidx.core.content.edit
 import androidx.core.math.MathUtils.clamp
 import androidx.core.view.GestureDetectorCompat
-import rak.pixellwp.cycling.models.TimelineImage
+import rak.pixellwp.cycling.*
 import rak.pixellwp.cycling.models.getDayPercent
 import rak.pixellwp.cycling.models.getTimeWithinDay
 import kotlin.math.abs
@@ -26,7 +26,7 @@ fun CyclingWallpaperService.CyclingWallpaperEngine.panDetector(applicationContex
     })
 }
 
-private fun CyclingWallpaperService.CyclingWallpaperEngine.adjustImageSrc(distanceX: Float, distanceY: Float) {
+internal fun CyclingWallpaperService.CyclingWallpaperEngine.adjustImageSrc(distanceX: Float, distanceY: Float) {
     val overlapLeft: Float = drawRunner.image.getImageWidth() - screenDimensions.width() / scaleFactor
     val overLapTop: Float = drawRunner.image.getImageHeight() - screenDimensions.height() / scaleFactor
 
@@ -52,20 +52,5 @@ private fun CyclingWallpaperService.CyclingWallpaperEngine.adjustTimeOverride(di
     prefs.edit {
         putLong(OVERRIDE_TIME, overrideTime)
         putInt(OVERRIDE_TIME_PERCENT, dayPercent)
-    }
-}
-
-private fun CyclingWallpaperService.CyclingWallpaperEngine.updateTimelineOverride(prefOverrideTimeline: Boolean, newOverrideTime: Long) {
-    if (drawRunner.image is TimelineImage) {
-        val image: TimelineImage = drawRunner.image as TimelineImage
-        if (prefOverrideTimeline != overrideTimeline || newOverrideTime != image.getOverrideTime()) {
-            if (prefOverrideTimeline) {
-                image.setTimeOverride(newOverrideTime)
-            } else {
-                image.stopTimeOverride()
-            }
-            overrideTimeline = prefOverrideTimeline
-            overrideTime = image.getOverrideTime()
-        }
     }
 }

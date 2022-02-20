@@ -14,6 +14,8 @@ import androidx.preference.*
 import rak.pixellwp.R
 import rak.pixellwp.cycling.*
 import rak.pixellwp.cycling.jsonLoading.ImageLoader
+import rak.pixellwp.cycling.wallpaperService.ImageType
+import rak.pixellwp.cycling.wallpaperService.toImageType
 
 
 class CyclingPreferenceActivity : FragmentActivity() {

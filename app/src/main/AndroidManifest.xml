@@ -33,7 +33,7 @@
         </activity>
 
         <service
-            android:name=".cycling.CyclingWallpaperService"
+            android:name=".cycling.wallpaperService.CyclingWallpaperService"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_WALLPAPER">

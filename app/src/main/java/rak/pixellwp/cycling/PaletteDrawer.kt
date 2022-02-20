@@ -5,8 +5,9 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
 import android.view.SurfaceHolder
-import rak.pixellwp.cycling.models.ColorCyclingImage
 import rak.pixellwp.cycling.models.PaletteImage
+import rak.pixellwp.cycling.wallpaperService.CyclingWallpaperService
+import rak.pixellwp.cycling.wallpaperService.getOffsetImage
 import java.util.*
 import kotlin.math.floor
 

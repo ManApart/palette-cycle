@@ -5,7 +5,7 @@ import android.app.WallpaperManager
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
-import rak.pixellwp.cycling.CyclingWallpaperService
+import rak.pixellwp.cycling.wallpaperService.CyclingWallpaperService
 
 class SetWallpaperActivity : Activity() {
 

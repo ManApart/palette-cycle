@@ -1,7 +1,8 @@
-package rak.pixellwp.cycling
+package rak.pixellwp.cycling.wallpaperService
 
 import android.content.Context
 import android.view.ScaleGestureDetector
+import rak.pixellwp.cycling.SCALE_FACTOR
 import kotlin.math.max
 import kotlin.math.min
 
@@ -20,3 +21,9 @@ private fun CyclingWallpaperService.CyclingWallpaperEngine.incrementScaleFactor(
     prefs.edit().putFloat(SCALE_FACTOR, scaleFactor).apply()
 }
 
+internal fun CyclingWallpaperService.CyclingWallpaperEngine.determineMinScaleFactor() {
+    //Find the smallest scale factor that leaves no border on one side
+    val w: Float = screenDimensions.width() / drawRunner.image.getImageWidth().toFloat()
+    val h: Float = screenDimensions.height() / drawRunner.image.getImageHeight().toFloat()
+    minScaleFactor = max(w, h)
+}
