@@ -65,7 +65,11 @@ class CyclingPreferenceActivity : FragmentActivity() {
                     timelinePercent?.isVisible = true
                     panOverride?.isVisible = true
                 }
-                ImageType.COLLECTION -> collectionList?.isVisible = true
+                ImageType.COLLECTION -> {
+                    collectionList?.isVisible = true
+                    timelineOverride?.isVisible = true
+                    timelinePercent?.isVisible = true
+                }
                 else -> singleImageList?.isVisible = true
             }
 

@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.graphics.Rect
 import android.util.Log
 import rak.pixellwp.cycling.*
+import rak.pixellwp.cycling.models.getTimeWithinDay
 import rak.pixellwp.cycling.models.maxMilliseconds
 
 fun CyclingWallpaperService.CyclingWallpaperEngine.preferenceListener(): SharedPreferences.OnSharedPreferenceChangeListener {
@@ -16,8 +17,8 @@ fun CyclingWallpaperService.CyclingWallpaperEngine.preferenceListener(): SharedP
         }
 
         dayPercent = preference.getInt(OVERRIDE_TIME_PERCENT, 50)
-        val newOverrideTime = maxMilliseconds * dayPercent / 100
-        prefs.edit().putLong(OVERRIDE_TIME, newOverrideTime).apply()
+        overrideTime = getTimeWithinDay(maxMilliseconds * dayPercent / 100)
+        prefs.edit().putLong(OVERRIDE_TIME, overrideTime).apply()
 
         if (isPreview) {
             val prevImageCollection = imageCollection
@@ -55,7 +56,7 @@ fun CyclingWallpaperService.CyclingWallpaperEngine.preferenceListener(): SharedP
                 }
             }
 
-            updateTimelineOverride(prefOverrideTimeline, newOverrideTime)
+            updateTimelineOverride(prefOverrideTimeline, overrideTime)
 
         } else {
             reloadPrefs()

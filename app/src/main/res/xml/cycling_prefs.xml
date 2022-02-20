@@ -25,7 +25,7 @@
         android:summary="Force Timeline Images to stay at a specific time."
         android:title="Override Timeline Time" />
     <DropDownPreference
-        android:defaultValue="Random"
+        android:defaultValue="Any"
         android:entries="@array/WeatherTypes"
         android:entryValues="@array/WeatherTypes"
         android:key="weatherType"
