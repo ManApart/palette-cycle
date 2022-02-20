@@ -26,10 +26,10 @@ class ImageLoader(private val context: Context) {
         return mapper.readValue(json)
     }
 
-    private fun parseTimelineImages(): List<ImageInfo> {
+    private fun parseTimelineImages(): List<ImageCollection> {
         val json = context.assets.open("Timelines.json")
-        val timelines: List<ImageInfo> = mapper.readValue(json)
-        timelines.forEach { it.isTimeline = true }
+        val timelines: List<ImageCollection> = mapper.readValue(json)
+        timelines.forEach{collection -> collection.images.forEach { it.isTimeline = true }}
         return timelines
     }
 
@@ -91,17 +91,23 @@ class ImageLoader(private val context: Context) {
     }
 
     fun getImageInfoForTimeline(imageId: String): ImageInfo {
-        Log.v(logTag, "Grabbing timeline info for $imageId")
-        return timelineImages.firstOrNull { it.id == imageId } ?: throw IllegalArgumentException("Could not find timeline for $imageId")
+        val collection = timelineImages.firstOrNull { it.name == imageId } ?: throw IllegalArgumentException("Could not find timeline for $imageId")
+        return getImageInfoForCollection(collection)
     }
 
     fun getImageInfoForCollection(collectionName: String): ImageInfo {
         val imageCollection = collection.first { it.name == collectionName }
+        return getImageInfoForCollection(imageCollection)
+    }
+
+    private fun getImageInfoForCollection(collection: ImageCollection): ImageInfo {
+        //TODO - grab weather
+        // TODO - override time
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-        Log.v(logTag, "grabbing image info for collection $collectionName at hour $hour")
-        val info = imageCollection.images
+        Log.v(logTag, "grabbing image info for collection ${collection.name} at hour $hour")
+        val info = collection.images
             .filter { it.startHour < hour }.maxByOrNull { it.startHour }
-            ?: imageCollection.images.minByOrNull { it.startHour }!!
+            ?: collection.images.minByOrNull { it.startHour }!!
 
         Log.d(logTag, "grabbed ${info.name} with hour ${info.startHour}")
         return info
@@ -138,7 +144,7 @@ class ImageLoader(private val context: Context) {
 
     fun preloadImages() {
         val imagesToDownload = (images.filterNot { imageIsReady(it) } +
-                timelineImages.filterNot { imageIsReady(it) } +
+                timelineImages.flatMap { it.images }.filterNot { imageIsReady(it) } +
                 collection.flatMap { it.images }.filterNot { imageIsReady(it) })
             .filterNot { downloading.contains(it) }
 

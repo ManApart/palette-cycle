@@ -4,7 +4,8 @@
     "images": [
       {
         "id": "V29FOG",
-        "startHour": "6"
+        "startHour": "6",
+        "weather": "CLOUDY"
       },
       {
         "id": "V29",
@@ -29,7 +30,8 @@
       },
       {
         "id": "V08RAIN",
-        "startHour": "16"
+        "startHour": "16",
+        "weather": "RAIN"
       },
       {
         "id": "V08PM",
@@ -46,7 +48,8 @@
       },
       {
         "id": "V16RAIN",
-        "startHour": "15"
+        "startHour": "15",
+        "weather": "RAIN"
       },
       {
         "id": "V16PM",
@@ -80,7 +83,8 @@
       },
       {
         "id": "V26SNOW",
-        "startHour": "12"
+        "startHour": "12",
+        "weather": "RAIN"
       },
       {
         "id": "V26PM",
@@ -101,7 +105,8 @@
       },
       {
         "id": "V25HEAT",
-        "startHour": "11"
+        "startHour": "11",
+        "weather": "CLOUDY"
       },
       {
         "id": "V25PM",
@@ -118,7 +123,8 @@
       },
       {
         "id": "V05RAIN",
-        "startHour": "12"
+        "startHour": "12",
+        "weather": "RAIN"
       },
       {
         "id": "V05PM",

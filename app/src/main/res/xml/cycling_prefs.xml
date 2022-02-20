@@ -27,6 +27,13 @@
         android:key="overrideTimelines"
         android:summary="Force Timeline Images to stay at a specific time."
         android:title="Override Timeline Time" />
+    <DropDownPreference
+        android:defaultValue="Random"
+        android:entries="@array/WeatherTypes"
+        android:entryValues="@array/WeatherTypes"
+        android:key="weatherType"
+        android:summary="Choose what weather to display, if possible"
+        android:title="Weather" />
     <SeekBarPreference
         android:title="Override Time"
         android:key="dayPercent"
