@@ -11,10 +11,7 @@
         android:key="timelineImage"
         android:summary="Choose a single image that will change constantly throughout the day"
         android:title="Timeline Image" />
-    <DropDownPreference
-        android:defaultValue="Waterfall"
-        android:entries="@array/ImageCollections"
-        android:entryValues="@array/ImageCollections"
+    <rak.pixellwp.cycling.preferences.ImageCollectionPreference
         android:key="imageCollection"
         android:summary="Choose an image that will change at several points throughout the day"
         android:title="Image Collection" />

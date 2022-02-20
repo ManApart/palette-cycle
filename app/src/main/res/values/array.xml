@@ -9,15 +9,6 @@
         <item>imageCollection</item>
         <item>singleImage</item>
     </string-array>
-    <string-array name="ImageCollections">
-        <item>Seascape</item>
-        <item>Waterfall</item>
-        <item>Mirror Pond</item>
-        <item>Mountain Stream</item>
-        <item>Snowy Wood</item>
-        <item>Desert Heat</item>
-        <item>Ghost Castle</item>
-    </string-array>
     <string-array name="WeatherTypes">
         <item>Any</item>
         <item>Clear</item>
