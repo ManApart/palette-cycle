@@ -18,7 +18,7 @@
     ]
   },
   {
-    "name": "Waterfall",
+    "name": "Jungle Waterfall",
     "images": [
       {
         "id": "V08AM",
@@ -70,7 +70,8 @@
       },
       {
         "id": "V19AURA",
-        "startHour": "21"
+        "startHour": "21",
+        "weather": "CLOUDY"
       }
     ]
   },
@@ -127,6 +128,11 @@
         "weather": "RAIN"
       },
       {
+        "id": "V04",
+        "name": "Highland Ruins - Rain",
+        "startHour": "14"
+      },
+      {
         "id": "V05PM",
         "startHour": "16"
       },
@@ -135,5 +141,105 @@
         "startHour": "20"
       }
     ]
+  },
+  {
+    "name": "Deep Forest",
+    "images": [
+      {
+        "id": "V30",
+        "name": "Deep Forest - Day"
+      },
+      {
+        "id": "V30RAIN",
+        "name": "Deep Forest - Rain",
+        "startHour": "14",
+        "weather": "RAIN"
+      }
+    ]
+  },
+  {
+    "id": "CORAL",
+    "name": "Aquarius - Day"
+  },
+  {
+    "id": "V01",
+    "name": "Island Fires - Dusk"
+  },
+  {
+    "id": "V02",
+    "name": "Mountain Fortress - Dusk"
+  },
+  {
+    "id": "V03",
+    "name": "Swamp Cathedral - Day"
+  },
+
+  {
+    "id": "V07",
+    "name": "Rough Seas - Day"
+  },
+  {
+    "id": "V09",
+    "name": "Forest Edge - Day"
+  },
+  {
+    "id": "V10",
+    "name": "Deep Swamp - Day"
+  },
+  {
+    "id": "V11AM",
+    "name": "Approaching Storm - Day"
+  },
+  {
+    "id": "V12",
+    "name": "Stone Henge"
+  },
+  {
+    "id": "V13",
+    "name": "Pond Ripples - Dawn"
+  },
+  {
+    "id": "V14",
+    "name": "Mountain Storm - Day"
+  },
+  {
+    "id": "V15",
+    "name": "Harbor Town - Night"
+  },
+  {
+    "id": "V17",
+    "name": "Ice Wind - Day"
+  },
+  {
+    "id": "V18",
+    "name": "Alpine Ruin"
+  },
+  {
+    "id": "V20",
+    "name": "Crystal Caves - Day"
+  },
+  {
+    "id": "V21",
+    "name": "Elvin City"
+  },
+  {
+    "id": "V22",
+    "name": "Dark Castle"
+  },
+  {
+    "id": "V23",
+    "name": "Desert Twilight"
+  },
+  {
+    "id": "V24",
+    "name": "Red Canyon"
+  },
+  {
+    "id": "V27",
+    "name": "Magic Marsh Cave - Night"
+  },
+  {
+    "id": "V28",
+    "name": "Water City Gates - Fog"
   }
 ]
