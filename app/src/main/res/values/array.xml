@@ -2,7 +2,6 @@
     <string-array name="ImageType">
         <item>Timeline</item>
         <item>Collection</item>
-        <item>Single Image</item>
     </string-array>
     <string-array name="ImageTypeValues">
         <item>timelineImage</item>
