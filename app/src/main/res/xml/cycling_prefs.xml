@@ -9,16 +9,12 @@
         android:title="Image Type" />
     <rak.pixellwp.cycling.preferences.TimelinePreference
         android:key="timelineImage"
-        android:summary="Choose a single image that will change constantly throughout the day"
+        android:summary="Choose an image that will change continuously throughout the day"
         android:title="Timeline Image" />
     <rak.pixellwp.cycling.preferences.ImageCollectionPreference
         android:key="imageCollection"
         android:summary="Choose an image that will change at several points throughout the day"
         android:title="Image Collection" />
-    <rak.pixellwp.cycling.preferences.ImagePreference
-        android:key="singleImage"
-        android:summary="Choose a single image that won't change"
-        android:title="Single Image" />
     <SwitchPreference
         android:defaultValue="false"
         android:key="overrideTimelines"

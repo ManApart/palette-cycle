@@ -1,11 +1,10 @@
 package rak.pixellwp.cycling.wallpaperService
 
 import rak.pixellwp.cycling.IMAGE_COLLECTION
-import rak.pixellwp.cycling.SINGLE_IMAGE
 import rak.pixellwp.cycling.TIMELINE_IMAGE
 
 enum class ImageType(val stringValue: String) {
-    TIMELINE(TIMELINE_IMAGE), COLLECTION(IMAGE_COLLECTION), SINGLE(SINGLE_IMAGE)
+    TIMELINE(TIMELINE_IMAGE), COLLECTION(IMAGE_COLLECTION)
 }
 
 fun String?.toImageType(): ImageType {

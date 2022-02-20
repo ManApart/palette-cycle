@@ -16,16 +16,10 @@ import kotlin.concurrent.thread
 
 class ImageLoader(private val context: Context) {
     private val logTag = "ImageLoader"
-    private val images = parseImages()
     private val timelineImages = parseTimelineImages()
     private val imageCollections = parseCollection()
     private val downloading = mutableSetOf<ImageInfo>()
     private val loadListeners = mutableListOf<ImageLoadedListener>()
-
-    private fun parseImages(): List<ImageInfo> {
-        val json = context.assets.open("Images.json")
-        return mapper.readValue(json)
-    }
 
     private fun parseTimelineImages(): List<ImageCollection> {
         val json = context.assets.open("Timelines.json")
@@ -39,17 +33,9 @@ class ImageLoader(private val context: Context) {
         return mapper.readValue(json)
     }
 
-    init {
-        getImageCollectionNames()
-    }
-
-    private fun getImageCollectionNames() {
-        imageCollections.forEach { collection -> collection.images.forEach { image -> image.name = getImageName(image.id) } }
-    }
-
-    private fun getImageName(id: String): String {
-        return images.firstOrNull { image -> image.id == id }?.name ?: id
-    }
+//    private fun getImageCollectionNames() {
+//        imageCollections.forEach { collection -> collection.images.forEach { image -> image.name = getImageName(image.id) } }
+//    }
 
     private fun saveAndLoadImage(image: ImageInfo, json: String) {
         saveImage(image, json, true)
@@ -84,11 +70,6 @@ class ImageLoader(private val context: Context) {
 
     fun addLoadListener(loadListener: ImageLoadedListener) {
         loadListeners.add(loadListener)
-    }
-
-    fun getImageInfoForImage(imageId: String): ImageInfo {
-        Log.v(logTag, "Grabbing image info for image $imageId")
-        return images.firstOrNull { it.id == imageId } ?: throw IllegalArgumentException("Could not find single image for $imageId")
     }
 
     fun getImageInfoForTimeline(name: String, time: Long, weather: WeatherType): ImageInfo {
@@ -133,8 +114,7 @@ class ImageLoader(private val context: Context) {
     }
 
     fun preloadImages() {
-        val imagesToDownload = (images.filterNot { imageIsReady(it) } +
-                timelineImages.flatMap { it.images }.filterNot { imageIsReady(it) } +
+        val imagesToDownload = (timelineImages.flatMap { it.images }.filterNot { imageIsReady(it) } +
                 imageCollections.flatMap { it.images }.filterNot { imageIsReady(it) })
             .filterNot { downloading.contains(it) }
 

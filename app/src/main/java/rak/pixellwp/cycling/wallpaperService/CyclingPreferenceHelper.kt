@@ -22,10 +22,8 @@ fun CyclingWallpaperService.CyclingWallpaperEngine.preferenceListener(): SharedP
 
         if (isPreview) {
             val prevImageCollection = imageCollection
-            val prevSingleImage = singleImage
             val prevTimeline = timelineImage
             imageCollection = preference.getString(IMAGE_COLLECTION, imageCollection) ?: imageCollection
-            singleImage = preference.getString(SINGLE_IMAGE, singleImage) ?: singleImage
             timelineImage = preference.getString(TIMELINE_IMAGE, timelineImage) ?: timelineImage
             parallax = preference.getBoolean(PARALLAX, parallax)
             adjustMode = preference.getBoolean(ADJUST_MODE, false)
@@ -50,10 +48,6 @@ fun CyclingWallpaperService.CyclingWallpaperEngine.preferenceListener(): SharedP
                     Log.d(cyclingWallpaperLogTag, "Image collection: $imageCollection for engine $this")
                     changeCollection()
                 }
-                prevSingleImage != singleImage -> {
-                    Log.d(cyclingWallpaperLogTag, "Single image: $singleImage for engine $this")
-                    changeImage()
-                }
             }
 
             updateTimelineOverride(prefOverrideTimeline, overrideTime)
@@ -66,7 +60,6 @@ fun CyclingWallpaperService.CyclingWallpaperEngine.preferenceListener(): SharedP
 
 internal fun CyclingWallpaperService.CyclingWallpaperEngine.reloadPrefs() {
     imageCollection = prefs.getString(IMAGE_COLLECTION, "") ?: imageCollection
-    singleImage = prefs.getString(SINGLE_IMAGE, "") ?: singleImage
     timelineImage = prefs.getString(TIMELINE_IMAGE, "") ?: timelineImage
     val prefOverrideTimeline = prefs.getBoolean(OVERRIDE_TIMELINE, overrideTimeline)
     val newOverrideTime = prefs.getLong(OVERRIDE_TIME, 5000L)
@@ -88,6 +81,5 @@ internal fun CyclingWallpaperService.CyclingWallpaperEngine.reloadPrefs() {
     when {
         currentImageType == ImageType.TIMELINE && timelineImage != "" -> changeTimeline()
         currentImageType == ImageType.COLLECTION && imageCollection != "" -> changeCollection()
-        currentImageType == ImageType.SINGLE && singleImage != "" -> changeImage()
     }
 }

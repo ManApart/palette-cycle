@@ -46,31 +46,20 @@ class CyclingPreferenceActivity : FragmentActivity() {
         private fun setOptionsVisibility(imageType: ImageType) {
             val timelineList = findPreference<DropDownPreference>(TIMELINE_IMAGE)
             val collectionList = findPreference<DropDownPreference>(IMAGE_COLLECTION)
-            val singleImageList = findPreference<DropDownPreference>(SINGLE_IMAGE)
-            val timelineOverride = findPreference<SwitchPreference>(OVERRIDE_TIMELINE)
-            val timelinePercent = findPreference<SeekBarPreference>(OVERRIDE_TIME_PERCENT)
             val panOverride = findPreference<SwitchPreference>(ADJUST_MODE)
 
             timelineList?.isVisible = false
             collectionList?.isVisible = false
-            singleImageList?.isVisible = false
-            timelineOverride?.isVisible = false
-            timelinePercent?.isVisible = false
             panOverride?.isVisible = false
 
             when (imageType) {
                 ImageType.TIMELINE -> {
                     timelineList?.isVisible = true
-                    timelineOverride?.isVisible = true
-                    timelinePercent?.isVisible = true
                     panOverride?.isVisible = true
                 }
                 ImageType.COLLECTION -> {
                     collectionList?.isVisible = true
-                    timelineOverride?.isVisible = true
-                    timelinePercent?.isVisible = true
                 }
-                else -> singleImageList?.isVisible = true
             }
 
         }

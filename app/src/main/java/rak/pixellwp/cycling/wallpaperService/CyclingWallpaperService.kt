@@ -33,7 +33,6 @@ class CyclingWallpaperService : WallpaperService() {
         val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@CyclingWallpaperService)
 
         internal var imageCollection = prefs.getString(IMAGE_COLLECTION, "") ?: "Seascape"
-        internal var singleImage = prefs.getString(SINGLE_IMAGE, "") ?: "CORAL"
         internal var timelineImage = prefs.getString(TIMELINE_IMAGE, "") ?: "V26"
         internal val defaultImage = ImageInfo("DefaultImage", "DefaultImage", 0)
         internal var currentImage = defaultImage
