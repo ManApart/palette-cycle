@@ -46,8 +46,8 @@ class CyclingWallpaperService : WallpaperService() {
         internal var parallax = prefs.getBoolean(PARALLAX, true)
         internal var adjustMode = prefs.getBoolean(ADJUST_MODE, false)
         internal var overrideTimeline = prefs.getBoolean(OVERRIDE_TIMELINE, false)
-        internal var overrideTime = 500L
-        internal var dayPercent = 0
+        internal var overrideTime = prefs.getLong(OVERRIDE_TIME, 5000L)
+        internal var dayPercent = prefs.getInt(OVERRIDE_TIME_PERCENT, 50)
         internal var scaleFactor = prefs.getFloat(SCALE_FACTOR, 5.3f)
         internal var minScaleFactor = 0.1f
 
