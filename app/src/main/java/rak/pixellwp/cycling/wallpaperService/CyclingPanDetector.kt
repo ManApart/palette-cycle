@@ -49,6 +49,7 @@ private fun CyclingWallpaperService.CyclingWallpaperEngine.adjustTimeOverride(di
     val newOverrideTime = getTimeWithinDay(overrideTime + distanceX.toLong() * 9000)
     dayPercent = getDayPercent(newOverrideTime)
     updateTimelineOverride(prefOverrideTimeline, newOverrideTime)
+    overrideTime = newOverrideTime
     prefs.edit {
         putLong(OVERRIDE_TIME, overrideTime)
         putInt(OVERRIDE_TIME_PERCENT, dayPercent)

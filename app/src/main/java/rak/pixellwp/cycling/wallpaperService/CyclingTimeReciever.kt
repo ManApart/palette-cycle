@@ -36,7 +36,6 @@ internal fun CyclingWallpaperService.CyclingWallpaperEngine.updateTimelineOverri
                 image.stopTimeOverride()
             }
             overrideTimeline = prefOverrideTimeline
-//            overrideTime = image.getOverrideTime()
         }
     }
 }
