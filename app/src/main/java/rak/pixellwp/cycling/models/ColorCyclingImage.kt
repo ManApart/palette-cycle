@@ -1,8 +1,6 @@
 package rak.pixellwp.cycling.models
 
 import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
 import rak.pixellwp.cycling.jsonModels.ImageJson
 
 class ColorCyclingImage(img: ImageJson) : PaletteImage {
@@ -10,15 +8,10 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
     private val height = img.height
     private var palette = Palette(colors = img.getParsedColors(), cycles = img.cycles)
     private val pixels = img.pixels.toList()
+    private val rawPixels = IntArray(width*height)
     private var optimizedPixels = optimizePixels(pixels)
     private var drawUnOptimized = true
-
     private val bitmap: Bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-    private val canvas = Canvas(bitmap)
-
-    init {
-        createBitmap()
-    }
 
     override fun toString(): String {
         return "image with dimensions $width x $height = ${width*height}, ${palette.colors.size} colors, ${palette.cycles.size} cycles and ${pixels.size} pixels"
@@ -30,6 +23,7 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
     }
 
     override fun getBitmap() : Bitmap{
+        bitmap.setPixels(rawPixels,0,width,0,0,width,height)
         return bitmap
     }
 
@@ -50,8 +44,8 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
         return palette
     }
 
-    private fun optimizePixels(pixels: List<Int>) : List<Pixel> {
-        val optPixels = mutableListOf<Pixel>()
+    private fun optimizePixels(pixels: List<Int>) : List<Triple<Int,Int,Int>> {
+        val optPixels = mutableListOf<Triple<Int,Int,Int>>()
         val optColors = BooleanArray(pixels.size) { false }.toMutableList()
 
         palette.cycles
@@ -64,23 +58,12 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
             for (x in 0 until width) {
                 //If this pixel references an animated color
                 if (optColors[pixels[j]]){
-                    optPixels.add(Pixel(x.toFloat(), y.toFloat(), j))
+                    optPixels.add(Triple(x, y, j))
                 }
                 j++
             }
         }
         return optPixels
-    }
-
-    private fun createBitmap() {
-        var j = 0
-        for (y in 0 until height){
-            for (x in 0 until width) {
-                val color = palette.colors[pixels[j]]
-                bitmap.setPixel(x, y, color)
-                j++
-            }
-        }
     }
 
     private fun draw() {
@@ -93,23 +76,14 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
     }
 
     private fun drawImage() {
-        val p = Paint()
-        var j = 0
-        for (y in 0 until height){
-            for (x in 0 until width) {
-                p.color = palette.colors[pixels[j]]
-                canvas.drawPoint(x.toFloat(), y.toFloat(), p)
-                j++
-            }
+        for (j in 0 until height*width){
+            rawPixels[j] = palette.colors[pixels[j]]
         }
     }
 
     private fun drawOptimizedImage(){
-        val p = Paint()
         for (pixel in optimizedPixels){
-            p.color = palette.colors[pixels[pixel.index]]
-            canvas.drawPoint(pixel.x, pixel.y, p)
+            rawPixels[(pixel.second*width)+pixel.first]=palette.colors[pixels[pixel.third]]
         }
     }
-
 }
