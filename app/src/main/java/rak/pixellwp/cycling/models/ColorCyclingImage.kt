@@ -82,8 +82,8 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
     }
 
     private fun drawOptimizedImage(){
-        for (pixel in optimizedPixels){
-            rawPixels[(pixel.second*width)+pixel.first]=palette.colors[pixels[pixel.third]]
+        for ((x, y, j) in optimizedPixels){
+            rawPixels[(y*width)+x]=palette.colors[pixels[j]]
         }
     }
 }
