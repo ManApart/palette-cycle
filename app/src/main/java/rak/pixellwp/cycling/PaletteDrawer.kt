@@ -72,7 +72,13 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
     private fun drawFrame(surfaceHolder: SurfaceHolder, imageSrc: Rect, screenDimensions: Rect) {
         if (visible && !surfaceHolder.isCreating) {
             try {
-                surfaceHolder.lockCanvas()?.let { canvas ->
+                val canvas = if (android.os.Build.VERSION.SDK_INT >= 26) {
+                    surfaceHolder.lockHardwareCanvas() //It is less CPU intensive to lock an hardware canvas
+                } else {
+                    surfaceHolder.lockCanvas()
+                }
+
+                if(canvas != null) {
                     canvas.drawBitmap(image.getBitmap(), imageSrc, screenDimensions, null)
                     surfaceHolder.unlockCanvasAndPost(canvas)
                 }
