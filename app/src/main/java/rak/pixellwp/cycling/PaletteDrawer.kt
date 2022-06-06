@@ -64,7 +64,7 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
     }
 
     private fun advanceAndDraw() {
-        val timePassed = floor((Date().time - startTime).toDouble()).toInt()
+        val timePassed = (Date().time - startTime).toInt()
         image.advance(timePassed)
         drawFrame(engine.surfaceHolder, engine.getOffsetImage(), engine.screenDimensions)
     }

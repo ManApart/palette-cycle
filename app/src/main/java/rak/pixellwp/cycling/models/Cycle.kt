@@ -3,16 +3,17 @@ package rak.pixellwp.cycling.models
 import kotlin.math.floor
 import kotlin.math.sin
 
-const val precision: Double = 100.0
+const val precision: Float = 100.0F
 const val precisionInt: Int = 100
+const val PI: Float = 3.141592653589793F
 
 data class Cycle(val rate: Int, private val reverse: Int, val low: Int, val high: Int) {
-    private val cycleSpeed: Double = 280.0
+    private val cycleSpeed: Float = 280.0F
 
     private val size = high - low + 1
     private val adjustedRate: Float = (rate / cycleSpeed).toFloat()
 
-    private fun dFloatMod(a: Float, b: Int) : Double {
+    private fun dFloatMod(a: Float, b: Int) : Float {
         return (floor((a* precision)) % floor((b* precision))) / precision
     }
 
@@ -27,8 +28,8 @@ data class Cycle(val rate: Int, private val reverse: Int, val low: Int, val high
         }
     }
 
-    fun getCycleAmount(timePassed: Int) : Double{
-        var cycleAmount = 0.0
+    fun getCycleAmount(timePassed: Int) : Float{
+        var cycleAmount = 0.0F
         if (reverse < 3){
             //standard cycle
             cycleAmount = dFloatMod(timePassed / (1000/adjustedRate), size)
@@ -41,7 +42,7 @@ data class Cycle(val rate: Int, private val reverse: Int, val low: Int, val high
         } else if (reverse < 6){
             //sine wave
             cycleAmount = dFloatMod(timePassed / (1000/adjustedRate), size)
-            cycleAmount = (sin(cycleAmount * Math.PI * 2/size) + 1)
+            cycleAmount = (sin(cycleAmount * PI * 2/size) + 1)
             if (reverse == 4){
                 cycleAmount *= size/4
             } else if (reverse == 5){

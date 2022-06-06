@@ -34,7 +34,7 @@ class Palette(val id: String = "", colors: List<Int>, val cycles: List<Cycle>) {
                 }
     }
 
-    fun shiftColors(colors: MutableList<Int>, cycle: Cycle, amount: Double) {
+    fun shiftColors(colors: MutableList<Int>, cycle: Cycle, amount: Float) {
         val intAmount = amount.toInt()
         for (i in 0 until intAmount) {
             val temp = colors[cycle.high]
@@ -46,7 +46,7 @@ class Palette(val id: String = "", colors: List<Int>, val cycles: List<Cycle>) {
     }
 
     // BlendShift Technology conceived, designed and coded by Joseph Huckaby
-    private fun blendShiftColors(colors: MutableList<Int>, cycle: Cycle, amount: Double) {
+    private fun blendShiftColors(colors: MutableList<Int>, cycle: Cycle, amount: Float) {
         shiftColors(colors, cycle, amount)
 
         val remainder = floor((amount - floor(amount)) * precision).toInt()
