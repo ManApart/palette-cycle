@@ -61,7 +61,6 @@ class CyclingWallpaperService : WallpaperService() {
         init {
             changeImage(loadInitialImage())
             downloadFirstTimeImage()
-            drawRunner.startDrawing()
         }
 
         override fun imageLoadComplete(image: ImageInfo) {
