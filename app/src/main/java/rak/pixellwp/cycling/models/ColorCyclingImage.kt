@@ -9,7 +9,7 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
     private var palette = Palette(colors = img.getParsedColors(), cycles = img.cycles)
     private val pixels = img.pixels.toList()
     private val rawPixels = IntArray(width*height)
-    private var optimizedPixels = optimizePixels(pixels)
+    private val optimizedPixels = optimizePixels(pixels)
     private var drawUnOptimized = true
     private val bitmap: Bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
 
@@ -44,8 +44,8 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
         return palette
     }
 
-    private fun optimizePixels(pixels: List<Int>) : List<Triple<Int,Int,Int>> {
-        val optPixels = mutableListOf<Triple<Int,Int,Int>>()
+    private fun optimizePixels(pixels: List<Int>) : List<Pair<Int,Int>> {
+        val optPixels = mutableListOf<Pair<Int,Int>>()
         val optColors = BooleanArray(pixels.size) { false }.toMutableList()
 
         palette.cycles
@@ -58,12 +58,12 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
             for (x in 0 until width) {
                 //If this pixel references an animated color
                 if (optColors[pixels[j]]){
-                    optPixels.add(Triple(x, y, j))
+                    optPixels.add(Pair(y*width+x, pixels[j]))
                 }
                 j++
             }
         }
-        return optPixels
+        return optPixels.toList()
     }
 
     private fun draw() {
@@ -82,8 +82,8 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
     }
 
     private fun drawOptimizedImage(){
-        for ((x, y, j) in optimizedPixels){
-            rawPixels[(y*width)+x]=palette.colors[pixels[j]]
+        for ((x, j) in optimizedPixels){
+            rawPixels[x]=palette.colors[j]
         }
     }
 }

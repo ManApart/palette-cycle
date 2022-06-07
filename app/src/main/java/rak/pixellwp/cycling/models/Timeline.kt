@@ -2,18 +2,19 @@ package rak.pixellwp.cycling.models
 
 import android.util.Log
 import rak.pixellwp.cycling.TimelineBlender
+import java.util.*
 
 class Timeline(entries: Map<String, String>, palettes: List<Palette>) {
     private val logTag = "Timeline"
-    private val timeToPalette: Map<Int, Palette> = parseEntries(entries, palettes)
+    private val timeToPalette: TreeMap<Int, Palette> = parseEntries(entries, palettes)
     private val blender = TimelineBlender(timeToPalette.entries.first())
 
     init {
         Log.d(logTag, "Initing timeline image with palettes at " + timeToPalette.keys.sorted().map { time -> "$time" }.toList())
     }
 
-    private fun parseEntries(entries: Map<String, String>, palettes: List<Palette>): Map<Int, Palette> {
-        val map = HashMap<Int, Palette>()
+    private fun parseEntries(entries: Map<String, String>, palettes: List<Palette>): TreeMap<Int, Palette> {
+        val map = TreeMap<Int, Palette>()
         entries.forEach{ entry -> map[Integer.parseInt(entry.key)] = palettes.first { it.id == entry.value } }
         return map
     }
@@ -23,15 +24,11 @@ class Timeline(entries: Map<String, String>, palettes: List<Palette>) {
     }
 
     fun getPreviousPalette(currentTime: Int): Map.Entry<Int, Palette> {
-        return timeToPalette.filter { it.key < currentTime}
-                .entries.sortedBy { it.key }.lastOrNull()
-                ?: timeToPalette.entries.sortedBy { it.key }.last()
+        return timeToPalette.lowerEntry(currentTime)?:timeToPalette.lastEntry()!!
     }
 
     fun getNextPalette(currentTime: Int): Map.Entry<Int, Palette>  {
-        return timeToPalette.filter { it.key > currentTime}
-                .entries.sortedBy { it.key }.firstOrNull()
-                ?: timeToPalette.entries.sortedBy { it.key }.first()
+        return timeToPalette.higherEntry(currentTime)?:timeToPalette.firstEntry()!!
     }
 
 }

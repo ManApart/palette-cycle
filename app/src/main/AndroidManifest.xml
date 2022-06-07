@@ -18,7 +18,8 @@
         android:roundIcon="@mipmap/mirror_lake_logo"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Material.Wallpaper.NoTitleBar"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        android:hardwareAccelerated="true" >
         <activity
             android:name=".SetWallpaperActivity"
             android:exported="true">
