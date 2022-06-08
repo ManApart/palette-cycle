@@ -10,12 +10,12 @@ import kotlin.math.min
 class Palette(val id: String = "", colors: List<Int>, val cycles: List<Cycle>) {
     constructor(id: String = "", paletteJson: PaletteJson) : this(id, paletteJson.parsedColors, paletteJson.cycles)
 
-    val baseColors = colors.toMutableList()
-    var colors = baseColors.toMutableList()
+    val baseColors = colors.toIntArray()
+    val colors = baseColors.clone()
 
     fun blendPalette(previous: Palette, next: Palette, percent: Int): Palette {
-        val mixedColors = baseColors.toIntArray()
-        for (i in 0 until baseColors.size){
+        val mixedColors = baseColors.clone()
+        for (i in baseColors.indices){
             mixedColors[i] = (fadeColors(previous.baseColors[i], next.baseColors[i], percent))
         }
         return Palette(colors = mixedColors.toList(), cycles = this.cycles)
@@ -23,10 +23,10 @@ class Palette(val id: String = "", colors: List<Int>, val cycles: List<Cycle>) {
 
     fun cycle(timePassed: Int) {
         //it's important we copy the base values as each time we cycle it 'starts from 0'; it's not additive
-        colors = baseColors.toMutableList()
-        cycles
-                .filter { it.rate != 0 }
-                .forEach { cycle ->
+        baseColors.copyInto(colors)
+        cycles.forEach { cycle ->
+                    if(cycle.rate==0)
+                        return@forEach //Similar to break in a conventionnal loop
                     cycle.reverseColorsIfNecessary(colors)
                     val amount = cycle.getCycleAmount(timePassed)
                     blendShiftColors(colors, cycle, amount)
@@ -34,7 +34,7 @@ class Palette(val id: String = "", colors: List<Int>, val cycles: List<Cycle>) {
                 }
     }
 
-    fun shiftColors(colors: MutableList<Int>, cycle: Cycle, amount: Float) {
+    fun shiftColors(colors: IntArray, cycle: Cycle, amount: Float) {
         val intAmount = amount.toInt()
         for (i in 0 until intAmount) {
             val temp = colors[cycle.high]
@@ -46,7 +46,7 @@ class Palette(val id: String = "", colors: List<Int>, val cycles: List<Cycle>) {
     }
 
     // BlendShift Technology conceived, designed and coded by Joseph Huckaby
-    private fun blendShiftColors(colors: MutableList<Int>, cycle: Cycle, amount: Float) {
+    private fun blendShiftColors(colors: IntArray, cycle: Cycle, amount: Float) {
         shiftColors(colors, cycle, amount)
 
         val remainder = floor((amount - floor(amount)) * precision).toInt()
