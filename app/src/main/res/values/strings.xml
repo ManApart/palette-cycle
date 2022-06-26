@@ -5,7 +5,7 @@
     <string name="bugReportButtonTitle">Get Logs</string>
     <string name="downloadAllButtonId">preload</string>
     <string name="downloadAllButtonTitle">Preload Images</string>
-    <string name="credits">Credits:\nApp by Austin Kucera \nArt by Mark Ferrari \nOriginal code by Ian Gilman and Joseph Huckaby \nWebsite (and BlendShift Technology) by Joseph Huckaby</string>
+    <string name="credits">Credits:\nApp by Austin Kucera \nArt by Mark Ferrari \nOriginal code by Ian Gilman and Joseph Huckaby \nWebsite (and BlendShift Technology) by Joseph Huckaby\nOptimization by G4E</string>
     <string name="logSaveButton">Write Files</string>
     <string name="preloadButton">Download</string>
     <string name="set">Set</string>

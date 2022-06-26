@@ -26,7 +26,7 @@ class Palette(val id: String = "", colors: List<Int>, val cycles: List<Cycle>) {
         baseColors.copyInto(colors)
         cycles.forEach { cycle ->
                     if(cycle.rate==0)
-                        return@forEach //Similar to break in a conventionnal loop
+                        return@forEach //Similar to break in a conventional loop
                     cycle.reverseColorsIfNecessary(colors)
                     val amount = cycle.getCycleAmount(timePassed)
                     blendShiftColors(colors, cycle, amount)
