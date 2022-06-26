@@ -17,7 +17,7 @@ data class Cycle(val rate: Int, private val reverse: Int, val low: Int, val high
         return (floor((a* precision)) % floor((b* precision))) / precision
     }
 
-    fun reverseColorsIfNecessary(colors: MutableList<Int>){
+    fun reverseColorsIfNecessary(colors: IntArray){
         if (reverse == 2){
             for (i in 0 until size/2){
                 val lowValue = colors[low+i]
