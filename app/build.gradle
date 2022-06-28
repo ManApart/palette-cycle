@@ -10,7 +10,7 @@ android {
         applicationId "rak.pixellwp"
         minSdk 25
         targetSdk 32
-        versionCode 2
+        versionCode 11
         versionName "2.2.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
