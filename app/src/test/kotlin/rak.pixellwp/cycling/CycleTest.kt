@@ -1,12 +1,10 @@
 package rak.pixellwp.cycling
 
-import junit.framework.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import rak.pixellwp.cycling.models.Cycle
-import java.util.logging.Logger
 
 class CycleTest {
-    val Log = Logger.getLogger(CycleTest::class.java.name)
 
     @Test
     @Throws(Exception::class)
@@ -25,11 +23,11 @@ class CycleTest {
         val cycle = Cycle(4914, 2, 192, 199)
         cycle.reverseColorsIfNecessary(colors)
 
-        Assert.assertEquals(expectedColors, colors)
+        assertEquals(expectedColors.toList(), colors.toList())
     }
 
 
-    private fun getColors(): MutableList<Int> {
-        return MutableList(256, { index -> index })
+    private fun getColors(): IntArray {
+        return IntArray(256) { i -> i }
     }
 }
