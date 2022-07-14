@@ -38,20 +38,25 @@ internal fun CyclingWallpaperService.CyclingWallpaperEngine.changeTimeline() {
 internal fun CyclingWallpaperService.CyclingWallpaperEngine.changeImage(image: ImageInfo) {
     if (image != currentImage) {
         Log.d(cyclingWallpaperLogTag, "Changing from ${currentImage.name} to ${image.name}.")
-        if (imageLoader.imageIsReady(image)) {
-            currentImage = image
-            if (image.isTimeline) {
-                drawRunner.image = imageLoader.loadTimelineImage(image)
-                if (drawRunner.image is TimelineImage && overrideTimeline) {
-                    (drawRunner.image as TimelineImage).setTimeOverride(overrideTime)
+        val previousImage = currentImage
+        try {
+            if (imageLoader.imageIsReady(image)) {
+                currentImage = image
+                if (image.isTimeline) {
+                    drawRunner.image = imageLoader.loadTimelineImage(image)
+                    if (drawRunner.image is TimelineImage && overrideTimeline) {
+                        (drawRunner.image as TimelineImage).setTimeOverride(overrideTime)
+                    }
+                } else {
+                    drawRunner.image = imageLoader.loadImage(image)
                 }
-            } else {
-                drawRunner.image = imageLoader.loadImage(image)
-            }
-            determineMinScaleFactor()
+                determineMinScaleFactor()
 
-        } else {
-            imageLoader.downloadImage(image)
+            } else {
+                imageLoader.downloadImage(image)
+            }
+        } catch (e: Exception){
+            Log.e(cyclingWallpaperLogTag, "Unable to change image from ${previousImage.name} to ${currentImage.name}.")
         }
     }
 }
