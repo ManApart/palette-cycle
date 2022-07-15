@@ -11,6 +11,7 @@ import kotlin.concurrent.thread
 
 class JsonDownloader(
     private val image: ImageInfo,
+    private val downloading: MutableSet<ImageInfo>,
     private val listener: (ImageInfo, String) -> Unit
 ) {
     private val imageUrl = "http://www.effectgames.com/demos/canvascycle/image.php?file="
@@ -21,31 +22,39 @@ class JsonDownloader(
         completeDownload(downloadImage())
     }
 
-    private fun downloadImage(): String {
-        var json = ""
+    private fun downloadImage(): String? {
         try {
             val inputStream = URL(getFullUrl(image)).openStream()
 
             val s = java.util.Scanner(inputStream).useDelimiter("\\A")
-            json = if (s.hasNext()) s.next() else ""
+            val json = if (s.hasNext()) s.next() else ""
 
             inputStream.close()
             return json
         } catch (e: Exception) {
             Log.e(logTag, "Unable to download image from ${getFullUrl(image)}")
             e.printStackTrace()
+            downloading.remove(image)
         }
-        return json
+        return null
     }
 
     private fun completeDownload(result: String?) {
-        val json = cleanJson(result)
-        val jsonSample = json.getSample()
-        Log.d(logTag, "downloaded json for ${image.name} from ${getFullUrl(image)} to ${image.getFileName()}: $jsonSample")
-        listener(image, json)
+        if (result != null) {
+            try {
+                val json = cleanJson(result)
+                val jsonSample = json.getSample()
+                Log.d(logTag, "downloaded json for ${image.name} from ${getFullUrl(image)} to ${image.getFileName()}: $jsonSample")
+                listener(image, json)
+            } catch (e: Exception) {
+                Log.e(logTag, "Unable to download image from ${getFullUrl(image)}")
+                e.printStackTrace()
+                downloading.remove(image)
+            }
+        }
     }
 
-    private fun cleanJson(json: String?): String {
+    private fun cleanJson(json: String): String {
         return if (image.isTimeline) {
             cleanTimelineImageJson(json)
         } else {
@@ -53,8 +62,7 @@ class JsonDownloader(
         }
     }
 
-    private fun cleanImageJson(json: String?): String {
-        if (json == null) return ""
+    private fun cleanImageJson(json: String): String {
         if (json.length > 25) {
             val start = json.indexOf("{filename")
             return json.substring(start, json.length - 4)
@@ -62,8 +70,7 @@ class JsonDownloader(
         return json
     }
 
-    private fun cleanTimelineImageJson(json: String?): String {
-        if (json == null) return ""
+    private fun cleanTimelineImageJson(json: String): String {
         if (json.length > 25) {
             val start = json.indexOf("{base")
             return json.substring(start, json.length - 3)

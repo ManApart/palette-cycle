@@ -107,7 +107,7 @@ class ImageLoader(private val context: Context) {
             Log.d(logTag, "Unable to find ${image.name} locally, downloading using id ${image.id}")
             downloading.add(image)
             thread {
-                JsonDownloader(image, ::saveAndLoadImage).download()
+                JsonDownloader(image, downloading, ::saveAndLoadImage).download()
             }
             Toast.makeText(context, "Unable to find ${image.name} locally. I'll change the image as soon as it's downloaded", Toast.LENGTH_LONG).show()
         }
@@ -133,7 +133,7 @@ class ImageLoader(private val context: Context) {
     private fun downloadImageWithoutChanging(image: ImageInfo) {
         if (!downloading.contains(image)) {
             downloading.add(image)
-            JsonDownloader(image, ::saveImageWithoutLoading).download()
+            JsonDownloader(image, downloading, ::saveImageWithoutLoading).download()
         }
     }
 
@@ -142,11 +142,11 @@ class ImageLoader(private val context: Context) {
             val stream = OutputStreamWriter(context.openFileOutput(image.getFileName(), Context.MODE_PRIVATE))
             stream.write(json)
             stream.close()
+            Log.d(logTag, "saved ${image.name} as ${image.getFileName()}")
         } catch (e: Exception) {
             Log.e(logTag, "Unable to save image")
             e.printStackTrace()
         }
-        Log.d(logTag, "saved ${image.name} as ${image.getFileName()}")
         downloading.remove(image)
     }
 
