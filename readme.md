@@ -1,6 +1,17 @@
+Palette-Cycle
+-------------
 
-http://www.effectgames.com/demos/worlds/
-http://www.effectgames.com/demos/canvascycle/
+* http://www.effectgames.com/demos/worlds/
+* http://www.effectgames.com/demos/canvascycle/
+
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/rak.pixellwp/)
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+     alt="Get it on Google Play"
+     height="80">](https://play.google.com/store/apps/details?id=rak.pixellwp)
+
+or get the apk from the [releases](https://github.com/ManApart/palette-cycle/releases/latest).
 
 **TODO**
 * Thread leaks, performance, bugs?
