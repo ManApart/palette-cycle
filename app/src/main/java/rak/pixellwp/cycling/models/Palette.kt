@@ -54,7 +54,7 @@ class Palette(val id: String = "", colors: List<Int>, val cycles: List<Cycle>) {
         for (j in (cycle.high - 1) downTo cycle.low) {
             colors[j + 1] = fadeColors(colors[j+1], colors[j], remainder)
         }
-        colors[cycle.low] = temp
+        colors[cycle.low] = fadeColors(colors[cycle.low], temp, remainder)
     }
 
     private fun fadeColors(sourceColor: Int, destColor: Int, frame: Int): Int {
