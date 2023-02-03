@@ -5,54 +5,54 @@
         android:entries="@array/ImageType"
         android:entryValues="@array/ImageTypeValues"
         android:key="imageType"
-        android:summary="Choose what type of image to show"
-        android:title="Image Type" />
+        android:summary="@string/imageTypeSummary"
+        android:title="@string/imageTypeTitle" />
     <rak.pixellwp.cycling.preferences.TimelinePreference
         android:key="timelineImage"
-        android:summary="Choose an image that will change continuously throughout the day"
-        android:title="Timeline Image" />
+        android:summary="@string/timelineImageSummary"
+        android:title="@string/timelineImageTitle" />
     <rak.pixellwp.cycling.preferences.ImageCollectionPreference
         android:key="imageCollection"
-        android:summary="Choose an image that will change at several points throughout the day"
-        android:title="Image Collection" />
+        android:summary="@string/imageCollectionSummary"
+        android:title="@string/imageCollectionTitle" />
     <SwitchPreference
         android:defaultValue="false"
         android:key="overrideTimelines"
-        android:summary="Force Timeline Images to stay at a specific time."
-        android:title="Override Timeline Time" />
+        android:summary="@string/overrideTimelinesSummary"
+        android:title="@string/overrideTimelinesTitle" />
     <DropDownPreference
         android:defaultValue="Any"
         android:entries="@array/WeatherTypes"
         android:entryValues="@array/WeatherTypes"
         android:key="weatherType"
-        android:summary="Choose what weather to display, if possible"
-        android:title="Weather" />
+        android:summary="@string/weatherTypeSummary"
+        android:title="@string/weatherTypeTitle" />
     <SeekBarPreference
-        android:title="Override Time"
         android:key="dayPercent"
-        android:summary="If Override Timeline Time is on, Timeline Images will stay at this part of the day." />
+        android:summary="@string/OverrideTimeSummary"
+        android:title="@string/OverrideTimeTitle" />
     <SwitchPreference
         android:defaultValue="true"
         android:key="adjustMode"
-        android:summary="Off: pan to change time. On: pan to move image."
-        android:title="Pan Override" />
+        android:summary="@string/adjustModeSummary"
+        android:title="@string/adjustModeTitle" />
     <SwitchPreference
         android:defaultValue="true"
         android:key="parallax"
-        android:summary="Pans the background when you swipe across screens"
-        android:title="Enable Parallax" />
+        android:summary="@string/parallaxSummary"
+        android:title="@string/parallaxTitle" />
     <Preference
-        android:key="@string/bugReportButtonId"
-        android:summary="Save logs to storage"
-        android:title="@string/bugReportButtonTitle"
+        android:key="bugReport"
+        android:summary="@string/bugReportSummary"
+        android:title="@string/bugReportTitle"
         android:widgetLayout="@layout/bug_report" />
     <Preference
-        android:key="@string/downloadAllButtonId"
-        android:summary="Download all images now"
-        android:title="@string/downloadAllButtonTitle"
+        android:key="preload"
+        android:summary="@string/preloadSummary"
+        android:title="@string/preloadTitle"
         android:widgetLayout="@layout/preload" />
     <Preference
-        android:layout="@layout/credits"
         android:selectable="false"
-        android:title="Credits" />
+        android:title="@string/creditTitle"
+        android:layout="@layout/credits" />
 </PreferenceScreen>
