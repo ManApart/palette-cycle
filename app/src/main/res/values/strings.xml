@@ -1,8 +1,8 @@
 <resources>
 
     <!-- Main app -->
-    <string name="app_name">Palette Cycling LWP</string>
-    <string name="wallpaper_description">Palette Cycling Pixel Art Wallpaper</string>
+    <string name="app_name" translatable="false">Palette Cycling LWP</string>
+    <string name="wallpaper_description" translatable="false">Palette Cycling Pixel Art Wallpaper</string>
     <string name="set">Set</string>
     <string name="cancel">Cancel</string>
     <string name="savedLogs">Saved logs to Android/data/rak.pixellwp/files</string>
