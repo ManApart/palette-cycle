@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Application principale -->
+    <string name="set">Appliquer</string>
+    <string name="cancel">Annuler</string>
+    <string name="savedLogs">Logs sauvegardés dans Android/data/rak.pixellwp/files</string>
+
+    <!-- Préférences-->
+    <string name="imageTypeSummary">Choisir quel type d\'image afficher</string>
+    <string name="imageTypeTitle">Type d\'image</string>
+
+    <string name="timelineImageSummary">Choisir une image qui évoluera lentement au fil de la journée</string>
+    <string name="timelineImageTitle">Image évolutive</string>
+
+    <string name="imageCollectionSummary">Choisir une image qui changera au fil de la journée</string>
+    <string name="imageCollectionTitle">Collection d\'image</string>
+
+    <string name="overrideTimelinesSummary">Force l\'image à rester à une heure précise</string>
+    <string name="overrideTimelinesTitle">Arrêter le temps</string>
+
+    <string name="weatherTypeSummary">Choisir la météo, si disponible</string>
+    <string name="weatherTypeTitle">Météo</string>
+
+    <string name="OverrideTimeSummary">Si \"Arrêter le temps\" est activé, les images évolutives resteront toujours à la même heure.</string>
+    <string name="OverrideTimeTitle">Heure fixe</string>
+
+    <string name="adjustModeSummary">Off : swipe pour changer l\'heure. On : swipe pour déplacer l\'image.</string>
+    <string name="adjustModeTitle">Type de swipe</string>
+
+    <string name="parallaxSummary">Le point de vue de l\'image de fond suivra les swipes d\'écrans</string>
+    <string name="parallaxTitle">Activer la parallaxe</string>
+
+    <string name="bugReportSummary">Sauvegarde les logs</string>
+    <string name="bugReportTitle">Récupérer les logs</string>
+    <string name="logSaveButton">Écrire le fichier</string>
+
+    <string name="preloadSummary">Télécharger toutes les images maintenant</string>
+    <string name="preloadTitle">Pré-télécharger les images</string>
+    <string name="preloadButton">Télécharger</string>
+
+    <string name="creditTitle">Crédits</string>
+    <string name="credits">
+        Crédits : \n
+        App par Austin Kucera \n
+        Art par Mark Ferrari \n
+        Code originel par Ian Gilman et Joseph Huckaby \n
+        Website (et la Technologie BlendShift) par Joseph Huckaby\n
+        Optimisation et traduction française par G4E</string>
+
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="ImageType">
+        <item>Évolutive</item>
+        <item>Collection</item>
+    </string-array>
+
+    <string-array name="WeatherTypes">
+        <item>Par défaut</item>
+        <item>Beau</item>
+        <item>Nuageux</item>
+        <item>Pluvieux</item>
+    </string-array>
+</resources>

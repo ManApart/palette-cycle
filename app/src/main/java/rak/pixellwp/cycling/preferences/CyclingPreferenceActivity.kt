@@ -94,7 +94,7 @@ class CyclingPreferenceActivity : FragmentActivity() {
             }
         } else {
             loggingManager.writeLogsToExternal()
-            Toast.makeText(this, "Saved logs to Android/data/rak.pixellwp/files", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, this.getText(R.string.savedLogs), Toast.LENGTH_LONG).show()
         }
     }
 

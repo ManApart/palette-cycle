@@ -1,13 +1,52 @@
 <resources>
-    <string name="app_name">Palette Cycling LWP</string>
-    <string name="wallpaper_description">Palette Cycling Pixel Art Wallpaper</string>
-    <string name="bugReportButtonId">Get Logs</string>
-    <string name="bugReportButtonTitle">Get Logs</string>
-    <string name="downloadAllButtonId">preload</string>
-    <string name="downloadAllButtonTitle">Preload Images</string>
-    <string name="credits">Credits:\nApp by Austin Kucera \nArt by Mark Ferrari \nOriginal code by Ian Gilman and Joseph Huckaby \nWebsite (and BlendShift Technology) by Joseph Huckaby\nOptimization by G4E</string>
-    <string name="logSaveButton">Write Files</string>
-    <string name="preloadButton">Download</string>
+
+    <!-- Main app -->
+    <string name="app_name" translatable="false">Palette Cycling LWP</string>
+    <string name="wallpaper_description" translatable="false">Palette Cycling Pixel Art Wallpaper</string>
     <string name="set">Set</string>
     <string name="cancel">Cancel</string>
+    <string name="savedLogs">Saved logs to Android/data/rak.pixellwp/files</string>
+
+    <!-- Cycling preferences -->
+    <string name="imageTypeSummary">Choose what type of image to show</string>
+    <string name="imageTypeTitle">Image Type</string>
+
+    <string name="timelineImageSummary">Choose an image that will change continuously throughout the day</string>
+    <string name="timelineImageTitle">Timeline Image</string>
+
+    <string name="imageCollectionSummary">Choose an image that will change at several points throughout the day</string>
+    <string name="imageCollectionTitle">Image Collection</string>
+
+    <string name="overrideTimelinesSummary">Force Timeline Images to stay at a specific time.</string>
+    <string name="overrideTimelinesTitle">Override Timeline Time</string>
+
+    <string name="weatherTypeSummary">Choose what weather to display, if possible</string>
+    <string name="weatherTypeTitle">Weather</string>
+
+    <string name="OverrideTimeSummary">If Override Timeline Time is on, Timeline Images will stay at this part of the day.</string>
+    <string name="OverrideTimeTitle">"Override Time"</string>
+
+    <string name="adjustModeSummary">Off: pan to change time. On: pan to move image.</string>
+    <string name="adjustModeTitle">Pan Override</string>
+
+    <string name="parallaxSummary">Pans the background when you swipe across screens</string>
+    <string name="parallaxTitle">Enable Parallax</string>
+
+    <string name="bugReportSummary">Save logs to storage</string>
+    <string name="bugReportTitle">Get Logs</string>
+    <string name="logSaveButton">Write Files</string>
+
+    <string name="preloadSummary">Download all images now</string>
+    <string name="preloadTitle">Preload Images</string>
+    <string name="preloadButton">preload</string>
+
+    <string name="creditTitle">Credits</string>
+    <string name="credits">
+        Credits: \n
+        App by Austin Kucera \n
+        Art by Mark Ferrari \n
+        Original code by Ian Gilman and Joseph Huckaby \n
+        Website (and BlendShift Technology) by Joseph Huckaby\n
+        Optimization and french translation by G4E</string>
+
 </resources>
