@@ -13,7 +13,8 @@ import java.util.*
 @JsonIgnoreProperties(ignoreUnknown = true)
 class ImageCollection(val name: String, val images: List<ImageInfo>) {
     @JsonCreator
-    constructor(name: String, id: String = "", month: String = "", script: String = "", weather: WeatherType = WeatherType.CLEAR, images: List<ImageInfo>?) : this(name, images ?: listOf(ImageInfo(name, id, month = month, script = script, weather = weather)))
+    constructor(name: String, id: String = "", month: String = "", script: String = "", weather: WeatherType = WeatherType.CLEAR, remap: Map<Int, IntArray> = emptyMap(), images: List<ImageInfo>?)
+            : this(name, images ?: listOf(ImageInfo(name, id, month = month, script = script, weather = weather, remap =  remap)))
 
     override fun toString(): String {
         return "Collection: $name" + images.map { it.toString() }
