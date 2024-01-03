@@ -1,12 +1,12 @@
 package rak.pixellwp.cycling.jsonLoading
 
 import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+
 import rak.pixellwp.cycling.jsonModels.ImageInfo
+
 import java.net.URL
-import kotlin.concurrent.thread
+import java.util.zip.GZIPInputStream
+
 
 
 class JsonDownloader(
@@ -24,7 +24,9 @@ class JsonDownloader(
 
     private fun downloadImage(): String? {
         try {
-            val inputStream = URL(getFullUrl(image)).openStream()
+            val urlConnection = URL(getFullUrl(image)).openConnection()
+            urlConnection.setRequestProperty("Accept-Encoding", "gzip")
+            val inputStream = GZIPInputStream(urlConnection.inputStream)
 
             val s = java.util.Scanner(inputStream).useDelimiter("\\A")
             val json = if (s.hasNext()) s.next() else ""
