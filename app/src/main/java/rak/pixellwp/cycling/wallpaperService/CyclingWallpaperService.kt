@@ -74,6 +74,7 @@ class CyclingWallpaperService : WallpaperService() {
         }
 
         override fun onDestroy() {
+            imageLoader.removeLoadListener(this)
             drawRunner.stop()
             unregisterReceiver(timeReceiver)
             PreferenceManager.getDefaultSharedPreferences(applicationContext).unregisterOnSharedPreferenceChangeListener(preferenceListener)

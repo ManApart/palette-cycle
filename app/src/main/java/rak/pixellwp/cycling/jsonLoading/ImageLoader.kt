@@ -12,6 +12,7 @@ import rak.pixellwp.cycling.wallpaperService.WeatherType
 import rak.pixellwp.mapper
 import java.io.*
 import java.util.*
+import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.concurrent.thread
 
 class ImageLoader(private val context: Context) {
@@ -19,7 +20,7 @@ class ImageLoader(private val context: Context) {
     private val timelineImages = parseTimelineImages()
     private val imageCollections = parseCollection()
     private val downloading = mutableSetOf<ImageInfo>()
-    private val loadListeners = mutableListOf<ImageLoadedListener>()
+    private val loadListeners = CopyOnWriteArrayList<ImageLoadedListener>()
 
     private fun parseTimelineImages(): List<ImageCollection> {
         val json = context.assets.open("Timelines.json")
@@ -70,6 +71,10 @@ class ImageLoader(private val context: Context) {
 
     fun addLoadListener(loadListener: ImageLoadedListener) {
         loadListeners.add(loadListener)
+    }
+
+    fun removeLoadListener(loadListener: ImageLoadedListener){
+        loadListeners.remove(loadListener)
     }
 
     fun getImageInfoForTimeline(name: String, time: Long, weather: WeatherType): ImageInfo {
