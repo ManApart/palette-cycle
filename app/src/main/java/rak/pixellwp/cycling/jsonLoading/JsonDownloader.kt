@@ -14,8 +14,9 @@ class JsonDownloader(
     private val downloading: MutableSet<ImageInfo>,
     private val listener: (ImageInfo, String) -> Unit
 ) {
-    private val imageUrl = "http://www.effectgames.com/demos/canvascycle/image.php?file="
-    private val timelineImageUrl = "http://www.effectgames.com/demos/worlds/scene.php?file="
+    private val imageUrl = "https://www.effectgames.com/demos/canvascycle/images/"
+    private val imageSuffix = ".LBM.json"
+    private val timelineImageUrl = "https://www.effectgames.com/demos/worlds/cache/"
     private val logTag = "JsonDownloader"
 
     fun download() {
@@ -65,26 +66,18 @@ class JsonDownloader(
     }
 
     private fun cleanImageJson(json: String): String {
-        if (json.length > 25) {
-            val start = json.indexOf("{filename")
-            return json.substring(start, json.length - 4)
-        }
-        return json
+        return json.trim()
     }
 
     private fun cleanTimelineImageJson(json: String): String {
-        if (json.length > 25) {
-            val start = json.indexOf("{base")
-            return json.substring(start, json.length - 3)
-        }
-        return json
+        return json.trim().removePrefix("CanvasCycle.initScene(").removeSuffix(");")
     }
 
     private fun getFullUrl(image: ImageInfo): String {
         return if (image.isTimeline) {
-            timelineImageUrl + image.getJustId() + "&month=" + image.month + "&script=" + image.script
+            "$timelineImageUrl${image.getJustId()}-${image.month}-${image.script}.js"
         } else {
-            imageUrl + image.id
+            imageUrl + image.id + imageSuffix
         }
     }
 
