@@ -8,8 +8,8 @@ import kotlin.math.min
 
 fun CyclingWallpaperService.CyclingWallpaperEngine.scaleDetector(applicationContext: Context): ScaleGestureDetector{
     return ScaleGestureDetector(applicationContext, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-        override fun onScale(detector: ScaleGestureDetector?): Boolean {
-            incrementScaleFactor(detector?.scaleFactor ?: 1f)
+        override fun onScale(detector: ScaleGestureDetector): Boolean {
+            incrementScaleFactor(detector.scaleFactor)
             return true
         }
     })

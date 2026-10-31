@@ -14,7 +14,7 @@ import kotlin.math.abs
 
 fun CyclingWallpaperService.CyclingWallpaperEngine.panDetector(applicationContext: Context): GestureDetectorCompat {
     return GestureDetectorCompat(applicationContext, object : GestureDetector.SimpleOnGestureListener() {
-        override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+        override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
             if (adjustMode || currentImageType != ImageType.TIMELINE) {
                 adjustImageSrc(distanceX, distanceY)
             } else {

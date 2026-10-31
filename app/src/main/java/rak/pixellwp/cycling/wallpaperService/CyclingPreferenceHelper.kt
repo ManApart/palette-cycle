@@ -8,7 +8,7 @@ import rak.pixellwp.cycling.models.getTimeWithinDay
 import rak.pixellwp.cycling.models.maxMilliseconds
 
 fun CyclingWallpaperService.CyclingWallpaperEngine.preferenceListener(): SharedPreferences.OnSharedPreferenceChangeListener {
-    return SharedPreferences.OnSharedPreferenceChangeListener { preference: SharedPreferences, newValue: Any ->
+    return SharedPreferences.OnSharedPreferenceChangeListener { preference: SharedPreferences, newValue: String? ->
         if (newValue == OVERRIDE_TIME
             || newValue == LAST_HOUR_CHECKED
             || (newValue == OVERRIDE_TIME_PERCENT && dayPercent == preference.getInt(OVERRIDE_TIME_PERCENT, 50))

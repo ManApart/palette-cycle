@@ -36,7 +36,7 @@ class CyclingPreferenceActivity : FragmentActivity() {
             super.onDestroy()
         }
 
-        private val preferenceListener = SharedPreferences.OnSharedPreferenceChangeListener { preference: SharedPreferences, newValue: Any ->
+        private val preferenceListener = SharedPreferences.OnSharedPreferenceChangeListener { preference: SharedPreferences, newValue: String? ->
             if (newValue == IMAGE_TYPE){
                 val prefImageType = preference.getString(IMAGE_TYPE, TIMELINE_IMAGE).toImageType()
                 setOptionsVisibility(prefImageType)
