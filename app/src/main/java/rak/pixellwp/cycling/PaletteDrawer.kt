@@ -3,6 +3,7 @@ package rak.pixellwp.cycling
 import android.graphics.Rect
 import android.os.Handler
 import android.os.HandlerThread
+import android.os.SystemClock
 import android.util.Log
 import android.view.SurfaceHolder
 import rak.pixellwp.cycling.models.PaletteImage
@@ -22,7 +23,7 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
     private var handler = Handler(handlerThread.looper)
     private val runner = Runnable { advanceAndDraw() }
     private val drawDelay = 20L
-    private val startTime = Date().time
+    private val startTime = SystemClock.elapsedRealtime()
     private var visible = true
 
     fun startDrawing() {
@@ -64,7 +65,7 @@ class PaletteDrawer(private val engine: CyclingWallpaperService.CyclingWallpaper
     }
 
     private fun advanceAndDraw() {
-        val timePassed = (Date().time - startTime).toInt()
+        val timePassed = SystemClock.elapsedRealtime() - startTime
         image.advance(timePassed)
         drawFrame(engine.surfaceHolder, engine.getOffsetImage(), engine.screenDimensions)
     }

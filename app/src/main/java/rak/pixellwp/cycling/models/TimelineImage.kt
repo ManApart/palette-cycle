@@ -21,7 +21,7 @@ class TimelineImage(json: TimelineImageJson) : PaletteImage {
         return jsonPalettes.map { entry -> Palette(entry.key, entry.value) }.toList()
     }
 
-    override fun advance(timePassed: Int) {
+    override fun advance(timePassed: Long) {
         if (!useTimeOverride) {
             overrideTime.setTimeToNow()
         }

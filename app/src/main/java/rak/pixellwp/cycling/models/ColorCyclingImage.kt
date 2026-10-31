@@ -17,7 +17,7 @@ class ColorCyclingImage(img: ImageJson) : PaletteImage {
         return "image with dimensions $width x $height = ${width*height}, ${palette.colors.size} colors, ${palette.cycles.size} cycles and ${pixels.size} pixels"
     }
 
-    override fun advance(timePassed: Int){
+    override fun advance(timePassed: Long){
         palette.cycle(timePassed)
         draw()
     }

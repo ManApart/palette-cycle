@@ -21,7 +21,7 @@ class Palette(val id: String = "", colors: List<Int>, val cycles: List<Cycle>) {
         return Palette(colors = mixedColors.toList(), cycles = this.cycles)
     }
 
-    fun cycle(timePassed: Int) {
+    fun cycle(timePassed: Long) {
         //it's important we copy the base values as each time we cycle it 'starts from 0'; it's not additive
         baseColors.copyInto(colors)
         cycles.forEach { cycle ->
